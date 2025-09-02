@@ -1,0 +1,59 @@
+.page-container {
+    .page-content {
+        // height: 200vh;
+        height: 2000px;
+        // height: 256640px;
+        background-color: green;
+        transform-origin: 50% top;
+        transition: transform 0.3s ease-in-out;
+        
+        &.drag-scaling {
+            transform: scale(0.28);
+        }
+    }
+}
+
+// Vertical Scroll Progress Bar Container with Hover Area
+.scroll-progress-bar {
+    position: fixed;
+    top: 10vh; // Start at 10% from top to achieve 80% height
+    right: 0; // Extend to edge for larger hover area
+    width: 40px; // Larger hover area
+    height: 80vh;
+    z-index: 1000;
+    // cursor: pointer; // Make it clear that it's clickable
+    user-select: none; // Prevent text selection during drag
+    opacity: 1; // Hidden by default
+    transition: opacity 0.3s ease-in-out; // Smooth fade in/out
+    
+    // Show progress bar on hover
+    &:hover {
+        opacity: 1;
+    }
+    
+    // Also show when dragging
+    &.dragging {
+        opacity: 1;
+    }
+    
+    // Create the actual progress bar track
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 20px; // Distance from edge
+        width: 8px;
+        height: 100%;
+        background-color: #ccc; // Grey background
+    }
+    
+    .scroll-progress-fill {
+        position: absolute;
+        top: 0;
+        right: 20px; // Distance from edge
+        width: 8px;
+        background-color: #007bff; // Blue fill color
+        transition: height 0.1s ease-out;
+        height: 0%; // Start with 0% height
+    }
+}
