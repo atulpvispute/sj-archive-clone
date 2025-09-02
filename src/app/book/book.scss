@@ -1,0 +1,15 @@
+.b-container {
+    
+        .b-content {
+            // height: 200vh;
+            // height: 2000px;
+            // height: 256640px;
+            
+            transform-origin: 50% top;
+            transition: transform 0.3s ease-in-out;
+            
+            &.drag-scaling {
+                transform: scale(0.28);
+            }
+        }
+}

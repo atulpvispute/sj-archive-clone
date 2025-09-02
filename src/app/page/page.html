@@ -1,0 +1,43 @@
+<div class="page-container m-0 p-5">
+    <!-- Vertical Scroll Progress Bar -->
+    <div class="scroll-progress-bar" 
+         [class.dragging]="isDragging"
+         (click)="onProgressBarClick($event)"
+         (mousedown)="onMouseDown($event)"
+         (mousemove)="onMouseMove($event)"
+         (mouseup)="onMouseUp($event)"
+         (mouseleave)="onMouseUp($event)">
+        <div class="scroll-progress-fill" [style.height.%]="scrollProgress"></div>
+    </div>
+    
+    <div class="page-content" [class.drag-scaling]="isDragScaling">
+        <h1>Steve Jobs Page Replica</h1>
+        <p>hi a b c s ++ q w e r t y u i o p</p>
+        
+        <!-- Adding some content to make the page scrollable -->
+        <div class="content-section mb-5">
+            <h2>Section 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+        
+        <div class="content-section mb-5">
+            <h2>Section 2</h2>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+        
+        <div class="content-section mb-5">
+            <h2>Section 3</h2>
+            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+        </div>
+        
+        <div class="content-section mb-5">
+            <h2>Section 4</h2>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        
+        <div class="content-section mb-5">
+            <h2>Section 5</h2>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+        </div>
+    </div>
+</div>

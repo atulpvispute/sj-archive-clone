@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Import Bootstrap SCSS */
+@import 'bootstrap/scss/bootstrap';
+
+/* Hide native scrollbar while keeping scroll functionality */
+html {
+  /* Firefox */
+  scrollbar-width: none;
+}
+
+body {
+  /* WebKit browsers (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+  
+  /* For Internet Explorer and Edge legacy */
+  -ms-overflow-style: none;
+
+
+  background-color: #F1F1F1;
+}
