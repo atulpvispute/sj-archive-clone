@@ -117,7 +117,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
       const displayRect = displayElement.getBoundingClientRect();
       
       // Calculate the distance between the bottom of hr-main-top and the top of the display
-      this.hrMainToDisplayDistance = displayRect.top - hrMainRect.bottom;
+      this.hrMainToDisplayDistance = Math.round(displayRect.top - hrMainRect.bottom);
       ////console.log(`Distance between hr-main-top and hr-main-fixed: ${this.hrMainToDisplayDistance}px`);
     }
   }

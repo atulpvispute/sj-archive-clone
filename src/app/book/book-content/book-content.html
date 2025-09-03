@@ -2,7 +2,7 @@
     <!-- Active Chapter Display -->
     <div class="active-chapter-display">
         @for (chapter of getChaptersData(); track chapter.chapterName) {
-            @if (chapter.isActive) {
+            @if (chapter.isActive && chapter.chapterName) {
                 <strong>{{ chapter.chapterName }}</strong>
             }
         }
