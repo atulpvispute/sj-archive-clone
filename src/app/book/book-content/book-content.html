@@ -1,7 +1,41 @@
 <div class="book-main">
-    <!-- Chapter Display -->
-    <div class="chapter-display" [class.visible]="currentChapter">
-        {{ currentChapter || '' }}
+    <!-- Active Chapter Display -->
+    <div class="active-chapter-display">
+        @for (chapter of getChaptersData(); track chapter.chapterName) {
+            @if (chapter.isActive) {
+                <strong>{{ chapter.chapterName }}</strong>
+            }
+        }
+    </div>
+    
+    <!-- Scroll Progress Bar Height Display -->
+    <div class="scroll-progress-height-display">
+        Scroll Progress Bar Height: {{ getScrollProgressBarHeight() }}px
+    </div>
+    
+    <!-- Full Book Scroll Position Display -->
+    <div class="full-book-scroll-position-display">
+        Full Book Scroll Position: {{ getFullBookScrollPosition() }}px
+    </div>
+    
+    <!-- HR Main to Display Distance -->
+    <div class="hr-main-distance-display">
+        HR Main to Display Distance: {{ getHrMainToDisplayDistance() }}px
+        , %: {{ 100*getHrMainToDisplayDistance()/getFullBookHeight() }}px
+    </div>
+    
+    <!-- Chapters Data Display -->
+    <div class="chapters-data-display">
+        <h4>Chapters Data:</h4>
+        @for (chapter of getChaptersData(); track chapter.chapterName) {
+            <div class="chapter-data-item" [class.active]="chapter.isActive">
+                <strong>{{ chapter.chapterName }}</strong><br>
+                Start: {{ chapter.startPosition }}px ({{ chapter.percentageStartPosition }}%)<br>
+                End: {{ chapter.endPosition }}px ({{ chapter.percentageEndPosition }}%)<br>
+                Total Height: {{ chapter.totalFullHeight }}px<br>
+                Active: {{ chapter.isActive ? 'Yes' : 'No' }}
+            </div>
+        }
     </div>
     
     <!-- Vertical Scroll Progress Bar -->
@@ -14,10 +48,27 @@
          (mouseup)="onMouseUp($event)"
          (mouseleave)="onMouseUp($event)">
                  <div class="scroll-progress-fill" [style.height.%]="scrollProgress"></div>
+                 
+                 <!-- Chapter Divider Lines -->
+                 @for (chapter of getChaptersData(); track chapter.chapterName) {
+                     <div class="chapter-divider-line" 
+                          [style.top.%]="chapter.percentageStartPosition"
+                          [style.width.px]="4"
+                          [style.right.px]="22">
+                         <span class="chapter-name-label" 
+                               (click)="scrollToChapter(chapter.chapterName); $event.stopPropagation()"
+                               [title]="'Click to scroll to ' + chapter.chapterName">
+                             {{ chapter.chapterName }}
+                         </span>
+                     </div>
+                 }
      </div>
 
+     <hr class="hr-main-top p-0 m-0">
+     <hr class="hr-main-fixed p-0 m-0">
    <div class="full-book" [class.drag-scaling]="isDragScaling">
       <div class="book-section book-cover" chapter="Cover">
+         <div class="chapter-height">Cover, Height: {{ getChapterHeight('Cover') }}px, Total: {{ getFullBookHeight() }}px, Start: {{ getChapterStartPosition('Cover') }}px, End: {{ getChapterEndPosition('Cover') }}px</div>
          <div class="book-page center" gray id="cover" start-page cover vertical-center  toc="Make Something Wonderful" sticky=" " scrubber=" " shrink=".4">
             <div class="page-content">
                   <hr class="hr-top">
@@ -44,6 +95,7 @@
   
   
       <div class="book-section" chapter="Intro">
+         <div class="chapter-height">Intro, Height: {{ getChapterHeight('Intro') }}px, Total: {{ getFullBookHeight() }}px, Start: {{ getChapterStartPosition('Intro') }}px, End: {{ getChapterEndPosition('Intro') }}px</div>
          <div class="book-page" white id="introduction" toc="Introduction by Laurene Powell Jobs" sticky="Intro" scrubber="Intro" shrink=".4">
             <div class="page-content">
                <hr class="hr-top">
@@ -85,6 +137,7 @@
       </div>
 
       <div class="book-section" chapter="Preface">
+         <div class="chapter-height">Preface, Height: {{ getChapterHeight('Preface') }}px, Total: {{ getFullBookHeight() }}px, Start: {{ getChapterStartPosition('Preface') }}px, End: {{ getChapterEndPosition('Preface') }}px</div>
          <div class="book-page" white id="preface" toc="Preface" sticky="Preface" scrubber="Preface">
             <div class="page-content">
                <h1 id="sid-24">Preface:&nbsp;Steve&nbsp;on&nbsp;His&nbsp;Childhood and&nbsp;Young&nbsp;Adulthood</h1>
