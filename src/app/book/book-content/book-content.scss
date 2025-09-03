@@ -279,19 +279,19 @@
 
   .book-section {
     // border: 1px solid red;
-    .chapter-height {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      text-align: center;
-      background-color: rgba(144, 238, 144, 0.9);
-      color: #333;
-      font-weight: bold;
-      font-size: 14px;
-      padding: 8px 16px;
-      border-bottom: 2px solid #4CAF50;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+    // .chapter-height {
+    //   position: sticky;
+    //   top: 0;
+    //   z-index: 100;
+    //   text-align: center;
+    //   background-color: rgba(144, 238, 144, 0.9);
+    //   color: #333;
+    //   font-weight: bold;
+    //   font-size: 14px;
+    //   padding: 8px 16px;
+    //   border-bottom: 2px solid #4CAF50;
+    //   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    // }
     [gray] {
       @extend .book-page-common;
       background-color: #646464;

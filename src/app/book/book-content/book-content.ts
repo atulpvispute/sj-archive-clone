@@ -15,6 +15,7 @@ interface ChapterData {
   percentageStartPosition: number;
   percentageEndPosition: number;
   isActive: boolean;
+  chapterId: number;
 }
 
 @Component({
@@ -327,7 +328,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.chaptersData = [];
     const bookSections = document.querySelectorAll('.book-section');
     
-    bookSections.forEach((section) => {
+    bookSections.forEach((section, index) => {
       const chapterName = section.getAttribute('chapter') || '';
       if (chapterName) {
         const startPosition = this.getChapterStartPosition(chapterName);
@@ -341,16 +342,18 @@ export class BookContent implements AfterViewInit, OnDestroy {
           totalFullHeight: totalFullHeight,
           percentageStartPosition: Math.round(100 * (startPosition / totalFullHeight)),
           percentageEndPosition: Math.round(100 * (endPosition / totalFullHeight)),
-          isActive: false // Will be updated in updateChaptersData
+          isActive: false, // Will be updated in updateChaptersData
+          chapterId: index + 1
         };
         
         this.chaptersData.push(chapterData);
       }
     });
 
-    this.chaptersData[0].isActive = true;
-    
-    //console.log('Initialized chapters data:', this.chaptersData);
+    this.chaptersData.forEach((chapter) => {
+      chapter.isActive = this.fullBookScrollPosition >= chapter.startPosition && 
+                         this.fullBookScrollPosition < chapter.endPosition;
+    });
   }
 
   // Update chapters data with current scroll position
