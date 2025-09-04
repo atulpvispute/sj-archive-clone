@@ -53,12 +53,13 @@
                  @for (chapter of getChaptersData(); track chapter.chapterName) {
                      @if (chapter.chapterName) {
                          <div class="chapter-divider-line" 
-                              [style.top.%]="chapter.percentageStartPosition"
+                              [style.top.%]="chapter.percentageStartPosition+chapter.chapterId*0.5"
                               [style.width.px]="4"
                               [style.right.px]="22">
                              <span class="chapter-name-label" 
                                    (click)="scrollToChapter(chapter.chapterName); $event.stopPropagation()"
-                                   [title]="'Click to scroll to ' + chapter.chapterName">
+                                   [title]="'Click to scroll to ' + chapter.chapterName"
+                                   [style.color]="getLabelColor(chapter)">
                                  {{ chapter.chapterName }}
                              </span>
                          </div>

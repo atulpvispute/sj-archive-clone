@@ -219,22 +219,23 @@
 
                    .chapter-name-label {
             position: absolute;
-            right: 50px; // Fixed position relative to the scroll progress bar container
+            right: 20px; // Fixed position relative to the scroll progress bar container
             top: -8px; // Center vertically with the line
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
+            // background-color: rgba(0, 0, 0, 0.8);
+            // color: white;
+            color: #ccc;
             padding: 2px 6px;
             border-radius: 3px;
-            font-size: 10px;
+            font-size: 14px;
             font-weight: 500;
             white-space: nowrap;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
-            cursor: pointer; // Make it clear it's clickable
+            // cursor: pointer; // Make it clear it's clickable
             pointer-events: auto; // Enable pointer events for clicking
 
             &:hover {
-              background-color: rgba(0, 0, 0, 0.9);
+              // background-color: rgba(0, 0, 0, 0.9);
               transform: scale(1.05);
               transition: all 0.2s ease-in-out;
             }

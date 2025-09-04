@@ -159,6 +159,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     if (this.isDragging) {
       event.preventDefault();
       this.scrollToPosition(event);
+      // Update scroll progress for dynamic label colors during dragging
+      this.updateScrollProgress();
+      this.updateChaptersData();
     }
   }
 
@@ -423,5 +426,34 @@ export class BookContent implements AfterViewInit, OnDestroy {
         this.intersectionObserver.observe(section);
       }
     });
+  }
+
+  // Method to get label color based on scroll progress
+  getLabelColor(chapter: ChapterData): string {
+    const scrollProgressPercent = this.scrollProgress;
+    const chapterStartPercent = chapter.percentageStartPosition;
+    const chapterEndPercent = chapter.percentageEndPosition;
+    
+    // If scroll progress is before this chapter, use default color
+    if (scrollProgressPercent < chapterStartPercent) {
+      // return '#ffffff'; // White
+      return '#ccc'; // Grey
+    }
+    
+    // If scroll progress is after this chapter, use filled color
+    if (scrollProgressPercent >= chapterEndPercent) {
+      return '#007bff'; // Blue (same as scroll-progress-fill)
+    }
+    
+    // // If scroll progress is within this chapter, interpolate color
+    // const chapterProgress = (scrollProgressPercent - chapterStartPercent) / (chapterEndPercent - chapterStartPercent);
+    
+    // // Interpolate between white and blue based on progress within the chapter
+    // const r = Math.round(0 + (0 - 0) * chapterProgress);
+    // const g = Math.round(255 + (123 - 255) * chapterProgress);
+    // const b = Math.round(255 + (255 - 255) * chapterProgress);
+    
+    // return `rgb(${r}, ${g}, ${b})`;
+    return '#007bff'; // Blue (same as scroll-progress-fill)
   }
 }
