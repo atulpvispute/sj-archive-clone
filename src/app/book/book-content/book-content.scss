@@ -150,35 +150,35 @@
     opacity: 0; // Hidden by default
     transition: opacity 0.3s ease-in-out; // Smooth fade in/out
 
-    // Show progress bar on hover
-    &:hover {
-      opacity: 1;
+         // Show progress bar on hover
+     &:hover {
+       opacity: 1;
 
-      &::before {
-        width: 8px; // Wider on hover
-        right: 20px; // Adjust position to center the expansion
-      }
+       &::before {
+         width: 10px; // Wider on hover
+         right: 18px; // Adjust position to center the expansion
+       }
 
-      .scroll-progress-fill {
-        width: 8px; // Wider on hover
-        right: 20px; // Adjust position to center the expansion
-      }
-    }
+       .scroll-progress-fill {
+         width: 10px; // Wider on hover
+         right: 18px; // Adjust position to center the expansion
+       }
+     }
 
-    // Also show when dragging
-    &.dragging {
-      opacity: 1;
+         // Also show when dragging
+     &.dragging {
+       opacity: 1;
 
-      &::before {
-        width: 8px; // Wider when dragging
-        right: 20px; // Adjust position to center the expansion
-      }
+       &::before {
+         width: 10px; // Wider when dragging
+         right: 18px; // Adjust position to center the expansion
+       }
 
-      .scroll-progress-fill {
-        width: 8px; // Wider when dragging
-        right: 20px; // Adjust position to center the expansion
-      }
-    }
+       .scroll-progress-fill {
+         width: 10px; // Wider when dragging
+         right: 18px; // Adjust position to center the expansion
+       }
+     }
 
     // Show when scrolling (controlled by component)
     &.visible {
@@ -241,31 +241,31 @@
           }
        }
 
-       // Show chapter name labels on hover
-       &:hover {
-         .chapter-divider-line {
-           width: 8px !important; // Wider on hover
-           right: 20px !important; // Adjust position to center the expansion
+               // Show chapter name labels on hover
+        &:hover {
+          .chapter-divider-line {
+            width: 10px !important; // Wider on hover
+            right: 18px !important; // Adjust position to center the expansion
 
-           .chapter-name-label {
-             opacity: 1;
-             // No position change needed - label stays in fixed position
-           }
-         }
-       }
+            .chapter-name-label {
+              opacity: 1;
+              // No position change needed - label stays in fixed position
+            }
+          }
+        }
 
-       // Show chapter name labels when dragging
-       &.dragging {
-         .chapter-divider-line {
-           width: 8px !important; // Wider when dragging
-           right: 20px !important; // Adjust position to center the expansion
+               // Show chapter name labels when dragging
+        &.dragging {
+          .chapter-divider-line {
+            width: 10px !important; // Wider when dragging
+            right: 18px !important; // Adjust position to center the expansion
 
-           .chapter-name-label {
-             opacity: 1;
-             // No position change needed - label stays in fixed position
-           }
-         }
-       }
+            .chapter-name-label {
+              opacity: 1;
+              // No position change needed - label stays in fixed position
+            }
+          }
+        }
   }
 
   .full-book {
