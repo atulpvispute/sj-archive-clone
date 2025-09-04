@@ -432,7 +432,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
   getLabelColor(chapter: ChapterData): string {
     const scrollProgressPercent = this.scrollProgress;
     const chapterStartPercent = chapter.percentageStartPosition;
-    const chapterEndPercent = chapter.percentageEndPosition;
+    // const chapterEndPercent = chapter.percentageEndPosition;
     
     // If scroll progress is before this chapter, use default color
     if (scrollProgressPercent <= chapterStartPercent) {
