@@ -140,10 +140,10 @@
   // Vertical Scroll Progress Bar Container with Hover Area
   .scroll-progress-bar {
     position: fixed;
-    top: 10vh; // Start at 10% from top to achieve 80% height
+    top: 13vh; // Start at 10% from top to achieve 80% height
     right: 0; // Extend to edge for larger hover area
     width: 100px; // Larger hover area
-    height: 80vh;
+    height: 73vh;
     z-index: 1000;
     // cursor: pointer; // Make it clear that it's clickable
     user-select: none; // Prevent text selection during drag
