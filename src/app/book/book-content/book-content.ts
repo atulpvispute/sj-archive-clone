@@ -42,6 +42,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
   private intersectionObserver?: IntersectionObserver;
   private scrollTimeout: any;
   private resizeObserver?: ResizeObserver;
+  currentScrollPosition: number = 0;
+  nextScrollPosition: number = 0;
+
 
   ngAfterViewInit() {
     // Set up intersection observer after view is initialized
@@ -152,22 +155,124 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.isDragScaling = true;
     this.showScrollProgress(); // Show progress bar when interacting
     event.preventDefault(); // Prevent text selection
+    
+    // Calculate initial positions for scaling and translation
+    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    const progressBar = event.currentTarget as HTMLElement;
+    const rect = progressBar.getBoundingClientRect();
+    const clickY = event.clientY - rect.top;
+    const barHeight = rect.height;
+    const clampedY = Math.max(0, Math.min(clickY, barHeight));
+    const clickPercentage = clampedY / barHeight;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const targetScrollPosition = clickPercentage * scrollHeight;
+    
+    // Apply initial scaling and translation to .full-book
+    const fullBookElement = document.querySelector('.full-book') as HTMLElement;
+    if (fullBookElement) {
+      console.log(111)
+      fullBookElement.style.transformOrigin = `50% ${targetScrollPosition + 300}px`;
+      fullBookElement.style.transform = `scale(0.28)`;
+      fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+    }
+    
     this.scrollToPosition(event);
   }
 
   onMouseMove(event: MouseEvent) {
     if (this.isDragging) {
       event.preventDefault();
+      
+      const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      // Calculate current scroll progress for proportional translation
+      const progressBar = event.currentTarget as HTMLElement;
+      const rect = progressBar.getBoundingClientRect();
+      const mouseY = event.clientY - rect.top;
+      const barHeight = rect.height;
+      const clampedY = Math.max(0, Math.min(mouseY, barHeight));
+      const mousePercentage = clampedY / barHeight;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const targetScrollPosition = mousePercentage * scrollHeight;
+
+      const scrollDistance = targetScrollPosition - currentScrollPosition;
+      
+      // Update .full-book translation proportionally with scroll progress bar fill
+      const fullBookElement = document.querySelector('.full-book') as HTMLElement;
+      if (fullBookElement) {
+        console.log(222)
+        const translateY = (mousePercentage - 0.5) * scrollHeight * 0.28; // Proportional translation
+        fullBookElement.style.transform = `translate(0px, ${translateY}px) scale(0.28)`;
+        
+        // fullBookElement.style.transformOrigin = `50% ${translateY + 300}px`;
+        // fullBookElement.style.transform = `translate(0px, ${-scrollDistance}px) scale(0.28)`;
+        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+      }
+      
       this.scrollToPosition(event);
       // Update scroll progress for dynamic label colors during dragging
       this.updateScrollProgress();
       this.updateChaptersData();
     }
+
+
+    // // Get current scroll position
+    // const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // // Calculate target scroll position
+    // const progressBar = event.currentTarget as HTMLElement;
+    // const rect = progressBar.getBoundingClientRect();
+    // const clickY = event.clientY - rect.top;
+    // const barHeight = rect.height;
+    // const clampedY = Math.max(0, Math.min(clickY, barHeight));
+    // const clickPercentage = clampedY / barHeight;
+    // const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    // const targetScrollPosition = clickPercentage * scrollHeight;
+    // const scrollDistance = targetScrollPosition - currentScrollPosition;
+
+    // // Log current and target positions
+    // console.log(`Current scroll position: ${Math.round(currentScrollPosition)}px`);
+    // console.log(`Target scroll position: ${Math.round(targetScrollPosition)}px`);
+    // console.log(`Scroll distance: ${Math.round(scrollDistance)}px`);
+
+    // // Dynamically change transform-origin for .drag-scaling based on target scroll position
+    // const fullBookElement = document.querySelector('.full-book') as HTMLElement;
+    // if (fullBookElement) {
+    //   // if (this.isDragScaling) {
+    //     // dragScalingElement.style.transformOrigin = `50% ${targetScrollPosition + 50}px`;
+    //     fullBookElement.style.transform = `translate(0px, ${-scrollDistance + 50}px) scale(0.28)`;
+    //     fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+    //   // } else {
+    //   //   dragScalingElement.style.transform = 'none';
+    //   // }
+    // } 
   }
 
   onMouseUp(event: MouseEvent) {
     this.isDragging = false;
     this.isDragScaling = false;
+
+    // Get the final scroll progress bar position
+    const progressBar = event.currentTarget as HTMLElement;
+    const rect = progressBar.getBoundingClientRect();
+    const mouseY = event.clientY - rect.top;
+    const barHeight = rect.height;
+    const clampedY = Math.max(0, Math.min(mouseY, barHeight));
+    const finalPercentage = clampedY / barHeight;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const finalScrollPosition = finalPercentage * scrollHeight;
+
+    // Reset .full-book to normal scale
+    const fullBookElement = document.querySelector('.full-book') as HTMLElement;
+    if (fullBookElement) {
+      fullBookElement.style.transform = 'none';
+      fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+    }
+
+    // Scroll to the final proportional position
+    window.scrollTo({
+      top: finalScrollPosition,
+      behavior: 'smooth'
+    });
   }
 
   private scrollToPosition(event: MouseEvent) {
@@ -194,6 +299,44 @@ export class BookContent implements AfterViewInit, OnDestroy {
       top: targetScrollPosition,
       behavior: this.isDragging ? 'auto' : 'smooth',
     });
+
+
+
+
+    // // Get current scroll position
+    // const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // // Calculate target scroll position
+    // // const progressBar = event.currentTarget as HTMLElement;
+    // // const rect = progressBar.getBoundingClientRect();
+    // // const clickY = event.clientY - rect.top;
+    // // const barHeight = rect.height;
+    // // const clampedY = Math.max(0, Math.min(clickY, barHeight));
+    // // const clickPercentage = clampedY / barHeight;
+    // // const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    // // const targetScrollPosition = clickPercentage * scrollHeight;
+    // const scrollDistance = targetScrollPosition - currentScrollPosition;
+
+    // // Log current and target positions
+    // console.log(`Current scroll position: ${Math.round(currentScrollPosition)}px`);
+    // console.log(`Target scroll position: ${Math.round(targetScrollPosition)}px`);
+    // console.log(`Scroll distance: ${Math.round(scrollDistance)}px`);
+
+    // // Dynamically change transform-origin for .drag-scaling based on target scroll position
+    // const fullBookElement = document.querySelector('.full-book') as HTMLElement;
+    // if (fullBookElement) {
+    //   // if (this.isDragScaling) {
+    //     fullBookElement.style.transformOrigin = `50% ${targetScrollPosition + 50}px`;
+    //     fullBookElement.style.transform = `translate(0px, ${-scrollDistance + 50}px) scale(0.28)`;
+    //     // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+    //     // fullBookElement.style.transformOrigin = `50% ${targetScrollPosition * 0.28 + 50}px`;
+    //     // fullBookElement.style.transform = `translate(0px, ${-scrollDistance * 0.28 + 50}px) scale(0.28)`;
+    //   // } else {
+    //   //   dragScalingElement.style.transform = 'none';
+    //   // }
+    // }
+
+    
   }
 
   private calculateChapterHeights() {
