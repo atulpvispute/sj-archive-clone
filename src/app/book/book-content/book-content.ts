@@ -18,6 +18,16 @@ interface ChapterData {
   chapterId: number;
 }
 
+interface SubchapterData {
+  subchapterId: number;
+  subchapterName: string;
+  startPosition: number;
+  endPosition: number;
+  percentageStartPosition: number;
+  percentageEndPosition: number;
+  isActive: boolean;
+}
+
 @Component({
   selector: 'app-book-content',
   templateUrl: './book-content.html',
@@ -38,7 +48,10 @@ export class BookContent implements AfterViewInit, OnDestroy {
   scrollProgressBarHeight: number = 0; // Store the height of scroll progress bar
   fullBookScrollPosition: number = 0; // Store the current scroll position of full-book from top
   hrMainToDisplayDistance: number = 0; // Store the distance between hr-main-top and hr-main-fixed
-  chaptersData: ChapterData[] = []; // Array to store chapter data objects
+  chaptersData: ChapterData[] = [];
+  subchaptersData: SubchapterData[] = []; // Array to store chapter data objects
+  viewportTopPosition: number = 0; // Store current viewport top scroll position
+  viewportBottomPosition: number = 0; // Store current viewport bottom scroll position
   private intersectionObserver?: IntersectionObserver;
   private scrollTimeout: any;
   private resizeObserver?: ResizeObserver;
@@ -58,8 +71,10 @@ export class BookContent implements AfterViewInit, OnDestroy {
       this.calculateChapterHeights(); // Calculate heights of all chapters
       this.calculateFullBookHeight(); // Calculate total height of full-book
       this.calculateScrollProgressBarHeight(); // Calculate scroll progress bar height
-      this.setupResizeObserver(); // Set up resize observer for dynamic updates
-      this.initializeChaptersData(); // Initialize chapters data array
+        this.setupResizeObserver(); // Set up resize observer for dynamic updates
+        this.initializeChaptersData(); // Initialize chapters data array
+        this.initializeSubchaptersData(); // Initialize subchapters data array
+        // this.addSubchapterAttributes(); // Add subchapter attributes to all book-page elements
     }, 500); // Increased timeout to allow more time for content to load
   }
 
@@ -84,6 +99,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.updateFullBookScrollPosition();
     this.calculateHrMainToDisplayDistance();
     this.updateChaptersData();
+    this.updateSubchaptersData();
     this.showScrollProgress();
   }
 
@@ -93,6 +109,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.updateFullBookScrollPosition();
     this.calculateHrMainToDisplayDistance();
     this.updateChaptersData();
+    this.updateSubchaptersData();
     
     // Show scroll progress bar on wheel for non-touch devices (desktop/large screens)
     if (!this.isTouchDevice) {
@@ -168,6 +185,18 @@ export class BookContent implements AfterViewInit, OnDestroy {
       this.fullBookScrollPosition = Math.abs(rect.top);
       ////console.log(`Full book scroll position from top: ${this.fullBookScrollPosition}px`);
     }
+    
+    // Update viewport positions
+    this.updateViewportPositions();
+  }
+
+  // Update viewport top and bottom positions
+  private updateViewportPositions(): void {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const viewportHeight = window.innerHeight;
+    
+    this.viewportTopPosition = scrollTop;
+    this.viewportBottomPosition = scrollTop + viewportHeight;
   }
 
   private calculateHrMainToDisplayDistance() {
@@ -481,6 +510,8 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.resizeObserver = new ResizeObserver((entries) => {
       this.calculateScrollProgressBarHeight();
       this.calculateFullBookHeight(); // Recalculate full book height when it changes
+      this.initializeChaptersData(); // Reinitialize chapters data when dimensions change
+      this.initializeSubchaptersData(); // Reinitialize subchapters data when dimensions change
     });
     const progressBar = document.querySelector('.scroll-progress-bar');
     if (progressBar) {
@@ -525,8 +556,34 @@ export class BookContent implements AfterViewInit, OnDestroy {
     return this.hrMainToDisplayDistance;
   }
 
+  // Get the start position of a subchapter from the top
+  getSubchapterStartPosition(subchapterElement: HTMLElement): number {
+    const rect = subchapterElement.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return rect.top + scrollTop;
+  }
+
+  // Get the end position of a subchapter from the top
+  getSubchapterEndPosition(subchapterElement: HTMLElement): number {
+    const rect = subchapterElement.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return rect.bottom + scrollTop;
+  }
+
   getChaptersData(): ChapterData[] {
     return this.chaptersData;
+  }
+
+  getSubchaptersData(): SubchapterData[] {
+    return this.subchaptersData;
+  }
+
+  getViewportTopPosition(): number {
+    return this.viewportTopPosition;
+  }
+
+  getViewportBottomPosition(): number {
+    return this.viewportBottomPosition;
   }
 
   // Method to scroll to a specific chapter
@@ -587,6 +644,33 @@ export class BookContent implements AfterViewInit, OnDestroy {
     });
   }
 
+  // Initialize subchapters data array
+  private initializeSubchaptersData(): void {
+    this.subchaptersData = [];
+    const bookPages = document.querySelectorAll('.book-page');
+    
+    bookPages.forEach((page, index) => {
+      const subchapterName = page.getAttribute('subchapter') || '';
+      if (subchapterName) {
+        const startPosition = this.getSubchapterStartPosition(page as HTMLElement);
+        const endPosition = this.getSubchapterEndPosition(page as HTMLElement);
+        const totalFullHeight = this.getFullBookHeight();
+        
+        const subchapterData: SubchapterData = {
+          subchapterId: index + 1,
+          subchapterName: subchapterName,
+          startPosition: startPosition,
+          endPosition: endPosition,
+          percentageStartPosition: Math.round(100 * (startPosition / totalFullHeight)),
+          percentageEndPosition: Math.round(100 * (endPosition / totalFullHeight)),
+          isActive: false // Will be updated in updateSubchaptersData
+        };
+        
+        this.subchaptersData.push(subchapterData);
+      }
+    });
+  }
+
   // Update chapters data with current scroll position
   private updateChaptersData(): void {
     if (this.chaptersData.length === 0) {
@@ -621,6 +705,32 @@ export class BookContent implements AfterViewInit, OnDestroy {
     if (activeChapter) {
       //console.log('Active chapter:', activeChapter.chapterName);
     }
+  }
+
+  // Update subchapters data with current scroll position
+  private updateSubchaptersData(): void {
+    if (this.subchaptersData.length === 0) {
+      this.initializeSubchaptersData();
+      return;
+    }
+    
+    // Get current scroll position
+    const currentScrollPosition = this.fullBookScrollPosition;
+    // Get current scroll progress percentage (0-100)
+    const currentScrollProgressPercent = this.scrollProgress;
+    
+    this.subchaptersData.forEach((subchapter) => {
+      // Update isActive based on current scroll position
+      
+      
+      if(currentScrollProgressPercent===100) {
+        subchapter.isActive = currentScrollProgressPercent >= subchapter.percentageStartPosition && 
+                           currentScrollProgressPercent <= subchapter.percentageEndPosition;
+      } else {
+        subchapter.isActive = currentScrollProgressPercent >= subchapter.percentageStartPosition && 
+                          currentScrollProgressPercent < subchapter.percentageEndPosition;
+      }
+    });
   }
 
   private setupChapterObserver() {
@@ -736,4 +846,45 @@ export class BookContent implements AfterViewInit, OnDestroy {
       fullBookElement.style.transition = 'transform 0.3s ease-in-out';
     }
   }
+
+  // // Add subchapter attributes to all book-page elements
+  // addSubchapterAttributes(): void {
+  //   const bookSections = document.querySelectorAll('.book-section');
+    
+  //   bookSections.forEach((section) => {
+  //     const chapterName = section.getAttribute('chapter');
+  //     if (!chapterName) return;
+      
+  //     const bookPages = section.querySelectorAll('.book-page');
+  //     let sequenceNumber = 1;
+      
+  //     bookPages.forEach((page) => {
+  //       const subchapterValue = `${chapterName}-${sequenceNumber.toString().padStart(2, '0')}`;
+        
+  //       // Check if subchapter attribute already exists
+  //       if (!page.hasAttribute('subchapter')) {
+  //         // If no subchapter attribute exists, add it right after class attribute
+  //         const classAttr = page.getAttribute('class');
+  //         if (classAttr) {
+  //           // Create new element with proper attribute order
+  //           const newPage = page.cloneNode(true) as HTMLElement;
+  //           newPage.setAttribute('subchapter', subchapterValue);
+            
+  //           // Replace the original element
+  //           page.parentNode?.replaceChild(newPage, page);
+  //         } else {
+  //           // Fallback: just add the attribute
+  //           page.setAttribute('subchapter', subchapterValue);
+  //         }
+  //       } else {
+  //         // Update existing subchapter attribute
+  //         page.setAttribute('subchapter', subchapterValue);
+  //       }
+        
+  //       sequenceNumber++;
+  //     });
+  //   });
+    
+  //   console.log('Subchapter attributes added to all book-page elements');
+  // }
 }

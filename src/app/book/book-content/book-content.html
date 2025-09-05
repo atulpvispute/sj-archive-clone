@@ -26,6 +26,12 @@
         , %: {{ 100*getHrMainToDisplayDistance()/getFullBookHeight() }}px
     </div>
     
+    <!-- Viewport Positions Display -->
+    <div class="viewport-positions-display">
+        Viewport Top: {{ getViewportTopPosition() }}px | 
+        Viewport Bottom: {{ getViewportBottomPosition() }}px
+    </div>
+    
     <!-- Chapters Data Display -->
     <div class="chapters-data-display">
         <h4>Chapters Data:</h4>
@@ -36,6 +42,20 @@
                 End: {{ chapter.endPosition }}px ({{ chapter.percentageEndPosition }}%)<br>
                 Total Height: {{ chapter.totalFullHeight }}px<br>
                 Active: {{ chapter.isActive ? 'Yes' : 'No' }}
+            </div>
+        }
+    </div>
+    
+    <!-- Subchapters Data Display -->
+    <div class="subchapters-data-display">
+        <h4>Subchapters Data:</h4>
+        @for (subchapter of getSubchaptersData(); track subchapter.subchapterId) {
+            <div class="subchapter-data-item" [class.active]="subchapter.isActive">
+                <strong>{{ subchapter.subchapterName }}</strong><br>
+                ID: {{ subchapter.subchapterId }}<br>
+                Start: {{ subchapter.startPosition }}px ({{ subchapter.percentageStartPosition }}%)<br>
+                End: {{ subchapter.endPosition }}px ({{ subchapter.percentageEndPosition }}%)<br>
+                Active: {{ subchapter.isActive ? 'Yes' : 'No' }}
             </div>
         }
     </div>
@@ -96,7 +116,7 @@
    <div class="full-book" [class.drag-scaling]="isDragScaling">
       <div class="book-section book-cover" chapter="Cover">
          <!-- <div class="chapter-height">Cover, Height: {{ getChapterHeight('Cover') }}px, Total: {{ getFullBookHeight() }}px, Start: {{ getChapterStartPosition('Cover') }}px, End: {{ getChapterEndPosition('Cover') }}px</div> -->
-         <div class="book-page center" gray id="cover" start-page cover vertical-center  toc="Make Something Wonderful" sticky=" " scrubber=" " shrink=".4">
+         <div class="book-page center" subchapter="Cover-01" gray id="cover" start-page cover vertical-center  toc="Make Something Wonderful" sticky=" " scrubber=" " shrink=".4">
             <div class="page-content">
                   <hr class="hr-top">
                   <hr class="hr-bottom">
@@ -109,12 +129,12 @@
                <h2 id="sid-3">Steve Jobs in his own&nbsp;words</h2>
             </div>
          </div>
-         <div class="book-page" id="sid-4" gray vertical-center>
+         <div class="book-page" subchapter="Cover-02" id="sid-4" gray vertical-center>
             <div class="page-content">
                <hr class="hr-top">
                <hr class="hr-bottom">
-               <p id="sid-5">There’s lots of ways to be, as a person. And some people express their deep appreciation in different ways. But one of the ways that I&nbsp;believe people express their appreciation to the rest of humanity is to make something wonderful and put it out&nbsp;there.</p>
-               <p id="sid-6">And you never meet the people. You never shake their hands. You never hear their story or tell yours. But somehow, in the act of making something with a great deal of care and love, something’s transmitted there. And it’s a way of expressing to the rest of our species our deep appreciation. So we need to be true to who we are and remember what’s really important to&nbsp;us.</p>
+               <p id="sid-5">There's lots of ways to be, as a person. And some people express their deep appreciation in different ways. But one of the ways that I&nbsp;believe people express their appreciation to the rest of humanity is to make something wonderful and put it out&nbsp;there.</p>
+               <p id="sid-6">And you never meet the people. You never shake their hands. You never hear their story or tell yours. But somehow, in the act of making something with a great deal of care and love, something's transmitted there. And it's a way of expressing to the rest of our species our deep appreciation. So we need to be true to who we are and remember what's really important to&nbsp;us.</p>
                <p id="sid-7"><span class="no-wrap">—</span>Steve,&nbsp;2007</p>
             </div>
          </div>
@@ -123,19 +143,19 @@
   
       <div class="book-section" chapter="Intro">
          <!-- <div class="chapter-height">Intro, Height: {{ getChapterHeight('Intro') }}px, Total: {{ getFullBookHeight() }}px, Start: {{ getChapterStartPosition('Intro') }}px, End: {{ getChapterEndPosition('Intro') }}px</div> -->
-         <div class="book-page" white id="introduction" toc="Introduction by Laurene Powell Jobs" sticky="Intro" scrubber="Intro" shrink=".4">
+         <div class="book-page" subchapter="Intro-01" white id="introduction" toc="Introduction by Laurene Powell Jobs" sticky="Intro" scrubber="Intro" shrink=".4">
             <div class="page-content">
                <hr class="hr-top">
                <hr class="hr-bottom">
                <h1 id="introduction-by-title">Introduction by<br>Laurene Powell&nbsp;Jobs</h1>
                <p id="sid-10">The best way to understand a person is to listen to that person directly. And the best way to understand Steve is to listen to what he said and wrote over the course of his life. His <span class="no-wrap">words—</span>in speeches, interviews, and <span class="no-wrap">emails—</span>offer a window into how he thought. And he was an exquisite&nbsp;thinker.</p>
-               <p id="sid-11">Much of what’s in these pages reflects guiding themes of Steve’s life: his sense of the worlds that would emerge from marrying the arts and technology; his unbelievable rigor, which he imposed first and most strenuously on himself; his tenacity in pursuit of assembling and leading great teams; and perhaps, above all, his insights into what it means to be&nbsp;human.</p>
-               <p id="sid-12">Steve once told a group of students, “You appear, have a chance to blaze in the sky, then you disappear.” He gave an extraordinary amount of thought to how best to use our fleeting time. He was compelled by the notion of being part of the arc of human existence, animated by the thought that <span class="no-wrap">he—</span>or that any of <span class="no-wrap">us—</span>might elevate or expedite human&nbsp;progress.</p>
-               <p id="sid-13">It is hard enough to see what is already there, to gain a clear view. Steve’s gift was greater still: he saw clearly what was not there, what could be there, what had to be there. His mind was never a captive of reality. Quite the contrary: he imagined what reality lacked and set out to remedy it. His ideas were not arguments, but intuitions, born of a true inner freedom and an epic sense of&nbsp;possibility.</p>
+               <p id="sid-11">Much of what's in these pages reflects guiding themes of Steve's life: his sense of the worlds that would emerge from marrying the arts and technology; his unbelievable rigor, which he imposed first and most strenuously on himself; his tenacity in pursuit of assembling and leading great teams; and perhaps, above all, his insights into what it means to be&nbsp;human.</p>
+               <p id="sid-12">Steve once told a group of students, "You appear, have a chance to blaze in the sky, then you disappear." He gave an extraordinary amount of thought to how best to use our fleeting time. He was compelled by the notion of being part of the arc of human existence, animated by the thought that <span class="no-wrap">he—</span>or that any of <span class="no-wrap">us—</span>might elevate or expedite human&nbsp;progress.</p>
+               <p id="sid-13">It is hard enough to see what is already there, to gain a clear view. Steve's gift was greater still: he saw clearly what was not there, what could be there, what had to be there. His mind was never a captive of reality. Quite the contrary: he imagined what reality lacked and set out to remedy it. His ideas were not arguments, but intuitions, born of a true inner freedom and an epic sense of&nbsp;possibility.</p>
                <p id="sid-14">In these pages, Steve drafts and refines. He stumbles, grows, and changes. But always, always, he retains that sense of possibility. I&nbsp;hope these selections ignite in you the understanding that drove him: that everything that makes up what we call life was made by people no smarter, no more capable, than we are; that our world is not <span class="no-wrap">fixed—</span>and so we can change it for the&nbsp;better.</p>
             </div>
          </div>
-         <div class="book-page" id="sid-15" blue title-page no-snap>
+         <div class="book-page" subchapter="Intro-02" id="sid-15" blue title-page no-snap>
             <div class="page-content">
                <hr class="hr-top">
                <hr class="hr-bottom">
@@ -145,7 +165,7 @@
                <p id="sid-19"><mark class="snip">&#9986;</mark>&nbsp;indicates&nbsp;that&nbsp;several&nbsp;sentences or&nbsp;paragraphs&nbsp;have&nbsp;been removed&nbsp;from&nbsp;the&nbsp;original.</p>
             </div>
          </div>
-         <div class="book-page" id="sid-20" black>
+         <div class="book-page" subchapter="Intro-03" id="sid-20" black>
             <div class="page-content">
                <hr class="hr-top">
                <hr class="hr-bottom">
@@ -157,7 +177,7 @@
                         <img id="photo-9" class="portrait" width="1498" height="1500" src="/photos/photo-9~1500.jpg" alt="Two-year-old Steve rides a tricycle with tassels on the handlebars toward the camera." loading="lazy">
                      </picture>
                   </image-set>
-                  <figcaption>Steve&nbsp;at&nbsp;two. He&nbsp;later&nbsp;called&nbsp;computers “a&nbsp;bicycle&nbsp;of&nbsp;the&nbsp;mind.”</figcaption>
+                  <figcaption>Steve&nbsp;at&nbsp;two. He&nbsp;later&nbsp;called&nbsp;computers "a&nbsp;bicycle&nbsp;of&nbsp;the&nbsp;mind."</figcaption>
                </figure>
             </div>
          </div>
@@ -165,7 +185,7 @@
 
       <div class="book-section" chapter="Preface">
          <!-- <div class="chapter-height">Preface, Height: {{ getChapterHeight('Preface') }}px, Total: {{ getFullBookHeight() }}px, Start: {{ getChapterStartPosition('Preface') }}px, End: {{ getChapterEndPosition('Preface') }}px</div> -->
-         <div class="book-page" white id="preface" toc="Preface" sticky="Preface" scrubber="Preface">
+         <div class="book-page" subchapter="Preface-01" white id="preface" toc="Preface" sticky="Preface" scrubber="Preface">
             <div class="page-content">
                <h1 id="sid-24">Preface:&nbsp;Steve&nbsp;on&nbsp;His&nbsp;Childhood and&nbsp;Young&nbsp;Adulthood</h1>
                <h3 id="sid-25">Steve typically kept his personal life private, but he did occasionally talk about growing up in the San Francisco Bay Area. It was a time when engineers and programmers began flooding into what came to be known as Silicon&nbsp;Valley.</h3>
@@ -198,7 +218,7 @@
                <p id="sid-52">So I&nbsp;didn’t, for about three months. I&nbsp;just read and sat. When you are a stranger in a place, you notice things that you rapidly stop noticing when you become familiar. I&nbsp;was a stranger in America for the first time in my life, and so I&nbsp;saw things I’d never seen before. And I&nbsp;tried to pay attention to them for those three months because I&nbsp;knew that gradually, bit by bit, my familiarity would be gained&nbsp;again.</p>
             </div>
          </div>
-         <div class="book-page" id="sid-53" black>
+         <div class="book-page" subchapter="Preface-02" id="sid-53" black>
             <!-- <nav-occluder></nav-occluder> -->
             <div class="page-content">
                <figure id="sid-54" credit="Photo by Ben Blackwell courtesy SJA" alt="A passport for Steven Paul Jobs issued on May 11, 1973, featuring a stamped photo of him with shaggy hair." class="photo-count-1">
@@ -213,6 +233,11 @@
                   </image-set>
                   <figcaption>Steve’s&nbsp;passport,&nbsp;spring&nbsp;1973. He&nbsp;was&nbsp;eighteen.</figcaption>
                </figure>
+            </div>
+         </div>
+         <div class="book-page" subchapter="Preface-03" id="sid-53" black>
+            <!-- <nav-occluder></nav-occluder> -->
+            <div class="page-content">
                <figure id="sid-56" credit="Courtesy Elizabeth Holmes" alt="A yellowing postcard with a Buddhist poem handwritten by Steve. The last line reads: Dont waste your life." class="photo-count-1">
                   <!-- <snap-start></snap-start>
                   <snap-end></snap-end> -->
