@@ -206,6 +206,12 @@ export class BookContent implements AfterViewInit, OnDestroy {
         // fullBookElement.style.transformOrigin = `50% ${translateY + 300}px`;
         // fullBookElement.style.transform = `translate(0px, ${-scrollDistance}px) scale(0.28)`;
         // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+
+        // const hrDistance = this.hrMainToDisplayDistance;
+        // const hrDistancePC = 100*this.getHrMainToDisplayDistance()/this.getFullBookHeight();
+        // fullBookElement.style.transformOrigin = `50% ${hrDistancePC + 10}%`;
+        // fullBookElement.style.transform = `translate(0%, ${-hrDistancePC}%) scale(0.28)`;
+        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
       }
       
       this.scrollToPosition(event);
@@ -509,10 +515,13 @@ export class BookContent implements AfterViewInit, OnDestroy {
       return;
     }
     
+    // Get current scroll progress percentage (0-100)
+    const currentScrollProgressPercent = this.scrollProgress;
+    
     this.chaptersData.forEach((chapter) => {
-      // Update isActive based on current scroll position
-      chapter.isActive = this.fullBookScrollPosition >= chapter.startPosition && 
-                         this.fullBookScrollPosition < chapter.endPosition;
+      // Update isActive based on scroll progress bar percentage fill
+      chapter.isActive = currentScrollProgressPercent >= chapter.percentageStartPosition && 
+                         currentScrollProgressPercent < chapter.percentageEndPosition;
       
       // // Update totalFullHeight in case it changed
       // chapter.totalFullHeight = this.getFullBookHeight();
