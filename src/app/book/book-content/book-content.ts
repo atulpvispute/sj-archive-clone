@@ -195,6 +195,11 @@ export class BookContent implements AfterViewInit, OnDestroy {
       const targetScrollPosition = mousePercentage * scrollHeight;
 
       const scrollDistance = targetScrollPosition - currentScrollPosition;
+
+      const totalFullHeight = this.getFullBookHeight();
+      const totalFullHeightScaled = this.getFullBookHeight()*0.28;
+      const scrollDistanceScaled = scrollDistance*0.28;
+      const currentScrollProgressPercent = this.scrollProgress;
       
       // Update .full-book translation proportionally with scroll progress bar fill
       const fullBookElement = document.querySelector('.full-book') as HTMLElement;
@@ -211,6 +216,20 @@ export class BookContent implements AfterViewInit, OnDestroy {
         // const hrDistancePC = 100*this.getHrMainToDisplayDistance()/this.getFullBookHeight();
         // fullBookElement.style.transformOrigin = `50% ${hrDistancePC + 10}%`;
         // fullBookElement.style.transform = `translate(0%, ${-hrDistancePC}%) scale(0.28)`;
+        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+
+
+        // const currentScrollProgressPercent = this.scrollProgress;
+        // fullBookElement.style.transformOrigin = `50% ${translateY*currentScrollProgressPercent/100 + 300}px`;
+        // fullBookElement.style.transform = `translate(0px, ${-translateY*currentScrollProgressPercent/100}px) scale(0.28)`;
+        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+
+        // fullBookElement.style.transformOrigin = `50% ${totalFullHeightScaled*currentScrollProgressPercent/100 + 10}%`;
+        // fullBookElement.style.transform = `translate(0%, ${-scrollDistanceScaled*currentScrollProgressPercent/100}%) scale(0.28)`;
+        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+
+        // fullBookElement.style.transformOrigin = `50% ${totalFullHeight*currentScrollProgressPercent/100 + 10}%`;
+        // fullBookElement.style.transform = `translate(0%, ${-scrollDistance*currentScrollProgressPercent/100}%) scale(0.28)`;
         // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
       }
       
