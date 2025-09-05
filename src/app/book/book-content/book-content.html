@@ -8,11 +8,6 @@
         }
     </div>
     
-    <!-- Touch Device Button -->
-    <button class="touch-device-button" (click)="onTouchButtonClick()">
-        <span class="button-icon">📱</span>
-        <span class="button-text">Touch Mode</span>
-    </button>
     
     <!-- Scroll Progress Bar Height Display -->
     <div class="scroll-progress-height-display">
@@ -79,7 +74,25 @@
      <hr class="hr-main-fixed p-0 m-0">
 
 
-     
+   <!-- Mobile Banner - Only visible on screens < 767px -->
+   <div class="mobile-banner">
+      <div class="banner-content">
+          <div >
+            @for (chapter of getChaptersData(); track chapter.chapterName) {
+                  @if (chapter.isActive && chapter.chapterName) {
+                     <strong class="touch-active-chapter-display">{{ chapter.chapterName }}</strong>
+                  }
+            }
+         </div>
+      </div>
+
+       <!-- Touch Device Button -->
+      <button class="touch-device-button" (click)="onTouchButtonClick()">
+         <span class="button-icon">📱</span>
+         <span class="button-text">Touch Mode</span>
+      </button>
+  </div>
+
    <div class="full-book" [class.drag-scaling]="isDragScaling">
       <div class="book-section book-cover" chapter="Cover">
          <!-- <div class="chapter-height">Cover, Height: {{ getChapterHeight('Cover') }}px, Total: {{ getFullBookHeight() }}px, Start: {{ getChapterStartPosition('Cover') }}px, End: {{ getChapterEndPosition('Cover') }}px</div> -->
