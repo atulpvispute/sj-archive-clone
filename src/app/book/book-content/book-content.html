@@ -8,6 +8,12 @@
         }
     </div>
     
+    <!-- Touch Device Button -->
+    <button class="touch-device-button" (click)="onTouchButtonClick()">
+        <span class="button-icon">📱</span>
+        <span class="button-text">Touch Mode</span>
+    </button>
+    
     <!-- Scroll Progress Bar Height Display -->
     <div class="scroll-progress-height-display">
         Scroll Progress Bar Height: {{ getScrollProgressBarHeight() }}px
@@ -43,6 +49,7 @@
     <div class="scroll-progress-bar" 
          [class.dragging]="isDragging"
          [class.visible]="isScrollProgressVisible"
+         [class.touch-mode-active]="isTouchModeActive"
          (click)="onProgressBarClick($event)"
          (mousedown)="onMouseDown($event)"
          (mousemove)="onMouseMove($event)"

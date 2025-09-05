@@ -44,9 +44,14 @@ export class BookContent implements AfterViewInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
   currentScrollPosition: number = 0;
   nextScrollPosition: number = 0;
+  isTouchDevice: boolean = false;
+  isTouchModeActive: boolean = false;
 
 
   ngAfterViewInit() {
+    // Detect touch device
+    this.detectTouchDevice();
+    
     // Set up intersection observer after view is initialized
     setTimeout(() => {
       this.setupChapterObserver();
@@ -88,7 +93,60 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.updateFullBookScrollPosition();
     this.calculateHrMainToDisplayDistance();
     this.updateChaptersData();
-    this.showScrollProgress();
+    
+    // Show scroll progress bar on wheel for non-touch devices (desktop/large screens)
+    if (!this.isTouchDevice) {
+      this.showScrollProgress();
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    // const currentWidth = window.innerWidth;
+    // console.log('Screen width changed to:', currentWidth + 'px');
+
+    const prevIsTouchDevice = this.isTouchDevice;
+    
+    // Re-detect touch device on resize
+    this.detectTouchDevice();
+    
+    // Log current device type
+    if (prevIsTouchDevice !== this.isTouchDevice) {
+      console.log('Current device type:', this.isTouchDevice ? 'Small Screen Device' : 'Desktop Device');
+    }
+  }
+
+  // Detect if device is touch device or has screen size <= 767px
+  detectTouchDevice(): void {
+    // Check for touch capability
+    const isTouchCapable = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    // Check for screen size <= 767px
+    const isSmallScreen = window.innerWidth <= 767;
+    
+    // Check for hover capability (touch devices typically don't have hover)
+    const hasHover = window.matchMedia('(hover: hover)').matches;
+    
+    // Check for fine pointer (mouse vs touch)
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+    
+    // // Device is considered touch device if:
+    // // 1. Has touch capability AND (small screen OR no hover OR no fine pointer)
+    // // 2. OR just small screen (regardless of other capabilities)
+    this.isTouchDevice = (isTouchCapable && (isSmallScreen || !hasHover || !hasFinePointer)) || isSmallScreen;
+    this.isTouchDevice = (isTouchCapable && (isSmallScreen || !hasHover || !hasFinePointer)) || isSmallScreen;
+
+    // console.log('Touch device detected:', this.isTouchDevice, {
+    //   isTouchCapable,
+    //   isSmallScreen,
+    //   hasHover,
+    //   hasFinePointer,
+    //   screenWidth: window.innerWidth
+    // });
+    // const isSmallScreen = window.innerWidth <= 767;
+    // this.isTouchDevice = isSmallScreen;
+    
+
   }
 
   private updateScrollProgress() {
@@ -287,10 +345,12 @@ export class BookContent implements AfterViewInit, OnDestroy {
     const finalScrollPosition = finalPercentage * scrollHeight;
 
     // Reset .full-book to normal scale
-    const fullBookElement = document.querySelector('.full-book') as HTMLElement;
-    if (fullBookElement) {
-      fullBookElement.style.transform = 'none';
-      fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+    if (!this.isTouchModeActive) {
+      const fullBookElement = document.querySelector('.full-book') as HTMLElement;
+      if (fullBookElement) {
+        fullBookElement.style.transform = 'none';
+        fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+      }
     }
 
     // Scroll to the final proportional position
@@ -539,8 +599,14 @@ export class BookContent implements AfterViewInit, OnDestroy {
     
     this.chaptersData.forEach((chapter) => {
       // Update isActive based on scroll progress bar percentage fill
-      chapter.isActive = currentScrollProgressPercent >= chapter.percentageStartPosition && 
+      if(currentScrollProgressPercent===100) {
+        chapter.isActive = currentScrollProgressPercent >= chapter.percentageStartPosition && 
+                        currentScrollProgressPercent <= chapter.percentageEndPosition;
+      } else {
+        chapter.isActive = currentScrollProgressPercent >= chapter.percentageStartPosition && 
                          currentScrollProgressPercent < chapter.percentageEndPosition;
+      }
+      
       
       // // Update totalFullHeight in case it changed
       // chapter.totalFullHeight = this.getFullBookHeight();
@@ -617,5 +683,57 @@ export class BookContent implements AfterViewInit, OnDestroy {
       return computedStyle.backgroundColor;
     }
     return '#007bff'; // Fallback blue color
+  }
+
+  // Touch device button click handler
+  onTouchButtonClick(): void {
+    if (!this.isTouchDevice) return;
+    
+    this.isTouchModeActive = !this.isTouchModeActive;
+    
+    if (this.isTouchModeActive) {
+      // Show scroll progress bar and scale down full book
+      this.showTouchMode();
+    } else {
+      // Hide scroll progress bar and restore full book scale
+      this.hideTouchMode();
+    }
+    
+    console.log('Touch mode active:', this.isTouchModeActive);
+  }
+
+  // Show touch mode - display scroll progress bar and scale full book
+  showTouchMode(): void {
+    const scrollProgressBar = document.querySelector('.scroll-progress-bar') as HTMLElement;
+    const fullBookElement = document.querySelector('.full-book') as HTMLElement;
+    
+    if (scrollProgressBar) {
+      scrollProgressBar.style.opacity = '1';
+      scrollProgressBar.style.pointerEvents = 'auto';
+      scrollProgressBar.classList.add('touch-mode-active');
+    }
+    
+    if (fullBookElement) {
+      fullBookElement.style.transformOrigin = `50% 50px`;
+      fullBookElement.style.transform = 'scale(0.28)';
+      fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+    }
+  }
+
+  // Hide touch mode - hide scroll progress bar and restore full book scale
+  hideTouchMode(): void {
+    const scrollProgressBar = document.querySelector('.scroll-progress-bar') as HTMLElement;
+    const fullBookElement = document.querySelector('.full-book') as HTMLElement;
+    
+    if (scrollProgressBar) {
+      scrollProgressBar.style.opacity = '0';
+      scrollProgressBar.style.pointerEvents = 'none';
+      scrollProgressBar.classList.remove('touch-mode-active');
+    }
+    
+    if (fullBookElement) {
+      fullBookElement.style.transform = 'none';
+      fullBookElement.style.transition = 'transform 0.3s ease-in-out';
+    }
   }
 }

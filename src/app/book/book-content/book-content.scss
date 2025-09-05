@@ -1,7 +1,9 @@
+
+
 .book-page-common {
   position: relative;
-  padding: 50px 20vw;
-  // padding: 0 20vw 50px 20vw;
+  // padding: 50px 20vw;
+  padding: 50px 20%;
   min-height: 100vh;
   .hr-top {
     position: absolute;
@@ -35,6 +37,181 @@
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
+
+  // Center active chapter display for touch devices and small screens
+  // @media (max-width: 767px) {
+    @media (max-width: 767px), (hover: none) and (pointer: coarse) {
+    .active-chapter-display {
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+    }
+  }
+
+  // Touch Device Button - Only visible on touch devices and screens < 767px
+  .touch-device-button {
+    display: none; // Hidden by default
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    z-index: 1004; // Above active chapter display
+    padding: 12px 16px;
+    background-color: rgba(0, 123, 255, 0.9);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: all 0.3s ease-in-out;
+    user-select: none;
+
+    .button-icon {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .button-text {
+      font-size: 14px;
+    }
+
+    &:hover {
+      background-color: rgba(0, 123, 255, 1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+  }
+
+  // // Show touch device button only on touch devices and screens < 767px
+  // @media (max-width: 767px) {
+  //   .touch-device-button {
+  //     display: flex;
+  //     align-items: center;
+  //   }
+  // }
+
+  // // Show touch device button on touch devices (regardless of screen size)
+  // @media (hover: none) and (pointer: coarse) {
+  //   .touch-device-button {
+  //     display: flex;
+  //     align-items: center;
+  //   }
+  // }
+
+  // Show touch device button only on touch devices and screens < 767px
+  // Show touch device button on touch devices (regardless of screen size)
+  @media (max-width: 767px), (hover: none) and (pointer: coarse) {
+    .touch-device-button {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  // // Touch device specific styles - only apply to touch devices and small screens
+  // @media (max-width: 767px) {
+  //   // Hide scroll progress bar by default on touch devices
+  //   .scroll-progress-bar {
+  //     opacity: 0 !important;
+  //     pointer-events: none !important;
+      
+  //     // Show only when touch mode is active
+  //     &.touch-mode-active {
+  //       opacity: 1 !important;
+  //       pointer-events: auto !important;
+        
+  //       // Set width to 10px when in touch mode
+  //       &::before {
+  //         width: 10px !important;
+  //         right: 18px !important;
+  //       }
+        
+  //       .scroll-progress-fill {
+  //         width: 10px !important;
+  //         right: 18px !important;
+  //       }
+        
+  //       .chapter-divider-line {
+  //         width: 10px !important;
+  //         right: 18px !important;
+          
+  //         .chapter-name-label {
+  //           opacity: 1 !important;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+  // // Desktop/large screen styles - preserve original functionality
+  // @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  //   .scroll-progress-bar {
+  //     // Restore original opacity behavior for desktop
+  //     opacity: 0 !important; // Hidden by default - use !important to override base styles
+  //     pointer-events: none !important; // Disabled by default
+      
+  //     // Show on hover (original behavior)
+  //     &:hover {
+  //       opacity: 1 !important;
+  //       pointer-events: auto !important;
+        
+  //       &::before {
+  //         width: 10px !important; // Wider on hover
+  //         right: 18px !important; // Adjust position to center the expansion
+  //       }
+        
+  //       .scroll-progress-fill {
+  //         width: 10px !important; // Wider on hover
+  //         right: 18px !important; // Adjust position to center the expansion
+  //       }
+        
+  //       .chapter-divider-line {
+  //         width: 10px !important; // Wider on hover
+  //         right: 18px !important; // Adjust position to center the expansion
+          
+  //         .chapter-name-label {
+  //           opacity: 1 !important;
+  //         }
+  //       }
+  //     }
+      
+  //     // Show when dragging (original behavior)
+  //     &.dragging {
+  //       opacity: 1 !important;
+  //       pointer-events: auto !important;
+        
+  //       &::before {
+  //         width: 10px !important; // Wider when dragging
+  //         right: 18px !important; // Adjust position to center the expansion
+  //       }
+        
+  //       .scroll-progress-fill {
+  //         width: 10px !important; // Wider when dragging
+  //         right: 18px !important; // Adjust position to center the expansion
+  //       }
+        
+  //       .chapter-divider-line {
+  //         width: 10px !important; // Wider when dragging
+  //         right: 18px !important; // Adjust position to center the expansion
+          
+  //         .chapter-name-label {
+  //           opacity: 1 !important;
+  //         }
+  //       }
+  //     }
+      
+  //     // Show when visible (original behavior for wheel events)
+  //     &.visible {
+  //       opacity: 1 !important;
+  //       pointer-events: auto !important;
+  //     }
+  //   }
+  // }
 
   // Scroll Progress Bar Height Display
   .scroll-progress-height-display {
@@ -150,35 +327,35 @@
     opacity: 0; // Hidden by default
     transition: opacity 0.3s ease-in-out; // Smooth fade in/out
 
-         // Show progress bar on hover
-     &:hover {
-       opacity: 1;
+    // Show progress bar on hover
+    &:hover {
+      opacity: 1;
 
-       &::before {
+      &::before {
          width: 10px; // Wider on hover
          right: 18px; // Adjust position to center the expansion
-       }
+      }
 
-       .scroll-progress-fill {
+      .scroll-progress-fill {
          width: 10px; // Wider on hover
          right: 18px; // Adjust position to center the expansion
-       }
-     }
+      }
+    }
 
-         // Also show when dragging
-     &.dragging {
-       opacity: 1;
+    // Also show when dragging
+    &.dragging {
+      opacity: 1;
 
-       &::before {
+      &::before {
          width: 10px; // Wider when dragging
          right: 18px; // Adjust position to center the expansion
-       }
+      }
 
-       .scroll-progress-fill {
+      .scroll-progress-fill {
          width: 10px; // Wider when dragging
          right: 18px; // Adjust position to center the expansion
-       }
-     }
+      }
+    }
 
     // Show when scrolling (controlled by component)
     &.visible {
@@ -198,15 +375,15 @@
       transform-origin: center; // Ensure scaling from center
     }
 
-         .scroll-progress-fill {
-       position: absolute;
-       top: 0;
-       right: 22px; // Distance from edge - adjusted for centering
-       width: 4px;
-       background-color: #007bff; // Blue fill color
-       transition: height 0.1s ease-out, width 0.3s ease-in-out, right 0.3s ease-in-out; // Smooth height, width and position transitions
-       height: 0%; // Start with 0% height
-       transform-origin: center; // Ensure scaling from center
+    .scroll-progress-fill {
+      position: absolute;
+      top: 0;
+      right: 22px; // Distance from edge - adjusted for centering
+      width: 4px;
+      background-color: #007bff; // Blue fill color
+      transition: height 0.1s ease-out, width 0.3s ease-in-out, right 0.3s ease-in-out; // Smooth height, width and position transitions
+      height: 0%; // Start with 0% height
+      transform-origin: center; // Ensure scaling from center
      }
 
                        // Chapter Divider Lines
@@ -266,6 +443,42 @@
               // No position change needed - label stays in fixed position
             }
           }
+        }
+
+
+        // Touch device specific styles - only apply to touch devices and small screens
+        @media (max-width: 767px), (hover: none) and (pointer: coarse) {
+          // Hide scroll progress bar by default on touch devices
+          // .scroll-progress-bar {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            
+            // Show only when touch mode is active
+            &.touch-mode-active {
+              opacity: 1 !important;
+              pointer-events: auto !important;
+              
+              // Set width to 10px when in touch mode
+              &::before {
+                width: 10px !important;
+                right: 18px !important;
+              }
+              
+              .scroll-progress-fill {
+                width: 10px !important;
+                right: 18px !important;
+              }
+              
+              .chapter-divider-line {
+                width: 10px !important;
+                right: 18px !important;
+                
+                .chapter-name-label {
+                  opacity: 1 !important;
+                }
+              }
+            }
+          // }
         }
   }
 
