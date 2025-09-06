@@ -510,8 +510,8 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.resizeObserver = new ResizeObserver((entries) => {
       this.calculateScrollProgressBarHeight();
       this.calculateFullBookHeight(); // Recalculate full book height when it changes
-      this.initializeChaptersData(); // Reinitialize chapters data when dimensions change
-      this.initializeSubchaptersData(); // Reinitialize subchapters data when dimensions change
+      // this.initializeChaptersData(); // Reinitialize chapters data when dimensions change
+      // this.initializeSubchaptersData(); // Reinitialize subchapters data when dimensions change
     });
     const progressBar = document.querySelector('.scroll-progress-bar');
     if (progressBar) {

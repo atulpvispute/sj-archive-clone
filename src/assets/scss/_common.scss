@@ -1,3 +1,133 @@
+
+
+
+.book-page-common {
+  position: relative;
+  padding: 50px 20%;
+  min-height: 100vh;
+  .hr-top {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    color: transparent;
+  } 
+  .hr-bottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    color: transparent;
+  }
+
+}
+
+.book-section {
+  figure {
+    min-height: 100vh;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .book-page[subchapter="Cover-01"] {
+    h1, h2 {
+      color: white;
+      font-style: normal;
+      // font-size: 32px;
+      // @media (max-width: 767px) {
+      //   font-size: 24px;
+      // }
+      font-size: clamp(20px, 5vw, 32px);
+    }
+    h2 {
+      font-style: italic;
+    }
+    
+  }
+  
+  .book-page{
+    @extend .book-page-common;
+    background-color: white;
+    color: black;
+    font-size: clamp(17px, 4vw, 26px);
+    h1, h2, h3, h4, h5, h6 {
+      color: #008bd6;
+      font-style: italic;
+    }
+
+    mark {
+      color: #008bd6;
+    }
+  }
+  [gray] {
+    @extend .book-page-common;
+    background-color: #646464;
+    color: white;
+
+    font-size: clamp(17px, 4vw, 26px);
+  }
+
+  [blue] {
+    @extend .book-page-common;
+    background-color: #008bd6;
+    color: black;
+    mark {
+      color: white;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: white;
+      font-style: italic;
+    }
+
+    font-size: clamp(20px, 4vw, 28px);
+
+    .page-content {
+      min-height: 100vh;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+  }
+
+  [black] {
+    @extend .book-page-common;
+    background-color: black;
+    color: white;
+
+    font-size: clamp(17px, 4vw, 26px);
+  }
+
+  // [white] {
+  //   @extend .book-page-common;
+  //   background-color: white;
+  //   color: black;
+  // }
+
+
+  .book-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .page-content {
+      width: 100%;
+      height: 100%;
+    }
+    &.center {
+      text-align: center;
+    }
+  }
+
+  .snip{
+    background-color: transparent;
+  }
+}
+
+
+
 // Chapters Data Display
 .chapters-data-display {
     position: fixed;
