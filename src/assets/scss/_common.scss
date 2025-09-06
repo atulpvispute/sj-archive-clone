@@ -60,7 +60,7 @@
       color: #008bd6;
     }
   }
-  [gray] {
+  [theme="gray"] {
     @extend .book-page-common;
     background-color: #646464;
     color: white;
@@ -68,7 +68,7 @@
     font-size: clamp(17px, 4vw, 26px);
   }
 
-  [blue] {
+  [theme="blue"] {
     @extend .book-page-common;
     background-color: #008bd6;
     color: black;
@@ -93,7 +93,7 @@
     
   }
 
-  [black] {
+  [theme="black"] {
     @extend .book-page-common;
     background-color: black;
     color: white;
@@ -101,11 +101,16 @@
     font-size: clamp(17px, 4vw, 26px);
   }
 
-  // [white] {
-  //   @extend .book-page-common;
-  //   background-color: white;
-  //   color: black;
-  // }
+  [theme="white"] {
+    @extend .book-page-common;
+    background-color: white;
+    color: black;
+    font-size: clamp(17px, 4vw, 26px);
+    h1, h2, h3, h4, h5, h6 {
+      color: #008bd6;
+      font-style: italic;
+    }
+  }
 
 
   .book-page {
@@ -211,4 +216,18 @@
         font-size: 12px;
       }
     }
+  }
+
+  .active-subchapter-theme-display {
+    position: fixed;
+    top: 180px;
+    left: 20px;
+    z-index: 1001;
+    padding: 8px 16px;
+    background-color: rgba(76, 175, 80, 0.9);
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }

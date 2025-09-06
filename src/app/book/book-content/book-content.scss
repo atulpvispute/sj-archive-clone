@@ -2,6 +2,14 @@
 
 
 .book-main {
+  .active-subchapter-theme-display-2 {
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    z-index: 1003; // Above other elements
+    background-color: rgba(0, 123, 255, 0.9);
+  }
+
   img {
     height: 250px;
     width: 250px;
@@ -9,8 +17,8 @@
 
   .tree-image {
     position: fixed;
-    top: 20px;
-    left: 20px;
+    top: 0px;
+    left: 0px;
     z-index: 1000;
     height: 60px;
     width: auto;
@@ -26,12 +34,14 @@
     right: 20px;
     z-index: 1003; // Above other elements
     padding: 8px 16px;
-    background-color: black;
-    color: white;
+    // background-color: black;
+    // color: white;
+    color: #124966;
     border-radius: 4px;
     font-size: 16px;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-style: italic;
+    // box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
 
   // Center active chapter display for touch devices and small screens
@@ -201,8 +211,8 @@
   // Vertical Scroll Progress Bar Container with Hover Area
   .scroll-progress-bar {
     position: fixed;
-    top: 13vh; // Start at 10% from top to achieve 80% height
-    right: 0; // Extend to edge for larger hover area
+    top: 16vh; // Start at 10% from top to achieve 80% height
+    right: 16px; // Extend to edge for larger hover area
     width: 100px; // Larger hover area
     height: 73vh;
     z-index: 1000;
@@ -210,6 +220,7 @@
     user-select: none; // Prevent text selection during drag
     opacity: 0; // Hidden by default
     transition: opacity 0.3s ease-in-out; // Smooth fade in/out
+    display: none;
 
     // Show progress bar on hover
     &:hover {
@@ -334,6 +345,7 @@
         @media (max-width: 767px), (hover: none) and (pointer: coarse) {
           // Hide scroll progress bar by default on touch devices
           // .scroll-progress-bar {
+          display: block;
             opacity: 0 !important;
             pointer-events: none !important;
             

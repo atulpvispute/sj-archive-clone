@@ -26,6 +26,7 @@ interface SubchapterData {
   percentageStartPosition: number;
   percentageEndPosition: number;
   isActive: boolean;
+  theme: string;
 }
 
 @Component({
@@ -59,6 +60,8 @@ export class BookContent implements AfterViewInit, OnDestroy {
   nextScrollPosition: number = 0;
   isTouchDevice: boolean = false;
   isTouchModeActive: boolean = false;
+  isSnapScrolling: boolean = false;
+  private snapScrollTimeout: any;
 
 
   ngAfterViewInit() {
@@ -87,24 +90,203 @@ export class BookContent implements AfterViewInit, OnDestroy {
     if (this.scrollTimeout) {
       clearTimeout(this.scrollTimeout);
     }
+    // Clean up snap scroll timeout
+    if (this.snapScrollTimeout) {
+      clearTimeout(this.snapScrollTimeout);
+    }
     // Clean up resize observer
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     }
   }
 
+  private lastScrollTop = 0;
+  // private previousSnapElement: HTMLElement | null = null;
+  // public activeSubChapterTheme: string | null = null;
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event) {
+    // Block input during snap scrolling
+    if (this.isSnapScrolling) {
+      return;
+    }
+
+     
+
     this.updateScrollProgress();
     this.updateFullBookScrollPosition();
     this.calculateHrMainToDisplayDistance();
     this.updateChaptersData();
     this.updateSubchaptersData();
     this.showScrollProgress();
+
+
+    // Clear existing timeout
+     if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
+    if(!this.isTouchDevice) {
+        const currentScroll = window.scrollY || document.documentElement.scrollTop;
+
+        if (currentScroll > this.lastScrollTop) {
+          // User is scrolling down
+          
+          // Set timeout to detect when scrolling stops
+          this.scrollTimeout = setTimeout(() => {
+            this.handleScrollComplete_down();
+          }, 150); // 150ms delay to detect scroll completion
+        } else if (currentScroll < this.lastScrollTop) {
+          // User is scrolling up
+
+          // Set timeout to detect when scrolling stops
+          this.scrollTimeout = setTimeout(() => {
+            this.handleScrollComplete_up();
+          }, 150); // 150ms delay to detect scroll completion
+        }
+
+        this.lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // avoid negative values
+    }
   }
+
+  // // Get the theme value of the active subchapter
+  // getActiveSubchapterTheme(): string | null {
+  //   const activeSubchapter = this.subchaptersData.find(subchapter => subchapter.isActive);
+  //   return activeSubchapter ? activeSubchapter.theme : null;
+  // }
+
+  // Handle scroll completion and snap-to functionality
+  private handleScrollComplete_down(): void {
+    // Check if viewport contains any snap-start element
+    const snapStartElements = document.querySelectorAll('snap-start');
+    let closestSnapElement: HTMLElement | null = null;
+    let closestDistance = Infinity;
+
+    snapStartElements.forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      const elementTop = rect.top;
+      const elementBottom = rect.bottom;
+      const viewportHeight = window.innerHeight;
+      
+      // Check if element is in viewport
+      if (elementTop < viewportHeight && elementBottom > 0) {
+        // Calculate distance from top of viewport
+        const distance = Math.abs(elementTop);
+        
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestSnapElement = element as HTMLElement;
+        }
+      }
+    });
+
+    // If we found a snap-start element in viewport, snap to it
+    if (closestSnapElement) {
+      this.snapToElementTop(closestSnapElement);
+    }
+  }
+
+  // Handle scroll completion and snap-to functionality
+  private handleScrollComplete_up(): void {
+    // Check if viewport contains any snap-start element
+    const snapStartElements = document.querySelectorAll('snap-start');
+    let closestSnapElement: HTMLElement | null = null;
+    let closestDistance = Infinity;
+
+    snapStartElements.forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      const elementTop = rect.top;
+      const elementBottom = rect.bottom;
+      const viewportHeight = window.innerHeight;
+      
+      // Check if element is in viewport
+      if (elementTop < viewportHeight && elementBottom > 0) {
+        // Calculate distance from top of viewport
+        const distance = Math.abs(elementTop);
+        
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestSnapElement = element as HTMLElement;
+        }
+      }
+    });
+
+    // If we found a snap-start element in viewport, snap to it
+    if (closestSnapElement) {
+      this.snapToElementBottom(closestSnapElement);
+    }
+  }
+
+  // Snap to a specific element
+  private snapToElementTop(element: HTMLElement): void {
+    this.isSnapScrolling = true;
+    
+    const rect = element.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetPosition = rect.top + scrollTop;
+    
+    // Smooth scroll to the element
+    window.scrollTo({
+      top: targetPosition,
+      behavior: 'smooth'
+    });
+
+    // Set timeout to re-enable input after scroll completes
+    this.snapScrollTimeout = setTimeout(() => {
+      this.isSnapScrolling = false;
+      this.updateChaptersData();
+      this.updateSubchaptersData();
+      
+      // Show theme value after scroll is complete and stable
+      this.showActiveThemeAfterScrollComplete();
+    }, 200); // 800ms should be enough for smooth scroll to complete
+  }
+
+  // Snap to the bottom of a specific element
+  private snapToElementBottom(element: HTMLElement): void {
+    this.isSnapScrolling = true;
+    
+    const rect = element.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const viewportHeight = window.innerHeight;
+    const targetPosition = rect.bottom + scrollTop - viewportHeight;
+    
+    // Smooth scroll to the bottom of the element
+    window.scrollTo({
+      top: targetPosition,
+      behavior: 'smooth'
+    });
+    // this.checkTheme();
+    
+    // Set timeout to re-enable input after scroll completes
+    this.snapScrollTimeout = setTimeout(() => {
+      this.isSnapScrolling = false;
+      this.updateChaptersData();
+      this.updateSubchaptersData();
+      
+      // Show theme value after scroll is complete and stable
+      this.showActiveThemeAfterScrollComplete();
+    }, 200); // 800ms should be enough for smooth scroll to complete
+  }
+
+  // Show theme value after scroll is complete and stable
+  private showActiveThemeAfterScrollComplete(): void {
+    // Get the theme of the active subchapter
+    const activeSubchapter = this.subchaptersData.find(subchapter => subchapter.isActive);
+    if (activeSubchapter) {
+      console.log('Scroll complete - Active theme:', activeSubchapter.theme, 'Subchapter:', activeSubchapter.subchapterName);
+    } else {
+      console.log('Scroll complete - No active subchapter found');
+    }
+  }
+
 
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
+    // Block input during snap scrolling
+    if (this.isSnapScrolling) {
+      event.preventDefault();
+      return;
+    }
+
     this.updateScrollProgress();
     this.updateFullBookScrollPosition();
     this.calculateHrMainToDisplayDistance();
@@ -628,8 +810,8 @@ export class BookContent implements AfterViewInit, OnDestroy {
           startPosition: startPosition,
           endPosition: endPosition,
           totalFullHeight: totalFullHeight,
-          percentageStartPosition: Math.round(100 * (startPosition / totalFullHeight)),
-          percentageEndPosition: Math.round(100 * (endPosition / totalFullHeight)),
+          percentageStartPosition: Math.round(10*(100 * (startPosition / totalFullHeight)))/10,
+          percentageEndPosition: Math.round(10*(100 * (endPosition / totalFullHeight)))/10,
           isActive: false, // Will be updated in updateChaptersData
           chapterId: index + 1
         };
@@ -638,9 +820,12 @@ export class BookContent implements AfterViewInit, OnDestroy {
       }
     });
 
+    // Get current scroll progress percentage (0-100)
+    const currentScrollProgressPercent = this.scrollProgress;
+
     this.chaptersData.forEach((chapter) => {
-      chapter.isActive = this.fullBookScrollPosition >= chapter.startPosition && 
-                         this.fullBookScrollPosition < chapter.endPosition;
+      chapter.isActive = currentScrollProgressPercent >= chapter.percentageStartPosition && 
+                         currentScrollProgressPercent < chapter.percentageEndPosition;
     });
   }
 
@@ -655,19 +840,29 @@ export class BookContent implements AfterViewInit, OnDestroy {
         const startPosition = this.getSubchapterStartPosition(page as HTMLElement);
         const endPosition = this.getSubchapterEndPosition(page as HTMLElement);
         const totalFullHeight = this.getFullBookHeight();
+        const theme = page.getAttribute('theme') || 'white'; // Extract theme attribute, default to 'white'
         
         const subchapterData: SubchapterData = {
           subchapterId: index + 1,
           subchapterName: subchapterName,
-          startPosition: startPosition,
-          endPosition: endPosition,
-          percentageStartPosition: Math.round(100 * (startPosition / totalFullHeight)),
-          percentageEndPosition: Math.round(100 * (endPosition / totalFullHeight)),
-          isActive: false // Will be updated in updateSubchaptersData
+          startPosition: Math.round(startPosition),
+          endPosition: Math.round(endPosition),
+          percentageStartPosition: Math.round(10*(100 * (startPosition / totalFullHeight)))/10,
+          percentageEndPosition: Math.round(10*(100 * (endPosition / totalFullHeight)))/10,
+          isActive: false, // Will be updated in updateSubchaptersData
+          theme: theme
         };
         
         this.subchaptersData.push(subchapterData);
       }
+    });
+
+    // Get current scroll progress percentage (0-100)
+    const currentScrollProgressPercent = this.scrollProgress;
+
+    this.subchaptersData.forEach((subchapter) => {
+      subchapter.isActive = currentScrollProgressPercent >= subchapter.percentageStartPosition && 
+                         currentScrollProgressPercent < subchapter.percentageEndPosition;
     });
   }
 
@@ -714,8 +909,8 @@ export class BookContent implements AfterViewInit, OnDestroy {
       return;
     }
     
-    // Get current scroll position
-    const currentScrollPosition = this.fullBookScrollPosition;
+    // // Get current scroll position
+    // const currentScrollPosition = this.fullBookScrollPosition;
     // Get current scroll progress percentage (0-100)
     const currentScrollProgressPercent = this.scrollProgress;
     
@@ -787,12 +982,13 @@ export class BookContent implements AfterViewInit, OnDestroy {
     }
     
     // If scroll progress is within this chapter, use the dynamic fill color
-    const scrollProgressFill = document.querySelector('.scroll-progress-fill') as HTMLElement;
-    if (scrollProgressFill) {
-      const computedStyle = window.getComputedStyle(scrollProgressFill);
-      return computedStyle.backgroundColor;
-    }
-    return '#007bff'; // Fallback blue color
+    // const scrollProgressFill = document.querySelector('.scroll-progress-fill') as HTMLElement;
+    // if (scrollProgressFill) {
+    //   const computedStyle = window.getComputedStyle(scrollProgressFill);
+    //   return computedStyle.backgroundColor;
+    // }
+    // return '#007bff'; // Fallback blue color
+    return '#124966'; // Fallback blue color
   }
 
   // Touch device button click handler
