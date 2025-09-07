@@ -117,8 +117,11 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.calculateHrMainToDisplayDistance();
     this.updateChaptersData();
     this.updateSubchaptersData();
-    this.showScrollProgress();
-
+    
+    // Show scroll progress bar only for non-touch devices
+    if (!this.isTouchDevice) {
+      this.showScrollProgress();
+    }
 
     // Clear existing timeout
      if (this.scrollTimeout) {
@@ -181,6 +184,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     // If we found a snap-start element in viewport, snap to it
     if (closestSnapElement) {
       this.snapToElementTop(closestSnapElement);
+    } else {
+      // No snap element found, scroll is complete - hide progress bar
+      this.hideScrollProgress();
     }
   }
 
@@ -212,6 +218,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     // If we found a snap-start element in viewport, snap to it
     if (closestSnapElement) {
       this.snapToElementBottom(closestSnapElement);
+    } else {
+      // No snap element found, scroll is complete - hide progress bar
+      this.hideScrollProgress();
     }
   }
 
@@ -312,7 +321,17 @@ export class BookContent implements AfterViewInit, OnDestroy {
     // Log current device type
     if (prevIsTouchDevice !== this.isTouchDevice) {
       console.log('Current device type:', this.isTouchDevice ? 'Small Screen Device' : 'Desktop Device');
+    
+      if(!this.isTouchDevice) {
+        const scrollProgressBar = document.querySelector('.scroll-progress-bar') as HTMLElement;
+        if (scrollProgressBar) {
+          scrollProgressBar.removeAttribute("style");
+        }
+          this.showScrollProgress();
+      }
     }
+
+    
   }
 
   // Detect if device is touch device or has screen size <= 767px
@@ -332,7 +351,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     // // Device is considered touch device if:
     // // 1. Has touch capability AND (small screen OR no hover OR no fine pointer)
     // // 2. OR just small screen (regardless of other capabilities)
-    this.isTouchDevice = (isTouchCapable && (isSmallScreen || !hasHover || !hasFinePointer)) || isSmallScreen;
     this.isTouchDevice = (isTouchCapable && (isSmallScreen || !hasHover || !hasFinePointer)) || isSmallScreen;
 
     // console.log('Touch device detected:', this.isTouchDevice, {
@@ -408,6 +426,16 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.scrollTimeout = setTimeout(() => {
       this.isScrollProgressVisible = false;
     }, 700);
+  }
+
+  private hideScrollProgress() {
+    // Hide the progress bar immediately
+    this.isScrollProgressVisible = false;
+    
+    // Clear any existing timeout
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
   }
 
   onProgressBarClick(event: MouseEvent) {
@@ -1013,8 +1041,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     const fullBookElement = document.querySelector('.full-book') as HTMLElement;
     
     if (scrollProgressBar) {
-      scrollProgressBar.style.opacity = '1';
-      scrollProgressBar.style.pointerEvents = 'auto';
+      // scrollProgressBar.style.opacity = '1';
+      scrollProgressBar.style.display = 'block';
+      // scrollProgressBar.style.pointerEvents = 'auto';
       scrollProgressBar.classList.add('touch-mode-active');
     }
     
@@ -1031,8 +1060,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     const fullBookElement = document.querySelector('.full-book') as HTMLElement;
     
     if (scrollProgressBar) {
-      scrollProgressBar.style.opacity = '0';
-      scrollProgressBar.style.pointerEvents = 'none';
+      // scrollProgressBar.style.opacity = '0';
+      scrollProgressBar.style.display = 'none';
+      // scrollProgressBar.style.pointerEvents = 'none';
       scrollProgressBar.classList.remove('touch-mode-active');
     }
     
