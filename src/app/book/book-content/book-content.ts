@@ -48,7 +48,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
   fullBookHeight: number = 0; // Store the total height of full-book
   scrollProgressBarHeight: number = 0; // Store the height of scroll progress bar
   fullBookScrollPosition: number = 0; // Store the current scroll position of full-book from top
-  // hrMainToDisplayDistance: number = 0; // Store the distance between hr-main-top and hr-main-fixed
   chaptersData: ChapterData[] = [];
   subchaptersData: SubchapterData[] = []; // Array to store chapter data objects
   viewportTopPosition: number = 0; // Store current viewport top scroll position
@@ -77,7 +76,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
         this.setupResizeObserver(); // Set up resize observer for dynamic updates
         this.initializeChaptersData(); // Initialize chapters data array
         this.initializeSubchaptersData(); // Initialize subchapters data array
-        // this.addSubchapterAttributes(); // Add subchapter attributes to all book-page elements
     }, 500); // Increased timeout to allow more time for content to load
   }
 
@@ -101,16 +99,12 @@ export class BookContent implements AfterViewInit, OnDestroy {
   }
 
   private lastScrollTop = 0;
-  // private previousSnapElement: HTMLElement | null = null;
-  // public activeSubChapterTheme: string | null = null;
   @HostListener('window:scroll', ['$event'])
   onScroll(event: Event) {
     // Block input during snap scrolling
     if (this.isSnapScrolling) {
       return;
     }
-
-     
 
     this.updateScrollProgress();
     this.updateFullBookScrollPosition();
@@ -150,12 +144,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // // Get the theme value of the active subchapter
-  // getActiveSubchapterTheme(): string | null {
-  //   const activeSubchapter = this.subchaptersData.find(subchapter => subchapter.isActive);
-  //   return activeSubchapter ? activeSubchapter.theme : null;
-  // }
-
   // Handle scroll completion and snap-to functionality
   private handleScrollComplete_down(): void {
     // Check if viewport contains any snap-start element
@@ -184,10 +172,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     // If we found a snap-start element in viewport, snap to it
     if (closestSnapElement) {
       this.snapToElementTop(closestSnapElement);
-    } else {
-      // No snap element found, scroll is complete - hide progress bar
-      this.hideScrollProgress();
     }
+    this.hideScrollProgress();
+
   }
 
   // Handle scroll completion and snap-to functionality
@@ -218,10 +205,8 @@ export class BookContent implements AfterViewInit, OnDestroy {
     // If we found a snap-start element in viewport, snap to it
     if (closestSnapElement) {
       this.snapToElementBottom(closestSnapElement);
-    } else {
-      // No snap element found, scroll is complete - hide progress bar
-      this.hideScrollProgress();
     }
+    this.hideScrollProgress();
   }
 
   // Snap to a specific element
@@ -243,9 +228,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
       this.isSnapScrolling = false;
       this.updateChaptersData();
       this.updateSubchaptersData();
-      
-      // Show theme value after scroll is complete and stable
-      this.showActiveThemeAfterScrollComplete();
     }, 200); // 800ms should be enough for smooth scroll to complete
   }
 
@@ -263,28 +245,13 @@ export class BookContent implements AfterViewInit, OnDestroy {
       top: targetPosition,
       behavior: 'smooth'
     });
-    // this.checkTheme();
     
     // Set timeout to re-enable input after scroll completes
     this.snapScrollTimeout = setTimeout(() => {
       this.isSnapScrolling = false;
       this.updateChaptersData();
       this.updateSubchaptersData();
-      
-      // Show theme value after scroll is complete and stable
-      this.showActiveThemeAfterScrollComplete();
     }, 200); // 800ms should be enough for smooth scroll to complete
-  }
-
-  // Show theme value after scroll is complete and stable
-  private showActiveThemeAfterScrollComplete(): void {
-    // Get the theme of the active subchapter
-    const activeSubchapter = this.subchaptersData.find(subchapter => subchapter.isActive);
-    if (activeSubchapter) {
-      console.log('Scroll complete - Active theme:', activeSubchapter.theme, 'Subchapter:', activeSubchapter.subchapterName);
-    } else {
-      console.log('Scroll complete - No active subchapter found');
-    }
   }
 
 
@@ -310,9 +277,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
-    // const currentWidth = window.innerWidth;
-    // console.log('Screen width changed to:', currentWidth + 'px');
-
     const prevIsTouchDevice = this.isTouchDevice;
     
     // Re-detect touch device on resize
@@ -320,7 +284,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     
     // Log current device type
     if (prevIsTouchDevice !== this.isTouchDevice) {
-      console.log('Current device type:', this.isTouchDevice ? 'Small Screen Device' : 'Desktop Device');
     
       if(!this.isTouchDevice) {
         const scrollProgressBar = document.querySelector('.scroll-progress-bar') as HTMLElement;
@@ -352,18 +315,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     // // 1. Has touch capability AND (small screen OR no hover OR no fine pointer)
     // // 2. OR just small screen (regardless of other capabilities)
     this.isTouchDevice = (isTouchCapable && (isSmallScreen || !hasHover || !hasFinePointer)) || isSmallScreen;
-
-    // console.log('Touch device detected:', this.isTouchDevice, {
-    //   isTouchCapable,
-    //   isSmallScreen,
-    //   hasHover,
-    //   hasFinePointer,
-    //   screenWidth: window.innerWidth
-    // });
-    // const isSmallScreen = window.innerWidth <= 767;
-    // this.isTouchDevice = isSmallScreen;
-    
-
   }
 
   private updateScrollProgress() {
@@ -383,7 +334,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     if (fullBook) {
       const rect = fullBook.getBoundingClientRect();
       this.fullBookScrollPosition = Math.abs(rect.top);
-      ////console.log(`Full book scroll position from top: ${this.fullBookScrollPosition}px`);
     }
     
     // Update viewport positions
@@ -406,10 +356,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     if (hrMain && displayElement) {
       const hrMainRect = hrMain.getBoundingClientRect();
       const displayRect = displayElement.getBoundingClientRect();
-      
-      // Calculate the distance between the bottom of hr-main-top and the top of the display
-      // this.hrMainToDisplayDistance = Math.round(displayRect.top - hrMainRect.bottom);
-      ////console.log(`Distance between hr-main-top and hr-main-fixed: ${this.hrMainToDisplayDistance}px`);
     }
   }
 
@@ -467,7 +413,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     // Apply initial scaling and translation to .full-book
     const fullBookElement = document.querySelector('.full-book') as HTMLElement;
     if (fullBookElement) {
-      console.log(111)
       fullBookElement.style.transformOrigin = `50% ${targetScrollPosition + 300}px`;
       fullBookElement.style.transform = `scale(0.28)`;
       fullBookElement.style.transition = 'transform 0.3s ease-in-out';
@@ -501,33 +446,8 @@ export class BookContent implements AfterViewInit, OnDestroy {
       // Update .full-book translation proportionally with scroll progress bar fill
       const fullBookElement = document.querySelector('.full-book') as HTMLElement;
       if (fullBookElement) {
-        console.log(222)
         const translateY = (mousePercentage - 0.5) * scrollHeight * 0.28; // Proportional translation
         fullBookElement.style.transform = `translate(0px, ${translateY}px) scale(0.28)`;
-        
-        // fullBookElement.style.transformOrigin = `50% ${translateY + 300}px`;
-        // fullBookElement.style.transform = `translate(0px, ${-scrollDistance}px) scale(0.28)`;
-        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
-
-        // const hrDistance = this.hrMainToDisplayDistance;
-        // const hrDistancePC = 100*this.getHrMainToDisplayDistance()/this.getFullBookHeight();
-        // fullBookElement.style.transformOrigin = `50% ${hrDistancePC + 10}%`;
-        // fullBookElement.style.transform = `translate(0%, ${-hrDistancePC}%) scale(0.28)`;
-        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
-
-
-        // const currentScrollProgressPercent = this.scrollProgress;
-        // fullBookElement.style.transformOrigin = `50% ${translateY*currentScrollProgressPercent/100 + 300}px`;
-        // fullBookElement.style.transform = `translate(0px, ${-translateY*currentScrollProgressPercent/100}px) scale(0.28)`;
-        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
-
-        // fullBookElement.style.transformOrigin = `50% ${totalFullHeightScaled*currentScrollProgressPercent/100 + 10}%`;
-        // fullBookElement.style.transform = `translate(0%, ${-scrollDistanceScaled*currentScrollProgressPercent/100}%) scale(0.28)`;
-        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
-
-        // fullBookElement.style.transformOrigin = `50% ${totalFullHeight*currentScrollProgressPercent/100 + 10}%`;
-        // fullBookElement.style.transform = `translate(0%, ${-scrollDistance*currentScrollProgressPercent/100}%) scale(0.28)`;
-        // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
       }
       
       this.scrollToPosition(event);
@@ -535,38 +455,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
       this.updateScrollProgress();
       this.updateChaptersData();
     }
-
-
-    // // Get current scroll position
-    // const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-    
-    // // Calculate target scroll position
-    // const progressBar = event.currentTarget as HTMLElement;
-    // const rect = progressBar.getBoundingClientRect();
-    // const clickY = event.clientY - rect.top;
-    // const barHeight = rect.height;
-    // const clampedY = Math.max(0, Math.min(clickY, barHeight));
-    // const clickPercentage = clampedY / barHeight;
-    // const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    // const targetScrollPosition = clickPercentage * scrollHeight;
-    // const scrollDistance = targetScrollPosition - currentScrollPosition;
-
-    // // Log current and target positions
-    // console.log(`Current scroll position: ${Math.round(currentScrollPosition)}px`);
-    // console.log(`Target scroll position: ${Math.round(targetScrollPosition)}px`);
-    // console.log(`Scroll distance: ${Math.round(scrollDistance)}px`);
-
-    // // Dynamically change transform-origin for .drag-scaling based on target scroll position
-    // const fullBookElement = document.querySelector('.full-book') as HTMLElement;
-    // if (fullBookElement) {
-    //   // if (this.isDragScaling) {
-    //     // dragScalingElement.style.transformOrigin = `50% ${targetScrollPosition + 50}px`;
-    //     fullBookElement.style.transform = `translate(0px, ${-scrollDistance + 50}px) scale(0.28)`;
-    //     fullBookElement.style.transition = 'transform 0.3s ease-in-out';
-    //   // } else {
-    //   //   dragScalingElement.style.transform = 'none';
-    //   // }
-    // } 
   }
 
   onMouseUp(event: MouseEvent) {
@@ -624,43 +512,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
       behavior: this.isDragging ? 'auto' : 'smooth',
     });
 
-
-
-
-    // // Get current scroll position
-    // const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-    
-    // // Calculate target scroll position
-    // // const progressBar = event.currentTarget as HTMLElement;
-    // // const rect = progressBar.getBoundingClientRect();
-    // // const clickY = event.clientY - rect.top;
-    // // const barHeight = rect.height;
-    // // const clampedY = Math.max(0, Math.min(clickY, barHeight));
-    // // const clickPercentage = clampedY / barHeight;
-    // // const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    // // const targetScrollPosition = clickPercentage * scrollHeight;
-    // const scrollDistance = targetScrollPosition - currentScrollPosition;
-
-    // // Log current and target positions
-    // console.log(`Current scroll position: ${Math.round(currentScrollPosition)}px`);
-    // console.log(`Target scroll position: ${Math.round(targetScrollPosition)}px`);
-    // console.log(`Scroll distance: ${Math.round(scrollDistance)}px`);
-
-    // // Dynamically change transform-origin for .drag-scaling based on target scroll position
-    // const fullBookElement = document.querySelector('.full-book') as HTMLElement;
-    // if (fullBookElement) {
-    //   // if (this.isDragScaling) {
-    //     fullBookElement.style.transformOrigin = `50% ${targetScrollPosition + 50}px`;
-    //     fullBookElement.style.transform = `translate(0px, ${-scrollDistance + 50}px) scale(0.28)`;
-    //     // fullBookElement.style.transition = 'transform 0.3s ease-in-out';
-    //     // fullBookElement.style.transformOrigin = `50% ${targetScrollPosition * 0.28 + 50}px`;
-    //     // fullBookElement.style.transform = `translate(0px, ${-scrollDistance * 0.28 + 50}px) scale(0.28)`;
-    //   // } else {
-    //   //   dragScalingElement.style.transform = 'none';
-    //   // }
-    // }
-
-    
   }
 
   private calculateChapterHeights() {
@@ -684,8 +535,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
         end: endPosition
       });
       
-      ////console.log(`Chapter "${chapter}" height: ${height}px, start: ${startPosition}px, end: ${endPosition}px`);
-      
       // Move to next chapter position
       currentPosition = endPosition;
     });
@@ -696,15 +545,11 @@ export class BookContent implements AfterViewInit, OnDestroy {
     if (fullBook) {
       const oldHeight = this.fullBookHeight;
       this.fullBookHeight = fullBook.offsetHeight;
-      ////console.log(`Full book height: ${this.fullBookHeight}px (was: ${oldHeight}px)`);
       
       // If height changed significantly, also recalculate chapter positions
       if (Math.abs(this.fullBookHeight - oldHeight) > 10) {
-        ////console.log('Significant height change detected, recalculating chapter positions');
         this.calculateChapterHeights();
       }
-    } else {
-      console.warn('Full book element not found');
     }
   }
 
@@ -712,7 +557,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     const progressBar = document.querySelector('.scroll-progress-bar') as HTMLElement;
     if (progressBar) {
       this.scrollProgressBarHeight = progressBar.offsetHeight;
-      ////console.log(`Scroll progress bar height: ${this.scrollProgressBarHeight}px`);
     }
   }
 
@@ -761,10 +605,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     return this.fullBookScrollPosition;
   }
 
-  // getHrMainToDisplayDistance(): number {
-  //   return this.hrMainToDisplayDistance;
-  // }
-
   // Get the start position of a subchapter from the top
   getSubchapterStartPosition(subchapterElement: HTMLElement): number {
     const rect = subchapterElement.getBoundingClientRect();
@@ -808,15 +648,11 @@ export class BookContent implements AfterViewInit, OnDestroy {
         top: targetPosition + 11,
         behavior: 'smooth'
       });
-      console.log(`Scrolling to chapter: ${chapterName} at position: ${targetPosition}px (original: ${startPosition}px)`);
-    } else {
-      console.warn(`Chapter "${chapterName}" not found`);
-    }
+    } 
   }
 
   // Method to force recalculation of full book height
   recalculateFullBookHeight(): void {
-    ////console.log('Forcing recalculation of full book height');
     this.calculateFullBookHeight();
   }
 
@@ -913,20 +749,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
                          currentScrollProgressPercent < chapter.percentageEndPosition;
       }
       
-      
-      // // Update totalFullHeight in case it changed
-      // chapter.totalFullHeight = this.getFullBookHeight();
-      
-      // // Recalculate percentages
-      // chapter.percentageStartPosition = Math.round(100 * (chapter.startPosition / chapter.totalFullHeight));
-      // chapter.percentageEndPosition = Math.round(100 * (chapter.endPosition / chapter.totalFullHeight));
     });
-    
-    // Log active chapter
-    const activeChapter = this.chaptersData.find(chapter => chapter.isActive);
-    if (activeChapter) {
-      //console.log('Active chapter:', activeChapter.chapterName);
-    }
   }
 
   // Update subchapters data with current scroll position
@@ -961,10 +784,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
       (entries) => {
         // Find the entry with the largest intersection ratio
         let mostVisible = entries.reduce((prev, current) => {
-          ////console.log('current.intersectionRatio', current.intersectionRatio);
-          ////console.log('prev.intersectionRatio', prev.intersectionRatio);
           return (current.intersectionRatio > prev.intersectionRatio) ? current : prev;
-          // return current.intersectionRatio > 0 ? current : prev;
         });
 
                  if (mostVisible.intersectionRatio > 0.1) {
@@ -1001,20 +821,11 @@ export class BookContent implements AfterViewInit, OnDestroy {
   getLabelColor(chapter: ChapterData): string {
     const scrollProgressPercent = this.scrollProgress;
     const chapterStartPercent = chapter.percentageStartPosition;
-    // const chapterEndPercent = chapter.percentageEndPosition;
     
     // If scroll progress is before this chapter, use default color
     if (scrollProgressPercent <= chapterStartPercent) {
       return '#ccc'; // Grey
     }
-    
-    // If scroll progress is within this chapter, use the dynamic fill color
-    // const scrollProgressFill = document.querySelector('.scroll-progress-fill') as HTMLElement;
-    // if (scrollProgressFill) {
-    //   const computedStyle = window.getComputedStyle(scrollProgressFill);
-    //   return computedStyle.backgroundColor;
-    // }
-    // return '#007bff'; // Fallback blue color
     return '#124966'; // Fallback blue color
   }
 
@@ -1031,8 +842,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
       // Hide scroll progress bar and restore full book scale
       this.hideTouchMode();
     }
-    
-    console.log('Touch mode active:', this.isTouchModeActive);
   }
 
   // Show touch mode - display scroll progress bar and scale full book
@@ -1041,9 +850,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     const fullBookElement = document.querySelector('.full-book') as HTMLElement;
     
     if (scrollProgressBar) {
-      // scrollProgressBar.style.opacity = '1';
+      scrollProgressBar.style.opacity = '1';
       scrollProgressBar.style.display = 'block';
-      // scrollProgressBar.style.pointerEvents = 'auto';
+      scrollProgressBar.style.pointerEvents = 'auto';
       scrollProgressBar.classList.add('touch-mode-active');
     }
     
@@ -1060,9 +869,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     const fullBookElement = document.querySelector('.full-book') as HTMLElement;
     
     if (scrollProgressBar) {
-      // scrollProgressBar.style.opacity = '0';
+      scrollProgressBar.style.opacity = '0';
       scrollProgressBar.style.display = 'none';
-      // scrollProgressBar.style.pointerEvents = 'none';
+      scrollProgressBar.style.pointerEvents = 'none';
       scrollProgressBar.classList.remove('touch-mode-active');
     }
     
@@ -1072,44 +881,5 @@ export class BookContent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // // Add subchapter attributes to all book-page elements
-  // addSubchapterAttributes(): void {
-  //   const bookSections = document.querySelectorAll('.book-section');
-    
-  //   bookSections.forEach((section) => {
-  //     const chapterName = section.getAttribute('chapter');
-  //     if (!chapterName) return;
-      
-  //     const bookPages = section.querySelectorAll('.book-page');
-  //     let sequenceNumber = 1;
-      
-  //     bookPages.forEach((page) => {
-  //       const subchapterValue = `${chapterName}-${sequenceNumber.toString().padStart(2, '0')}`;
-        
-  //       // Check if subchapter attribute already exists
-  //       if (!page.hasAttribute('subchapter')) {
-  //         // If no subchapter attribute exists, add it right after class attribute
-  //         const classAttr = page.getAttribute('class');
-  //         if (classAttr) {
-  //           // Create new element with proper attribute order
-  //           const newPage = page.cloneNode(true) as HTMLElement;
-  //           newPage.setAttribute('subchapter', subchapterValue);
-            
-  //           // Replace the original element
-  //           page.parentNode?.replaceChild(newPage, page);
-  //         } else {
-  //           // Fallback: just add the attribute
-  //           page.setAttribute('subchapter', subchapterValue);
-  //         }
-  //       } else {
-  //         // Update existing subchapter attribute
-  //         page.setAttribute('subchapter', subchapterValue);
-  //       }
-        
-  //       sequenceNumber++;
-  //     });
-  //   });
-    
-  //   console.log('Subchapter attributes added to all book-page elements');
-  // }
+  
 }

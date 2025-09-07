@@ -34,14 +34,11 @@
     right: 20px;
     z-index: 1003; // Above other elements
     padding: 8px 16px;
-    // background-color: black;
-    // color: white;
     color: #124966;
     border-radius: 4px;
     font-size: 16px;
     font-weight: bold;
     font-style: italic;
-    // box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
 
   // Center active chapter display for touch devices and small screens
@@ -103,7 +100,6 @@
   // Show mobile banner only on screens < 767px
   @media (max-width: 767px), (hover: none) and (pointer: coarse) {
     .mobile-banner {
-      // display: block;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -116,11 +112,6 @@
         border: none;
         width: auto;
         border-radius: 8px;
-        // font-size: 14px;
-        // font-weight: 500;
-
-        // cursor: pointer;
-        // box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         transition: all 0.3s ease-in-out;
         user-select: none;
 
@@ -216,11 +207,9 @@
     width: 100px; // Larger hover area
     height: 73vh;
     z-index: 1000;
-    // cursor: pointer; // Make it clear that it's clickable
     user-select: none; // Prevent text selection during drag
     opacity: 0; // Hidden by default
     transition: opacity 0.3s ease-in-out; // Smooth fade in/out
-    // display: none;
 
     // Show progress bar on hover
     &:hover {
@@ -293,8 +282,6 @@
             position: absolute;
             right: 20px; // Fixed position relative to the scroll progress bar container
             top: -8px; // Center vertically with the line
-            // background-color: rgba(0, 0, 0, 0.8);
-            // color: white;
             color: #ccc;
             padding: 2px 6px;
             border-radius: 3px;
@@ -303,11 +290,9 @@
             white-space: nowrap;
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
-            // cursor: pointer; // Make it clear it's clickable
             pointer-events: auto; // Enable pointer events for clicking
 
             &:hover {
-              // background-color: rgba(0, 0, 0, 0.9);
               transform: scale(1.05);
               transition: all 0.2s ease-in-out;
             }
@@ -344,8 +329,6 @@
         // Touch device specific styles - only apply to touch devices and small screens
         @media (max-width: 767px), (hover: none) and (pointer: coarse) {
           // Hide scroll progress bar by default on touch devices
-          // .scroll-progress-bar {
-          // display: block;
             opacity: 0 !important;
             pointer-events: none !important;
             
@@ -374,7 +357,6 @@
                 }
               }
             }
-          // }
         }
   }
 

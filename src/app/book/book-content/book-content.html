@@ -10,75 +10,6 @@
 
     <img src="tree.svg" alt="Tree" class="tree-image">
     
-    
-    <!-- Scroll Progress Bar Height Display -->
-    <!-- <div class="scroll-progress-height-display">
-        Scroll Progress Bar Height: {{ getScrollProgressBarHeight() }}px
-    </div> -->
-    
-    <!-- Full Book Scroll Position Display -->
-    <!-- <div class="full-book-scroll-position-display">
-        Full Book Scroll Position: {{ getFullBookScrollPosition() }}px, 
-        {{  this.scrollProgress }}%
-    </div> -->
-    
-    <!-- HR Main to Display Distance -->
-    <!-- <div class="hr-main-distance-display">
-        HR Main to Display Distance: {{ getHrMainToDisplayDistance() }}px
-        , %: {{ 100*getHrMainToDisplayDistance()/getFullBookHeight() }}px
-    </div> -->
-    
-    <!-- Viewport Positions Display -->
-    <!-- <div class="viewport-positions-display">
-        Viewport Top: {{ getViewportTopPosition() }}px | 
-        Viewport Bottom: {{ getViewportBottomPosition() }}px
-    </div> -->
-    
-    <!-- Chapters Data Display -->
-    <!-- <div class="chapters-data-display">
-        <h4>Chapters Data:</h4>
-        @for (chapter of getChaptersData(); track chapter.chapterName) {
-            <div class="chapter-data-item" [class.active]="chapter.isActive">
-                <strong>{{ chapter.chapterName }}</strong><br>
-                Start: {{ chapter.startPosition }}px ({{ chapter.percentageStartPosition }}%)<br>
-                End: {{ chapter.endPosition }}px ({{ chapter.percentageEndPosition }}%)<br>
-                Total Height: {{ chapter.totalFullHeight }}px<br>
-                Active: {{ chapter.isActive ? 'Yes' : 'No' }}
-            </div>
-        }
-    </div> -->
-    
-    <!-- Active Subchapter Theme Display -->
-    <!-- @for (subchapter of getSubchaptersData(); track subchapter.subchapterId) {
-        @if (subchapter.isActive) {
-            <div class="active-subchapter-theme-display">
-                Active Subchapter Theme: {{ subchapter.theme }}
-            </div>
-        }
-    } -->
-
-    <!-- Active Subchapter Theme Display -->
-    <!-- <div class="active-subchapter-theme-display-2">
-        Active Subchapter Theme: {{ activeSubChapterTheme }}
-    </div> -->
-
-    <!-- Subchapters Data Display -->
-    <!-- <div class="subchapters-data-display">
-        <h4>Subchapters Data:</h4>
-        @for (subchapter of getSubchaptersData(); track subchapter.subchapterId) {
-            <div class="subchapter-data-item" [class.active]="subchapter.isActive">
-                <strong>{{ subchapter.subchapterName }}</strong><br>
-                ID: {{ subchapter.subchapterId }}<br>
-                Theme: {{ subchapter.theme }}<br>
-                Start: {{ subchapter.startPosition }}px ({{ subchapter.percentageStartPosition }}%)<br>
-                End: {{ subchapter.endPosition }}px ({{ subchapter.percentageEndPosition }}%)<br>
-                Active: {{ subchapter.isActive ? 'Yes' : 'No' }}
-            </div>
-        }
-    </div> -->
-    
-    
-    
     <!-- Vertical Scroll Progress Bar -->
     <div class="scroll-progress-bar" 
          [class.dragging]="isDragging"
@@ -260,10 +191,6 @@
             </div>
          </div>
        </div>
-
-
-
-
 
        <div class="book-section" chapter="1976–1985">
          <snap-start id="snap-9"></snap-start>
