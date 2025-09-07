@@ -48,7 +48,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
   fullBookHeight: number = 0; // Store the total height of full-book
   scrollProgressBarHeight: number = 0; // Store the height of scroll progress bar
   fullBookScrollPosition: number = 0; // Store the current scroll position of full-book from top
-  hrMainToDisplayDistance: number = 0; // Store the distance between hr-main-top and hr-main-fixed
+  // hrMainToDisplayDistance: number = 0; // Store the distance between hr-main-top and hr-main-fixed
   chaptersData: ChapterData[] = [];
   subchaptersData: SubchapterData[] = []; // Array to store chapter data objects
   viewportTopPosition: number = 0; // Store current viewport top scroll position
@@ -390,7 +390,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
       const displayRect = displayElement.getBoundingClientRect();
       
       // Calculate the distance between the bottom of hr-main-top and the top of the display
-      this.hrMainToDisplayDistance = Math.round(displayRect.top - hrMainRect.bottom);
+      // this.hrMainToDisplayDistance = Math.round(displayRect.top - hrMainRect.bottom);
       ////console.log(`Distance between hr-main-top and hr-main-fixed: ${this.hrMainToDisplayDistance}px`);
     }
   }
@@ -692,8 +692,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
     this.resizeObserver = new ResizeObserver((entries) => {
       this.calculateScrollProgressBarHeight();
       this.calculateFullBookHeight(); // Recalculate full book height when it changes
-      // this.initializeChaptersData(); // Reinitialize chapters data when dimensions change
-      // this.initializeSubchaptersData(); // Reinitialize subchapters data when dimensions change
+
     });
     const progressBar = document.querySelector('.scroll-progress-bar');
     if (progressBar) {
@@ -734,9 +733,9 @@ export class BookContent implements AfterViewInit, OnDestroy {
     return this.fullBookScrollPosition;
   }
 
-  getHrMainToDisplayDistance(): number {
-    return this.hrMainToDisplayDistance;
-  }
+  // getHrMainToDisplayDistance(): number {
+  //   return this.hrMainToDisplayDistance;
+  // }
 
   // Get the start position of a subchapter from the top
   getSubchapterStartPosition(subchapterElement: HTMLElement): number {
