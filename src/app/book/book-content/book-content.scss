@@ -1,56 +1,212 @@
-.book-page-common {
-  position: relative;
-  padding: 50px 20vw;
-  // padding: 0 20vw 50px 20vw;
-  min-height: 100vh;
-  .hr-top {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    color: transparent;
-  } 
-  .hr-bottom {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    color: transparent;
-  }
-  // border-top: 1px solid blue;
-  // border-bottom: 1px solid red;
+@use '../../../assets/scss/_common.scss';
 
-}
 
 .book-main {
-  // Chapter Display
-  .chapter-display {
+  .active-subchapter-theme-display-2 {
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    z-index: 1003; // Above other elements
+    background-color: rgba(0, 123, 255, 0.9);
+  }
+
+  img {
+    height: 250px;
+    width: 250px;
+  }
+
+  .tree-image {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 1000;
+    height: 60px;
+    width: auto;
+    display: block;
+    @media (max-width: 767px) {
+      display: none;
+    }
+  }
+  // Active Chapter Display
+  .active-chapter-display {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 1001; // Above other elements
+    z-index: 1003; // Above other elements
     padding: 8px 16px;
-    background-color: rgba(0, 0, 0, 0.8);
+    color: #124966;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: italic;
+  }
+
+  // Center active chapter display for touch devices and small screens
+    @media (max-width: 767px), (hover: none) and (pointer: coarse) {
+    .active-chapter-display {
+      display: none;
+    }
+  }
+
+  // Mobile Banner - Only visible on screens < 767px
+  .mobile-banner {
+    display: none; // Hidden by default
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 60px;
+    background: white;
+    z-index: 1005; // Above all other elements
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+
+    .banner-tree-image {
+      height: 60px; // 80% of banner height (60px)
+      width: auto;
+      margin-right: 12px;
+    }
+
+    .touch-active-chapter-display {
+      color: #008bd6;
+      font-style: italic;
+      font-size: 18px;
+    }
+
+    .banner-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 20px;
+
+      .banner-icon {
+        font-size: 24px;
+        margin-right: 12px;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+      }
+
+      .banner-text {
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  // Show mobile banner only on screens < 767px
+  @media (max-width: 767px), (hover: none) and (pointer: coarse) {
+    .mobile-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    // Touch Device Button - Only visible on touch devices and screens < 767px
+  .touch-device-button {
+        background-color: transparent;
+        color: white;
+        border: none;
+        width: auto;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+        user-select: none;
+
+        .scroll-switcher-image{
+          height: 40px;
+          width: auto;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+  }
+
+
+  .scroll-progress-height-display {
+    position: fixed;
+    top: 40px;
+    left: 20px;
+    z-index: 1012; // Above other elements
+    padding: 8px 16px;
+    background-color: rgba(0, 123, 255, 0.9);
     color: white;
     border-radius: 4px;
     font-size: 14px;
     font-weight: 500;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-    pointer-events: none; // Don't interfere with interactions
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .full-book-scroll-position-display {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    z-index: 1001; // Above other elements
+    padding: 8px 16px;
+    background-color: rgba(255, 69, 0, 0.9);
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .hr-main-distance-display {
+    position: fixed;
+    top: 120px;
+    left: 20px;
+    z-index: 1001; // Above other elements
+    padding: 8px 16px;
+    background-color: rgba(128, 0, 128, 0.9);
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .viewport-positions-display {
+    position: fixed;
+    top: 160px;
+    left: 20px;
+    z-index: 1001; // Above other elements
+    padding: 8px 16px;
+    background-color: rgba(255, 165, 0, 0.9);
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
 
-    &.visible {
-      opacity: 1;
-    }
+  
+
+  // Fixed HR Main
+  .hr-main-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: transparent;
+    z-index: 1002; // Above other elements
+    margin: 0;
+    border: none;
   }
 
   // Vertical Scroll Progress Bar Container with Hover Area
   .scroll-progress-bar {
     position: fixed;
-    top: 10vh; // Start at 10% from top to achieve 80% height
-    right: 0; // Extend to edge for larger hover area
+    top: 16vh; // Start at 10% from top to achieve 80% height
+    right: 16px; // Extend to edge for larger hover area
     width: 100px; // Larger hover area
-    height: 80vh;
+    height: 73vh;
     z-index: 1000;
-    // cursor: pointer; // Make it clear that it's clickable
     user-select: none; // Prevent text selection during drag
     opacity: 0; // Hidden by default
     transition: opacity 0.3s ease-in-out; // Smooth fade in/out
@@ -60,13 +216,13 @@
       opacity: 1;
 
       &::before {
-        width: 8px; // Wider on hover
-        right: 20px; // Adjust position to center the expansion
+         width: 10px; // Wider on hover
+         right: 18px; // Adjust position to center the expansion
       }
 
       .scroll-progress-fill {
-        width: 8px; // Wider on hover
-        right: 20px; // Adjust position to center the expansion
+         width: 10px; // Wider on hover
+         right: 18px; // Adjust position to center the expansion
       }
     }
 
@@ -75,13 +231,13 @@
       opacity: 1;
 
       &::before {
-        width: 8px; // Wider when dragging
-        right: 20px; // Adjust position to center the expansion
+         width: 10px; // Wider when dragging
+         right: 18px; // Adjust position to center the expansion
       }
 
       .scroll-progress-fill {
-        width: 8px; // Wider when dragging
-        right: 20px; // Adjust position to center the expansion
+         width: 10px; // Wider when dragging
+         right: 18px; // Adjust position to center the expansion
       }
     }
 
@@ -112,72 +268,100 @@
       transition: height 0.1s ease-out, width 0.3s ease-in-out, right 0.3s ease-in-out; // Smooth height, width and position transitions
       height: 0%; // Start with 0% height
       transform-origin: center; // Ensure scaling from center
-    }
+     }
+
+                       // Chapter Divider Lines
+       .chapter-divider-line {
+         position: absolute;
+         height: 2px;
+         background-color: #F1F1F1;
+         z-index: 1001; // Above the progress bar
+         transition: width 0.3s ease-in-out, right 0.3s ease-in-out; // Match scrollbar transitions
+
+                   .chapter-name-label {
+            position: absolute;
+            right: 20px; // Fixed position relative to the scroll progress bar container
+            top: -8px; // Center vertically with the line
+            color: #ccc;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: auto; // Enable pointer events for clicking
+
+            &:hover {
+              transform: scale(1.05);
+              transition: all 0.2s ease-in-out;
+            }
+          }
+       }
+
+               // Show chapter name labels on hover
+        &:hover {
+          .chapter-divider-line {
+            width: 10px !important; // Wider on hover
+            right: 18px !important; // Adjust position to center the expansion
+
+            .chapter-name-label {
+              opacity: 1;
+              // No position change needed - label stays in fixed position
+            }
+          }
+        }
+
+               // Show chapter name labels when dragging
+        &.dragging {
+          .chapter-divider-line {
+            width: 10px !important; // Wider when dragging
+            right: 18px !important; // Adjust position to center the expansion
+
+            .chapter-name-label {
+              opacity: 1;
+              // No position change needed - label stays in fixed position
+            }
+          }
+        }
+
+
+        // Touch device specific styles - only apply to touch devices and small screens
+        @media (max-width: 767px), (hover: none) and (pointer: coarse) {
+          // Hide scroll progress bar by default on touch devices
+            opacity: 0 !important;
+            pointer-events: none !important;
+            
+            // Show only when touch mode is active
+            &.touch-mode-active {
+              opacity: 1 !important;
+              pointer-events: auto !important;
+              
+              // Set width to 10px when in touch mode
+              &::before {
+                width: 10px !important;
+                right: 18px !important;
+              }
+              
+              .scroll-progress-fill {
+                width: 10px !important;
+                right: 18px !important;
+              }
+              
+              .chapter-divider-line {
+                width: 10px !important;
+                right: 18px !important;
+                
+                .chapter-name-label {
+                  opacity: 1 !important;
+                }
+              }
+            }
+        }
   }
 
-  .full-book {
-    transform-origin: 50% top;
-    transition: transform 0.3s ease-in-out;
-
-    &.drag-scaling {
-      transform: scale(0.28);
-    }
-  }
-
-  .book-section {
-    // border: 1px solid red;
-    [gray] {
-      @extend .book-page-common;
-      background-color: #646464;
-      color: white;
-    }
-
-    [blue] {
-      @extend .book-page-common;
-      background-color: #008bd6;
-      color: black;
-    }
-
-    [black] {
-      @extend .book-page-common;
-      background-color: black;
-      color: white;
-    }
-
-    [white] {
-      @extend .book-page-common;
-      background-color: white;
-      color: black;
-    }
 
 
-    // 
-    // [pink] {
-    //   @extend .book-page-common;
-    //   background-color: pink;
-    //   color: black;
-    // }
-
-    // [green] {
-    //   @extend .book-page-common;
-    //   background-color: lightgreen;
-    //   color: black;
-    // }
-  }
-
-  // Center align book-page elements
-  .book-page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    
-    // Center all content within book-page
-    .page-content {
-      width: 100%;
-      height: 100%;
-    }
-    &.center {
-      text-align: center;
-    }
-  }
+  
+  
 }

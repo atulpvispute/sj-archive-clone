@@ -1,91 +1,133 @@
 <div class="book-main">
-    <!-- Chapter Display -->
-    <div class="chapter-display" [class.visible]="currentChapter">
-        {{ currentChapter || '' }}
+    <!-- Active Chapter Display -->
+    <div >
+        @for (chapter of getChaptersData(); track chapter.chapterName) {
+            @if (chapter.isActive && chapter.chapterName) {
+                <strong class="active-chapter-display">{{ chapter.chapterName }}</strong>
+            }
+        }
     </div>
+
+    <img src="tree.svg" alt="Tree" class="tree-image">
     
     <!-- Vertical Scroll Progress Bar -->
     <div class="scroll-progress-bar" 
          [class.dragging]="isDragging"
          [class.visible]="isScrollProgressVisible"
+         [class.touch-mode-active]="isTouchModeActive"
          (click)="onProgressBarClick($event)"
          (mousedown)="onMouseDown($event)"
          (mousemove)="onMouseMove($event)"
          (mouseup)="onMouseUp($event)"
-         (mouseleave)="onMouseUp($event)">
-                 <div class="scroll-progress-fill" [style.height.%]="scrollProgress"></div>
+         >
+         <div class="scroll-progress-fill" [style.height.%]="scrollProgress"></div>
+                 <!-- Chapter Divider Lines -->
+                 @for (chapter of getChaptersData(); track chapter.chapterName) {
+                     @if (chapter.chapterName || !(chapter.chapterName===" ")) {
+                         <div class="chapter-divider-line" 
+                              [style.top.%]="chapter.percentageStartPosition"
+                              [style.width.px]="4"
+                              [style.right.px]="22">
+                             <span class="chapter-name-label" 
+                                   (click)="scrollToChapter(chapter.chapterName); $event.stopPropagation()"
+                                   [title]="'Click to scroll to ' + chapter.chapterName"
+                                   [style.color]="getLabelColor(chapter)">
+                                 {{ chapter.chapterName }}
+                             </span>
+                         </div>
+                     }
+                 }
      </div>
 
+   <!-- Mobile Banner - Only visible on screens < 767px -->
+   <div class="mobile-banner">
+      <img src="tree.svg" alt="Tree" class="banner-tree-image">
+      <div class="banner-content">
+          <div >
+            @for (chapter of getChaptersData(); track chapter.chapterName) {
+                  @if (chapter.isActive && chapter.chapterName) {
+                     <strong class="touch-active-chapter-display">{{ chapter.chapterName }}</strong>
+                  }
+            }
+         </div>
+      </div>
+
+       <!-- Touch Device Button -->
+      <button class="touch-device-button" (click)="onTouchButtonClick()">
+          <img src="scroll-switcher.svg" class="scroll-switcher-image" alt="scroll-switcher" >
+         <!-- <span class="button-text">Timeline</span> -->
+      </button>
+  </div>
+
    <div class="full-book" [class.drag-scaling]="isDragScaling">
-      <div class="book-section book-cover" chapter="Cover">
-         <div class="book-page center" gray id="cover" start-page cover vertical-center  toc="Make Something Wonderful" sticky=" " scrubber=" " shrink=".4">
+      <div class="book-section book-cover" chapter="">
+         <snap-start id="snap-1"></snap-start>
+                  <snap-end></snap-end>
+         <div class="book-page center" subchapter="Cover-01" theme="gray" id="cover" start-page cover vertical-center  toc="Make Something Wonderful" sticky=" " scrubber=" " shrink=".4">
             <div class="page-content">
-                  <hr class="hr-top">
-                  <hr class="hr-bottom">
-               <!-- <polaroid-photo role="img" aria-label="A young Steve, with long hair and mustache, looks directly at the camera. He wears a tuxedo with a lop-sided bow tie.">
-                  <div class="p0"></div>
-                  <div class="p1"></div>
-                  <div class="p2"></div>
-               </polaroid-photo> -->
+                  
+                  <img class="p-2" src="icons/placeholder_image.svg" height="511" width="421" alt="Make Something Wonderful" loading="eager">
                <h1 id="sid-2">Make Something&nbsp;Wonderful</h1>
                <h2 id="sid-3">Steve Jobs in his own&nbsp;words</h2>
             </div>
          </div>
-         <div class="book-page" id="sid-4" gray vertical-center>
+         <snap-start id="snap-2"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="Cover-02" id="sid-4" theme="gray" vertical-center>
             <div class="page-content">
-               <hr class="hr-top">
-               <hr class="hr-bottom">
-               <p id="sid-5">There’s lots of ways to be, as a person. And some people express their deep appreciation in different ways. But one of the ways that I&nbsp;believe people express their appreciation to the rest of humanity is to make something wonderful and put it out&nbsp;there.</p>
-               <p id="sid-6">And you never meet the people. You never shake their hands. You never hear their story or tell yours. But somehow, in the act of making something with a great deal of care and love, something’s transmitted there. And it’s a way of expressing to the rest of our species our deep appreciation. So we need to be true to who we are and remember what’s really important to&nbsp;us.</p>
+               <p id="sid-5">There's lots of ways to be, as a person. And some people express their deep appreciation in different ways. But one of the ways that I&nbsp;believe people express their appreciation to the rest of humanity is to make something wonderful and put it out&nbsp;there.</p>
+               <p id="sid-6">And you never meet the people. You never shake their hands. You never hear their story or tell yours. But somehow, in the act of making something with a great deal of care and love, something's transmitted there. And it's a way of expressing to the rest of our species our deep appreciation. So we need to be true to who we are and remember what's really important to&nbsp;us.</p>
                <p id="sid-7"><span class="no-wrap">—</span>Steve,&nbsp;2007</p>
             </div>
          </div>
       </div>
   
-  
+      <snap-start id="snap-3"></snap-start>
+            <snap-end></snap-end>
       <div class="book-section" chapter="Intro">
-         <div class="book-page" white id="introduction" toc="Introduction by Laurene Powell Jobs" sticky="Intro" scrubber="Intro" shrink=".4">
+         <div class="book-page" subchapter="Intro-01" theme="white" id="introduction" toc="Introduction by Laurene Powell Jobs" sticky="Intro" scrubber="Intro" shrink=".4">
             <div class="page-content">
-               <hr class="hr-top">
-               <hr class="hr-bottom">
                <h1 id="introduction-by-title">Introduction by<br>Laurene Powell&nbsp;Jobs</h1>
                <p id="sid-10">The best way to understand a person is to listen to that person directly. And the best way to understand Steve is to listen to what he said and wrote over the course of his life. His <span class="no-wrap">words—</span>in speeches, interviews, and <span class="no-wrap">emails—</span>offer a window into how he thought. And he was an exquisite&nbsp;thinker.</p>
-               <p id="sid-11">Much of what’s in these pages reflects guiding themes of Steve’s life: his sense of the worlds that would emerge from marrying the arts and technology; his unbelievable rigor, which he imposed first and most strenuously on himself; his tenacity in pursuit of assembling and leading great teams; and perhaps, above all, his insights into what it means to be&nbsp;human.</p>
-               <p id="sid-12">Steve once told a group of students, “You appear, have a chance to blaze in the sky, then you disappear.” He gave an extraordinary amount of thought to how best to use our fleeting time. He was compelled by the notion of being part of the arc of human existence, animated by the thought that <span class="no-wrap">he—</span>or that any of <span class="no-wrap">us—</span>might elevate or expedite human&nbsp;progress.</p>
-               <p id="sid-13">It is hard enough to see what is already there, to gain a clear view. Steve’s gift was greater still: he saw clearly what was not there, what could be there, what had to be there. His mind was never a captive of reality. Quite the contrary: he imagined what reality lacked and set out to remedy it. His ideas were not arguments, but intuitions, born of a true inner freedom and an epic sense of&nbsp;possibility.</p>
+               <p id="sid-11">Much of what's in these pages reflects guiding themes of Steve's life: his sense of the worlds that would emerge from marrying the arts and technology; his unbelievable rigor, which he imposed first and most strenuously on himself; his tenacity in pursuit of assembling and leading great teams; and perhaps, above all, his insights into what it means to be&nbsp;human.</p>
+               <p id="sid-12">Steve once told a group of students, "You appear, have a chance to blaze in the sky, then you disappear." He gave an extraordinary amount of thought to how best to use our fleeting time. He was compelled by the notion of being part of the arc of human existence, animated by the thought that <span class="no-wrap">he—</span>or that any of <span class="no-wrap">us—</span>might elevate or expedite human&nbsp;progress.</p>
+               <p id="sid-13">It is hard enough to see what is already there, to gain a clear view. Steve's gift was greater still: he saw clearly what was not there, what could be there, what had to be there. His mind was never a captive of reality. Quite the contrary: he imagined what reality lacked and set out to remedy it. His ideas were not arguments, but intuitions, born of a true inner freedom and an epic sense of&nbsp;possibility.</p>
                <p id="sid-14">In these pages, Steve drafts and refines. He stumbles, grows, and changes. But always, always, he retains that sense of possibility. I&nbsp;hope these selections ignite in you the understanding that drove him: that everything that makes up what we call life was made by people no smarter, no more capable, than we are; that our world is not <span class="no-wrap">fixed—</span>and so we can change it for the&nbsp;better.</p>
             </div>
          </div>
-         <div class="book-page" id="sid-15" blue title-page no-snap>
+         <snap-start id="snap-4"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="Intro-02" id="sid-15" theme="blue" title-page no-snap>
+            
             <div class="page-content">
-               <hr class="hr-top">
-               <hr class="hr-bottom">
                <h1 id="sid-16">Edited by Leslie&nbsp;Berlin</h1>
                <h2 id="sid-17">Published&nbsp;by the&nbsp;Steve&nbsp;Jobs&nbsp;Archive</h2>
                <p id="sid-18">Contents&nbsp;have&nbsp;been&nbsp;edited&nbsp;and excerpted&nbsp;for&nbsp;clarity&nbsp;and&nbsp;privacy.</p>
                <p id="sid-19"><mark class="snip">&#9986;</mark>&nbsp;indicates&nbsp;that&nbsp;several&nbsp;sentences or&nbsp;paragraphs&nbsp;have&nbsp;been removed&nbsp;from&nbsp;the&nbsp;original.</p>
             </div>
          </div>
-         <div class="book-page" id="sid-20" black>
+         <div class="book-page" subchapter="Intro-03" id="sid-20" theme="black">
             <div class="page-content">
-               <hr class="hr-top">
-               <hr class="hr-bottom">
+               <snap-start id="snap-5"></snap-start>
+                  <snap-end></snap-end>
                <figure id="sid-21" credit="Photographer unknown, 1957" alt="Two-year-old Steve rides a tricycle with tassels on the handlebars toward the camera." class="photo-count-1">
+                  
                   <image-set>
                      <picture id="sid-22">
-                        <source srcset="/photos/photo-9~1500.webp 1500w" type="image/webp">
-                        <source srcset="/photos/photo-9~1500.jpg 1500w" type="image/jpeg">
-                        <img id="photo-9" class="portrait" width="1498" height="1500" src="/photos/photo-9~1500.jpg" alt="Two-year-old Steve rides a tricycle with tassels on the handlebars toward the camera." loading="lazy">
+                        <img id="photo-9" class="portrait p-2" width="1498" height="1500" src="icons/placeholder_image.svg" alt="Two-year-old Steve rides a tricycle with tassels on the handlebars toward the camera." loading="eager">
                      </picture>
                   </image-set>
-                  <figcaption>Steve&nbsp;at&nbsp;two. He&nbsp;later&nbsp;called&nbsp;computers “a&nbsp;bicycle&nbsp;of&nbsp;the&nbsp;mind.”</figcaption>
+                  <figcaption>Steve&nbsp;at&nbsp;two. He&nbsp;later&nbsp;called&nbsp;computers "a&nbsp;bicycle&nbsp;of&nbsp;the&nbsp;mind."</figcaption>
                </figure>
             </div>
          </div>
       </div>
 
       <div class="book-section" chapter="Preface">
-         <div class="book-page" white id="preface" toc="Preface" sticky="Preface" scrubber="Preface">
+         <snap-start id="snap-6"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="Preface-01" theme="white" id="preface" toc="Preface" sticky="Preface" scrubber="Preface">
+            
             <div class="page-content">
                <h1 id="sid-24">Preface:&nbsp;Steve&nbsp;on&nbsp;His&nbsp;Childhood and&nbsp;Young&nbsp;Adulthood</h1>
                <h3 id="sid-25">Steve typically kept his personal life private, but he did occasionally talk about growing up in the San Francisco Bay Area. It was a time when engineers and programmers began flooding into what came to be known as Silicon&nbsp;Valley.</h3>
@@ -118,29 +160,30 @@
                <p id="sid-52">So I&nbsp;didn’t, for about three months. I&nbsp;just read and sat. When you are a stranger in a place, you notice things that you rapidly stop noticing when you become familiar. I&nbsp;was a stranger in America for the first time in my life, and so I&nbsp;saw things I’d never seen before. And I&nbsp;tried to pay attention to them for those three months because I&nbsp;knew that gradually, bit by bit, my familiarity would be gained&nbsp;again.</p>
             </div>
          </div>
-         <div class="book-page" id="sid-53" black>
-            <!-- <nav-occluder></nav-occluder> -->
+         <div class="book-page" subchapter="Preface-02" id="sid-53" theme="black">
             <div class="page-content">
+               <snap-start id="snap-7"></snap-start>
+            <snap-end></snap-end>
                <figure id="sid-54" credit="Photo by Ben Blackwell courtesy SJA" alt="A passport for Steven Paul Jobs issued on May 11, 1973, featuring a stamped photo of him with shaggy hair." class="photo-count-1">
-                  <!-- <snap-start></snap-start>
-                  <snap-end></snap-end> -->
+                  
                   <image-set>
                      <picture id="sid-55">
-                        <source srcset="/photos/photo-10~1500.webp 1500w" type="image/webp">
-                        <source srcset="/photos/photo-10~1500.jpg 1500w" type="image/jpeg">
-                        <img id="photo-10" class="portrait" width="1262" height="1500" src="/photos/photo-10~1500.jpg" alt="A passport for Steven Paul Jobs issued on May 11, 1973, featuring a stamped photo of him with shaggy hair." loading="lazy">
+                        <img src="icons/placeholder_image.svg" alt="placeholder image" loading="eager">
                      </picture>
                   </image-set>
                   <figcaption>Steve’s&nbsp;passport,&nbsp;spring&nbsp;1973. He&nbsp;was&nbsp;eighteen.</figcaption>
                </figure>
+            </div>
+         </div>
+         <div class="book-page" subchapter="Preface-03" id="sid-53" theme="black">
+            <div class="page-content">
+               <snap-start id="snap-8"></snap-start>
+            <snap-end></snap-end>
                <figure id="sid-56" credit="Courtesy Elizabeth Holmes" alt="A yellowing postcard with a Buddhist poem handwritten by Steve. The last line reads: Dont waste your life." class="photo-count-1">
-                  <!-- <snap-start></snap-start>
-                  <snap-end></snap-end> -->
+                  
                   <image-set>
                      <picture id="sid-57">
-                        <source srcset="/photos/photo-42~1500.webp 1500w" type="image/webp">
-                        <source srcset="/photos/photo-42~1500.jpg 1500w" type="image/jpeg">
-                        <img id="photo-42" class="landscape" width="1500" height="893" src="/photos/photo-42~1500.jpg" alt="A yellowing postcard with a Buddhist poem handwritten by Steve. The last line reads: Dont waste your life." loading="lazy">
+                        <img id="photo-42" class="landscape p-2" width="1500" height="893" src="icons/placeholder_image.svg" alt="A yellowing postcard with a Buddhist poem handwritten by Steve. The last line reads: Dont waste your life." loading="eager">
                      </picture>
                   </image-set>
                   <figcaption>A&nbsp;poem&nbsp;sent&nbsp;to&nbsp;a&nbsp;friend&nbsp;in&nbsp;1974: “Don’t&nbsp;waste&nbsp;your&nbsp;life.”</figcaption>
@@ -148,8 +191,959 @@
             </div>
          </div>
        </div>
+
+       <div class="book-section" chapter="1976–1985">
+         <snap-start id="snap-9"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1976–1985-01" id="part-i" theme="blue" toc="Part I, 1976–1985" sticky="1976–1985" scrubber="1976–1985">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-59">Part I,&nbsp;1976–1985</h1>
+               <h2 id="part-i-subtitle">“A&nbsp;lot&nbsp;of&nbsp;people&nbsp;put&nbsp;a&nbsp;lot&nbsp;of love&nbsp;into&nbsp;these&nbsp;products.”</h2>
+            </div>
+         </div>
+         <snap-start id="snap-10"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1976–1985-02" id="part-i-editors-note" theme="white" dtoc="Part I, 1976–1985 Editor's Note">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <p class="narration" id="sid-62">In 1976, when Steve and his friend Steve Wozniak (“Woz”) began assembling what would come to be known as the Apple I&nbsp;in the Jobs family’s garage, the word “computer” conjured images of hulking machines tended by professional programmers. A single <span class="no-wrap">company—IBM—</span>dominated the industry. But Steve and Woz were part of a new generation of creative thinkers, engineers, and hobbyists trying to build small, cheap machines that they could program&nbsp;themselves.</p>
+               <p class="narration" id="sid-63">When Apple launched, Steve was twenty-one, precocious but inexperienced and unpolished. At Apple’s first board meeting, he put his bare feet on a conference room table, earning a quick rebuke from the board chair. The company’s breakthrough came with the introduction of the Apple II, a machine that could run right out of the box, with cassette storage and a built-in color screen. Within a year, Apple was one of the fastest-growing companies in <span class="no-wrap">America—</span>and by the time Steve turned thirty, he was the public face of a Fortune 500&nbsp;company.</p>
+               <p class="narration" id="sid-64">Inside Apple, his ideas and passion were inspiring, but Steve’s management style was divisive. His responsibilities changed almost every year as he was assigned to and removed from various projects and teams. He began clashing with his handpicked CEO, John Sculley. In September 1985, the Apple board fired&nbsp;Steve.</p>
+               <p class="narration" id="sid-65">Later, when he talked about these first years at Apple, Steve focused on one thing: Macintosh, the computer that he and a tight-knit team introduced to the world in 1984. To Steve, Macintosh was everything technology should be. It was streamlined and practical, simple and sophisticated, a tool for enhancing creativity as much as&nbsp;productivity.</p>
+               <p class="narration" id="sid-66">In another age, Steve believed, the people on the Macintosh team would have been writers, musicians, or artists. “The feelings and the passion that people put into it were completely indistinguishable from a poet or a painter,” he said. He called their work a form of love and their product “a computer for the rest of us,” with a mouse as well as arrow keys, desktop icons instead of programming commands, and, at startup, instead of a blinking cursor: a&nbsp;smile.</p>
+               <p class="narration" id="sid-67">Macintosh also represented the first time Steve led a team developing a product that he believed had changed the world. “It ushered in a revolution,” Steve recalled twenty-three years later, during the rollout of another world-changing innovation: the iPhone. “I remember the week before we launched the Mac, we all got together, and we said, ‘Every computer is going to work this way. You can’t argue about that anymore. You can argue about how long it will take, but you can’t argue about it&nbsp;anymore.’”</p>
+               <book-subpage-divider id="launching-apple" dtoc="Steve on Launching Apple"></book-subpage-divider>
+               <h1 id="sid-69">Steve on Launching&nbsp;Apple</h1>
+               <h3 id="sid-70">In 1984, Steve recalled the friendships behind&nbsp;Apple.</h3>
+               <p id="sid-71">I met Woz when I&nbsp;was thirteen in a friend of mine’s garage. He was, I&nbsp;think, about eighteen. […] He moved down the street from a friend of mine named Bill Fernandez, and I&nbsp;was over at Bill’s. We were working late one night on a project, and Woz dropped by. We ended up talking for hours. I&nbsp;was real impressed with him. I&nbsp;thought he was great. He had a good sense of humor […] and we had a common interest [in electronics] that sort of bound us together even though we were totally different in every other way possible.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-72">We’re sort of like two planets in our own orbits that every so often intersect each other. There’s a bond there that will last as long as we both&nbsp;live.</p>
+               <h3 id="sid-73">In 1996, the year Apple celebrated its twentieth anniversary, Steve recalled how a teen hobby building computers turned into a&nbsp;business.</h3>
+               <p id="sid-74">The reason we [Woz and I] built a computer was that we wanted one, and we couldn’t afford to buy one. They were thousands of dollars at that time. We were just two teenagers. We started trying to build them and scrounging parts around Silicon Valley where we could. After a few attempts, we managed to put together something that was the Apple I. All of our friends wanted them, too. They wanted to build them. It turned out that it took maybe fifty hours to build one of these things by hand. It was taking up all of our spare time because our friends were not that skilled at building them, so Woz and I&nbsp;were building them for&nbsp;them.</p>
+               <p id="sid-75">We thought if we could just get what’s called a printed circuit board, where you could just plug in the parts instead of having to hand-wire the whole thing, we could cut the assembly time down from maybe fifty hours to more like an hour. Woz sold his HP calculator, and I&nbsp;sold my VW Microbus, and we got enough money together to pay someone to design one of these printed circuit boards for us. Our goal was to just sell them as raw printed circuit boards to our friends and make enough money to recoup our calculator and&nbsp;transportation.</p>
+               <p id="sid-76">What happened was that one of the early computer [stores], in fact, the first computer store in the world, which was in Mountain View at the time, said, “Well, I’ll take fifty of these computers, but I&nbsp;want them fully assembled.” Which was a twist that we’d never thought&nbsp;of.</p>
+               <p id="sid-77">We went and bought the parts to build one hundred computers. We built fifty of them and delivered them. We got paid in cash and ran back and paid the people that sold us parts. Then we had the classic Marxian profit realization crisis, which was our profit wasn’t <span class="no-wrap">liquid—</span>it was in fifty computers sitting on the&nbsp;floor.</p>
+               <p id="sid-78">We decided we had to start learning about sales and distribution so that we could sell the fifty computers and get back our money. That’s how we got in the business. We took our idea [for the computer] to a few companies, one where Woz worked [Hewlett-Packard] and one where I&nbsp;worked at the time [Atari]. Neither one was interested in pursuing it, so we started our own&nbsp;company.</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1976–1985-03" id="sid-79" theme="black">
+            <div class="page-content">
+               <snap-start id="snap-11"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-80" credit="Photo by Joe Melena courtesy of Apple, 1976" alt="Steve hunches over a wooden desk, his hands on a keyboard hooked up to an Apple I circuit board." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-81">
+                        <img id="photo-36" class="landscape p-2" width="1500" height="1000" src="icons/placeholder_image.svg" alt="Steve hunches over a wooden desk, his hands on a keyboard hooked up to an Apple I circuit board." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>At work on an Apple I,&nbsp;1976.</figcaption>
+               </figure>
+               <snap-start id="snap-12"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-82" credit="Photo by Barbara Kinney courtesy SJA" alt1="A battered dark brown briefcase, closed. The front has two pieces of paper attached using clear tape." alt2="An open briefcase. The top half houses an Apple I circuit board, wired up to a keyboard in the bottom half." class="photo-count-2">
+                  <image-set>
+                     <picture id="sid-83">
+                        <img id="photo-4" class="landscape p-2" width="1500" height="1500" src="icons/placeholder_image.svg" alt="An&nbsp;Apple&nbsp;I&nbsp;that&nbsp;Steve kept&nbsp;in&nbsp;his&nbsp;office. Photo by Barbara Kinney courtesy SJA" loading="eager">
+                     </picture>
+                     <picture id="sid-84">
+                        <img id="photo-2" class="landscape p-2" width="1500" height="1500" src="icons/placeholder_image.svg" alt="An open briefcase. The top half houses an Apple I circuit board, wired up to a keyboard in the bottom half." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>An&nbsp;Apple&nbsp;I&nbsp;that&nbsp;Steve kept&nbsp;in&nbsp;his&nbsp;office.</figcaption>
+               </figure>
+               <snap-start id="snap-13"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-85" credit="Photo by Dean Phillips, 1976" alt="A Polaroid of a computer screen, with a fan letter praising Woz and Steve. A handwritten note dates it to 1976." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-86">
+                        <img id="photo-48" class="portrait p-2" width="1238" height="1500" src="icons/placeholder_image.svg" alt="A Polaroid of a computer screen, with a fan letter praising Woz and Steve. A handwritten note dates it to 1976." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Apple’s&nbsp;first&nbsp;fan&nbsp;letter, a&nbsp;Polaroid&nbsp;of&nbsp;a&nbsp;computer&nbsp;screen.</figcaption>
+               </figure>
+               <snap-start id="snap-14"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-87" credit="Photographer unknown, 1977" alt="Wearing suit pants and a vest, Steve is in front of a small crowd, looking over his shoulder at the camera." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-88">
+                        <img id="photo-12" class="landscape p-2" width="1500" height="1054" src="icons/placeholder_image.svg" alt="Wearing suit pants and a vest, Steve is in front of a small crowd, looking over his shoulder at the camera." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Steve demonstrates the Apple II prototype,&nbsp;1977.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-15"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1976–1985-04" id="interview-new-yorker-1977" theme="white" dtoc="Interview with The New Yorker (1977)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-90">Interview&nbsp;with <em>The&nbsp;New&nbsp;Yorker</em></h1>
+               <h2 id="sid-91">“It’s a domesticated&nbsp;computer.”</h2>
+               <h3 id="sid-92">Steve’s first appearance in a national publication came in a 1977 issue of <em>The New Yorker</em>. The magazine sent a reporter to the First Annual Personal Computing Expo, held in the New York Coliseum. Most people at the time had never seen a personal&nbsp;computer.</h3>
+               <p id="sid-93">At a booth marked “Apple Computer, Inc.,” we paused to chat with the young man in charge, who introduced himself as Steven Jobs, the company’s vice-president for operations. Mr. Jobs was pleased at the turnout for the exhibition. “I wish we’d had these personal machines when I&nbsp;was growing up,” he said. “People have been hearing all sorts of things about computers during the past ten years through the media. Supposedly, computers have been controlling various aspects of their lives. Yet in spite of that, most adults have no idea of what a computer really is, of what it can or can’t&nbsp;do.</p>
+               <p id="sid-94">“Now, for the first time, people can actually buy a computer for the price of a good stereo, interact with it, and find out all about it. It’s analogous to taking apart 1955 Chevys. Or consider the camera. There are thousands of people across the country taking photography courses. They’ll never be professional photographers. They just want to understand what the photographic process is all about. Same with&nbsp;computers.</p>
+               <p id="sid-95">“We started a little personal-computer manufacturing company in a garage in Los Altos in 1976. Now we’re the largest personal-computer company in the world. We make what we think of as the Rolls-Royce of personal computers. It’s a domesticated computer. People expect blinking lights, but what they find is that it looks like a portable typewriter, which, connected to a suitable readout screen, is able to display in&nbsp;color.</p>
+               <p id="sid-96">“There’s a feedback it gives to people, and the enthusiasm of the users is tremendous. We’re always asked what it can do, and it can do many things, but in my opinion the real thing it is doing right now is to teach people how to program the&nbsp;computer.”</p>
+               <p id="sid-97">Recalling Mr. Jobs’ wish that he had had such machines when he was growing up, we asked him if he would mind telling us his&nbsp;age.</p>
+               <p id="sid-98">“Twenty-two,” Mr. Jobs&nbsp;said.</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1976–1985-05" id="sid-99" theme="black">
+            <div class="page-content">
+               <snap-start id="snap-16"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-100" credit="Photo by Bill Kelley, 1977" alt="A scruffy-bearded Steve smiles at the camera as he leans back in his office chair and talks on the telephone." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-101">
+                        <img id="photo-11" class="landscape p-2" width="1500" height="1156" src="icons/placeholder_image.svg" alt="A scruffy-bearded Steve smiles at the camera as he leans back in his office chair and talks on the telephone." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Apple outgrew its headquarters twice in&nbsp;1977.</figcaption>
+               </figure>
+               <snap-start id="snap-17"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-102" credit="Photo by Ted Thai, 1981" alt="With tidy hair and a plaid shirt, Steve poses with an Apple II displaying drawings of Sesame Street characters." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-103">
+                        <img id="photo-13" class="portrait p-2" width="1196" height="1500" src="icons/placeholder_image.svg" alt="With tidy hair and a plaid shirt, Steve poses with an Apple II displaying drawings of Sesame Street characters." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>With&nbsp;the&nbsp;Apple&nbsp;II&nbsp;in&nbsp;1981, the&nbsp;year&nbsp;IBM&nbsp;introduced&nbsp;its&nbsp;PC.</figcaption>
+               </figure>
+               <snap-start id="snap-18"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-104" credit="Photo by Andrée Abecassis, 1981" alt="Steve peers through the lens of a Nikon camera as his elbow rests on the Apple II in front of him." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-105">
+                        <img id="photo-15" class="portrait p-2" width="1016" height="1500" src="icons/placeholder_image.svg" alt="Steve peers through the lens of a Nikon camera as his elbow rests on the Apple II in front of him." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Steve was an avid&nbsp;photographer.</figcaption>
+               </figure>
+               <snap-start id="snap-19"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-106" credit="Photo by Ted Thai, 1981" alt="Parked outside his Tudor-style home, Steve shares the seat of his BMW motorcycle with a black and white dog." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-107">
+                        <img id="photo-14" class="portrait p-2" width="1191" height="1500" src="icons/placeholder_image.svg" alt="Parked outside his Tudor-style home, Steve shares the seat of his BMW motorcycle with a black and white dog." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>He&nbsp;set&nbsp;up&nbsp;his&nbsp;bike&nbsp;in&nbsp;Apple’s&nbsp;lobby for&nbsp;design&nbsp;inspiration.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-20"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1976–1985-06" id="speech-aspen-1983" theme="white" dtoc="Speech at the International Design Conference in Aspen (1983)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-109">Speech&nbsp;at&nbsp;the&nbsp;International Design&nbsp;Conference&nbsp;in&nbsp;Aspen</h1>
+               <h2 id="sid-110">“Computers&nbsp;and&nbsp;society&nbsp;are&nbsp;out on&nbsp;a&nbsp;first&nbsp;date.”</h2>
+               <h3 id="sid-111">Steve spoke to designers at this annual gathering in Aspen, Colorado, on June 15, 1983, five months after Apple introduced the Lisa&nbsp;computer.</h3>
+               <p id="sid-112">How many of you are over thirty-six years old? You were born pre-computer. Computers are thirty-six years old. I&nbsp;think there’s going to be a little slice in the timeline of history as we look back, a pretty meaningful slice right there. A lot of you are products of the television generation. I’m pretty much a product of the television generation, but to some extent starting to be a product of the computer&nbsp;generation.</p>
+               <p id="sid-113">But the kids growing up now are definitely products of the computer generation, and in their lifetimes the computer will become the predominant medium of communication, just as the television took over from the radio, took over from even the&nbsp;book.</p>
+               <p id="sid-114">How many of you own an Apple? Any? Or just any personal&nbsp;computer?</p>
+               <p id="sid-115">Uh-oh.</p>
+               <p id="sid-116">How many of you have used one, or seen one, or anything like that? Good.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-117">Computers are really dumb. They’re exceptionally simple, but they’re really fast. The raw instructions that we have to feed these little <span class="no-wrap">microprocessors—</span>or even these giant <span class="tabular-nums no-wrap">Cray-1</span> <span class="no-wrap">supercomputers—</span>are the most trivial of instructions. They get some data from there, get a number from here, add two numbers together, and test to see if it’s bigger than zero. It’s the most mundane thing you could ever&nbsp;imagine.</p>
+               <p id="sid-118">But here’s the key thing: let’s say I&nbsp;could move a hundred times faster than anyone in here. In the blink of your eye, I&nbsp;could run out there, grab a bouquet of fresh spring flowers, run back in here, and snap my fingers. You would all think I&nbsp;was a magician. And yet I&nbsp;would basically be doing a series of really simple instructions: running out there, grabbing some flowers, running back, snapping my fingers. But I&nbsp;could just do them so fast that you would think that there was something magical going&nbsp;on.</p>
+               <p id="sid-119">And it’s the exact same way with a computer. It can do about a million instructions per second. And so we tend to think there’s something magical going on, when in reality, it’s just a series of simple instructions.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-120">One of the reasons I’m here is because I&nbsp;need your help. If you’ve looked at computers, they look like garbage. All the great product designers are off designing automobiles or buildings. But hardly any of them are designing computers. If we take a look, we’re going to sell 3 million computers this year, 10 million in ’86, whether they look like a piece of shit or they look great. People are just going to suck this stuff up so fast no matter what it looks like. And it doesn’t cost any more money to make them look great. They are going to be these new objects that are going to be in everyone’s working environment, everyone’s educational environment, and everyone’s home environment. We have a shot [at] putting a great object <span class="no-wrap">there—</span>and if we don’t, we’re going to put one more piece-of-junk object&nbsp;there.</p>
+               <p id="sid-121">By ’86, ’87, pick a year, people are going to spend more time interacting with these machines than they do interacting with automobiles today. People are going to be spending two, three hours a day interacting with these <span class="no-wrap">machines—</span>longer than they spend in the car. And so the industrial design, the software design, and how people interact with these things certainly must be given the consideration that we give automobiles <span class="no-wrap">today—</span>if not a lot&nbsp;more.</p>
+               <p id="sid-122">If you take a look, what we’ve got is a situation where most automobiles are not being designed in the United States. Televisions? Audio electronics? Watches, cameras, bicycles, calculators, you name it: most of the objects of our lives are not designed in America. We’ve blown it. We’ve blown it from an industrial point of view because we’ve lost the markets to foreign competitors. We’ve also blown it from a design point of&nbsp;view.</p>
+               <p id="sid-123">And I&nbsp;think we have a chance with this new computing technology meeting people in the <span class="no-wrap">eighties—</span>the fact that computers and society are out on a first date in the eighties. We have a chance to make these things beautiful, and we have a chance to communicate something through the design of the objects themselves.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-124">When I&nbsp;was going to school, I&nbsp;had a few great teachers and a lot of mediocre teachers. And the thing that probably kept me out of jail was the books. I&nbsp;could go and read what Aristotle or Plato wrote without an intermediary in the way. And a book was a phenomenal thing. It got right from the source to the destination without anything in the&nbsp;middle.</p>
+               <p id="sid-125">The problem was, you can’t ask Aristotle a question. And I&nbsp;think, as we look towards the next fifty to one hundred years, if we really can come up with these machines that can capture an underlying spirit, or an underlying set of principles, or an underlying way of looking at the world, then, when the next Aristotle comes around, maybe if he carries around one of these machines with him his whole <span class="no-wrap">life—</span>his or her whole <span class="no-wrap">life—</span>and types in all this stuff, then maybe someday, after this person’s dead and gone, we can ask this machine, “Hey, what would Aristotle have said? What about this?” And maybe we won’t get the right answer, but maybe we will. And that’s really exciting to me. And that’s one of the reasons I’m doing what I’m&nbsp;doing.</p>
+               <p id="sid-126">So, what do you want to talk&nbsp;about?</p>
+               <h3 id="sid-127">Steve&nbsp;answered&nbsp;questions&nbsp;at&nbsp;two conference&nbsp;sessions.</h3>
+               <p id="sid-128">How are these computers all going to work together? They’re probably going to work together a lot like people do. Sometimes they’re going to work together really well, and other times they’re not going to work together so well.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-129">What’s happened, there’s been a few installations where people have hooked these things together. The one installation that stands out is at Xerox Palo Alto Research Center, or PARC, for short. And they hooked about a hundred computers together on what’s called a local area network, which is just a cable that carries all this information back and forth.&nbsp;[…]</p>
+               <p id="sid-130">Then an interesting thing happened. There were twenty people interested in volleyball. So a volleyball distribution list evolved, and then, when the volleyball game next week was changed, you’d write a quick memo and send it to the volleyball distribution list. Then there was a Chinese food cooking list. And before long, there were more lists than&nbsp;people.</p>
+               <p id="sid-131">And it was a very, very interesting phenomenon, because I&nbsp;think that that’s exactly what’s going to happen as we start to tie these things [computers] together: they’re going to facilitate communication and facilitate bringing people together in the special interests that they&nbsp;have.</p>
+               <p id="sid-132">And we’re about five years away from really solving the problems of hooking these computers together in the office. And we’re about ten to fifteen years away from solving the problems of hooking them together in the home. A lot of people are working on it, but it’s a pretty fierce&nbsp;problem.</p>
+               <p id="sid-133">Now, Apple’s strategy is really simple. What we want to do is put an incredibly great computer in a book that you carry around with you, that you can learn how to use in twenty minutes. That’s what we want to do. And we want to do it this decade. And we really want to do it with a radio link in it so you don’t have to hook up to <span class="no-wrap">anything—</span>you’re in communication with all these larger databases and other computers. We don’t know how to do that now. It’s impossible technically.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-134">We’re trying to get away from programming. We’ve got to get away from programming because people don’t want to program computers. People want to <em>use</em> computers.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-135">We [at Apple] feel that, for some crazy reason, we’re in the right place at the right time to put something back. And what I&nbsp;mean by that is, most of us didn’t make the clothes we’re wearing, and we didn’t cook or grow the food that we eat, and we’re speaking a language that was developed by other people, and we use a mathematics that was developed by other people. We are constantly&nbsp;<em>taking</em>.</p>
+               <p id="sid-136">And the ability to <em>put something back</em> into the pool of human experience is extremely neat. I&nbsp;think that everyone knows that in the next ten years we have the chance to really do that. And we [will] look <span class="no-wrap">back—</span>and while we’re doing it, it’s pretty fun, <span class="no-wrap">too—</span>we will look back and say, “God, we were a part of that!”&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-137">We started with nothing. So whenever you start with nothing, you can always shoot for the moon. You have nothing to lose. And the thing that happens <span class="no-wrap">is—</span>when you sort of get something, it’s very easy to go into cover-your-ass mode, and then you become conservative and vote for Ronnie. So what we’re trying to do is to realize the very amazing time that we’re in and not go into that mode.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-138">I can’t tell you why you need a home computer right now. I&nbsp;mean, people ask me, “Why should I&nbsp;buy a computer in my&nbsp;home?”</p>
+               <p id="sid-139">And I&nbsp;say, “Well, to learn about it, to run some fun simulations. If you’ve got some kids, they should probably know about it in terms of literacy. They can probably get some good educational software, especially if they’re&nbsp;younger.</p>
+               <p id="sid-140">“You can hook up to the source and, you know, do whatever you’re going to do. Meet women, I&nbsp;don’t know. But other than that, there’s no good reason to buy one for your house right now. But there will be. There will be.”&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-141">I don’t think finance is what drives people at Apple. I&nbsp;don’t think it’s money, but feeling like you own a piece of the company, and this is your damn company, and if you see something … We always tell people, “You work for Apple first and your boss second.” We feel pretty strongly about that.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-142">When you have a million people using something, then that’s when creativity really starts to happen on a very rapid scale. […] We need some revolutions like [the] Lisa [computer], but we also then need to get millions of units out there and let the world <span class="no-wrap">innovate—</span>because the world’s pretty good at innovating, we’ve&nbsp;found.</p>
+               <book-subpage-divider id="on-the-macintosh" dtoc="On the Macintosh"></book-subpage-divider>
+               <h1 id="sid-144">On the&nbsp;Macintosh</h1>
+               <h3 id="sid-145">Macintosh was less than a year <span class="no-wrap">old—</span>but clearly poised to transform the personal computer <span class="no-wrap">industry—</span>when Steve reflected on its significance with reporter David&nbsp;Sheff.</h3>
+               <p id="sid-146">One of the things I&nbsp;love is that with Macintosh, you can write memos that are Times Roman or Helvetica, or you can throw in an Old English if you want to have a little fun for a party, you know, for a volleyball announcement. Or you can use a very serious font for something very serious. And you can express&nbsp;yourself.</p>
+               <p id="sid-147">It’s sort of like in 1844, the telegraph was invented, and it was an amazing breakthrough in communications. And you actually could send messages from New York to San Francisco in an afternoon. And some people talked about putting a telegraph on every desk in America to improve&nbsp;productivity.</p>
+               <p id="sid-148">But it wouldn’t have worked. It wouldn’t have worked. And the reason it wouldn’t have worked was because you would have had to learn this whole sequence of strange <span class="no-wrap">incantations—</span>Morse code in this case, dots and dashes in this <span class="no-wrap">case—</span>to use the telegraph. And it took about forty hours to learn how to use Morse code. And a majority of people would never have learned how to use Morse&nbsp;code.</p>
+               <p id="sid-149">So fortunately, in the 1870s, Alexander Graham Bell filed the patents for the <span class="no-wrap">telephone—</span>another radical breakthrough in communications that performed basically the same function, but people already knew how to use it. The neatest thing about it was that, in addition to allowing you to communicate with just words, it allowed you to sing. It allowed you to intone your words with meaning beyond the simple&nbsp;linguistics.</p>
+               <p id="sid-150">We’re in the same exact parallel situation today. Some people are saying we need to put an IBM PC on every desk in America to improve productivity. But it won’t work. The special incantations you have to learn this time are slash-qz’s and things like that. Most people are not going to learn slash-qz’s any more than they’re going to learn Morse&nbsp;code.</p>
+               <p id="sid-151">And that’s what Macintosh is all about. It’s the first “telephone” of our industry. But the neatest thing about it to me is, the same as the telephone to the telegraph, Macintosh lets you sing. It lets you use special fonts. It lets you make drawings and pictures or incorporate other people’s drawings or pictures into your&nbsp;documents.</p>
+               <p id="sid-152">Even in business, you’re seeing five-page memos get compressed down to a one-page memo because there’s a picture to express the key concept. And so we’re seeing less paper flying around and more quality of&nbsp;communication.</p>
+               <p id="sid-153">And it’s more fun. There’s always been this myth that really neat, fun people at home all of [a] sudden get very dull and boring and serious when they come to work, and it’s simply not true. So if we can again inject that liberal-arts spirit into this very serious realm of business, I&nbsp;think it would be a worthwhile&nbsp;contribution.</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1976–1985-07" id="sid-154" theme="black">
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <snap-start id="snap-21"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-155" credit="Photo by Jean Pigozzi, 1983" alt="Viewed through a conference crowd, Steve - his clean-shaven, grinning face - is displayed on a large screen." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-156">
+                        <img id="photo-33" class="landscape p-2" width="1500" height="1045" src="icons/placeholder_image.svg" alt="Viewed through a conference crowd, Steve - his clean-shaven, grinning face - is displayed on a large screen." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Apple sales conference in Hawaii,&nbsp;1983.</figcaption>
+               </figure>
+               <snap-start id="snap-22"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-157" credit="Photo by Jean Pigozzi, 1983" alt="Steve, wearing a black leather jacket, holds his middle finger up toward a large IBM sign." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-158">
+                        <img id="photo-32" class="landscape p-2" width="1500" height="1042" src="icons/placeholder_image.svg" alt="Steve, wearing a black leather jacket, holds his middle finger up toward a large IBM sign." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Outside the IBM offices in New&nbsp;York.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-23"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1976–1985-08" id="speech-apple-1983" theme="white" dtoc="Speech to Apple Employees (1983)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-160">Speech to Apple&nbsp;Employees</h1>
+               <h2 id="sid-161">“Was George Orwell right about&nbsp;1984?”</h2>
+               <h3 id="sid-162">Steve introduced the Macintosh and its iconic commercial, which ran during the 1984 Super Bowl, at an Apple sales meeting in October&nbsp;1983.</h3>
+               <p id="sid-163">Hi, I’m Steve&nbsp;Jobs.</p>
+               <p id="sid-164">It is 1958. IBM passes up the chance to buy a young, fledgling company that has invented a new technology called xerography. Two years later, Xerox is born. And IBM has been kicking themselves ever&nbsp;since.</p>
+               <p id="sid-165">It is ten years later, the late sixties. Digital Equipment [DEC] and others invent the minicomputer. IBM dismisses the minicomputer as too small to do serious computing, and therefore unimportant to their business. DEC grows to become a multi-hundred-million-dollar corporation before IBM finally enters the minicomputer&nbsp;market.</p>
+               <p id="sid-166">It is now ten years later, the late seventies. In 1977, Apple, a young, fledgling company on the West Coast, invents the Apple II, the first personal computer as we know it today. IBM dismisses the personal computer as too small to do serious computing and unimportant to their&nbsp;business.</p>
+               <p id="sid-167">The early eighties, ’81. Apple II has become the world’s most popular computer. Apple has grown to a $300 million company, becoming the fastest-growing corporation in American business history, with over fifty competitors vying for a share. IBM enters the personal-computer market in November ’81 with the IBM&nbsp;PC.</p>
+               <p id="sid-168">1983. Apple and IBM emerge as the industry’s strongest competitors, each selling approximately one billion dollars’ worth of personal computers in 1983. Each will invest greater than $50 million for R&D and another $50 million for television advertising in 1984, totaling almost one quarter of a billion dollars&nbsp;combined.</p>
+               <p id="sid-169">The shakeout is in full swing. The first major firm goes bankrupt, with others teetering on the brink. Total industry losses for ’83 outshadow even the combined profits of Apple and IBM for personal&nbsp;computers.</p>
+               <p id="sid-170">It is now 1984. It appears IBM wants it all. Apple is perceived to be the only hope to offer IBM a run for its money. Dealers initially welcoming IBM with open arms now fear an IBM-dominated and controlled future. They are increasingly and desperately turning back to Apple as the only force that can ensure their future&nbsp;freedom.</p>
+               <p id="sid-171">IBM wants it all, and is aiming its guns on its last obstacle to industry control: Apple. Will Big Blue dominate the entire computer industry? <em>[Audience: No!]</em> The entire information age? <em>[Audience: No!]</em> Was George Orwell right about&nbsp;1984?</p>
+               <p id="sid-172"><em>[Steve runs the “1984” commercial. Directed by Ridley Scott, the ad depicts a dystopian, Orwellian world. In one scene, people dressed in gray, their heads shaved, sit expressionless in front of a large screen on which a dictator drones nonsense. A woman in bright red running shorts and a Macintosh shirt bursts into the room. She hurls a hammer at the screen, destroying it. The commercial ends with a promise: “On January 24th, Apple Computer will introduce Macintosh. And you’ll see why 1984 won’t be like&nbsp;‘1984.’”]</em></p>
+               <p id="sid-173"><em>[There is tumultuous applause and shouting from the audience; once it dies down, Steve resumes.]</em> That ad is going to run one week before Macintosh is introduced. And our ad agency that put it together is here today, Chiat/Day. Jay Chiat is here, the principal. Lee Clow and Steve Hayden, [who] wrote the copy and did the creative, are also&nbsp;here.</p>
+               <p id="sid-174">You <span class="no-wrap">might—</span>I guess they just heard what you&nbsp;thought.</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1976–1985-09" id="sid-175" theme="black">
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <snap-start id="snap-24"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-176" credit="Photo by Bill Atkinson, 1983" alt="A Polaroid of Steve, playing pinball, with a white hooded sweatshirt with the word Mackintosh on the chest." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-177">
+                        <img id="photo-16" class="portrait p-2" width="1226" height="1500" src="icons/placeholder_image.svg" alt="A Polaroid of Steve, playing pinball, with a white hooded sweatshirt with the word Mackintosh on the chest." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Enjoying&nbsp;a&nbsp;rare&nbsp;break&nbsp;before the&nbsp;Macintosh&nbsp;release.</figcaption>
+               </figure>
+               <snap-start id="snap-25"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-178" credit="Photo by Jean Pigozzi, 1984" alt="Steve is fast asleep on a flight, his seat slightly reclined." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-179">
+                        <img id="photo-17" class="landscape p-2" width="1500" height="1014" src="icons/placeholder_image.svg" alt="Steve is fast asleep on a flight, his seat slightly reclined." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Exhausted&nbsp;after&nbsp;a&nbsp;sales&nbsp;conference in&nbsp;New&nbsp;Orleans,&nbsp;1984.</figcaption>
+               </figure>
+               <snap-start id="snap-26"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-180" credit="Photo by Norman Seeff, 1984" alt="29-year-old Steve wearing a black turtleneck and jeans, poses with a Macintosh computer resting in his lap." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-181">
+                        <img id="photo-56" class="portrait p-2" width="990" height="1500" src="icons/placeholder_image.svg" alt="29-year-old Steve wearing a black turtleneck and jeans, poses with a Macintosh computer resting in his lap." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Steve’s&nbsp;1984&nbsp;shoot&nbsp;for&nbsp;<em>Time</em> at&nbsp;his&nbsp;Woodside&nbsp;home.</figcaption>
+               </figure>
+               <snap-start id="snap-27"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-182" credit="Photo by Jean Pigozzi, 1984" alt="Steve, silhouetted, is bent over as he observes a curly-haired woman typing on a Mac in a storefront." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-183">
+                        <img id="photo-34" class="landscape p-2" width="1500" height="1021" src="icons/placeholder_image.svg" alt="Steve, silhouetted, is bent over as he observes a curly-haired woman typing on a Mac in a storefront." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Pausing to watch a Macintosh in&nbsp;action.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-28"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1976–1985-10" id="interview-michael-moritz-1984" theme="white" dtoc="Interview with Michael Moritz (1984)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-185">Interview with Michael&nbsp;Moritz</h1>
+               <h2 id="sid-186">“Your aesthetics get better as you make&nbsp;mistakes.”</h2>
+               <h3 id="sid-187">Steve and Michael Moritz, a reporter who would soon switch careers and become a venture capitalist, spoke at Steve’s office at Apple in May 1984. They covered a wide range of topics, including Steve’s thoughts on product&nbsp;design.</h3>
+               <p class="interview" id="sid-188"><em>Steve Jobs:</em> I went around and looked at Cuisinarts when we were designing Mac. It was like my Cuisinart&nbsp;week.</p>
+               <p class="interview" id="sid-189"><em>Michael Moritz:</em> But no other particular products [influenced you]? Say, from the late seventies or&nbsp;something.</p>
+               <p class="interview" id="sid-190"><em>SJ:</em> Well, we’re around automobiles our whole lives. I’ve never been a car guy, but I’ve always loved Volkswagen Beetles. I’ve always loved Volkswagen vans, actually,&nbsp;too.</p>
+               <p id="sid-191">Just a bunch of little things: wine labels, paintings in galleries. Just simple things. Not anything real profound, just lots and lots of little things. I&nbsp;don’t think my taste in aesthetics is that much different than a lot of other people’s. The difference is that I&nbsp;just get to be really stubborn about making things as good as we all know they can be. That’s the only&nbsp;difference.</p>
+               <p class="interview" id="sid-192"><em>MM:</em> Yeah, I&nbsp;think you’re being&nbsp;modest.</p>
+               <p class="interview" id="sid-193"><em>SJ:</em> Well, things get more refined as you make mistakes. I’ve had a chance to make a lot of mistakes. Your aesthetics get better as you make mistakes. But the real big thing is: if you’re going to make something, it doesn’t take any more <span class="no-wrap">energy—</span>and rarely does it take more <span class="no-wrap">money—</span>to make it really great. All it takes is a little more time. Not that much more. And a willingness to do so, a willingness to persevere until it’s really&nbsp;great.</p>
+               <p id="sid-194">But aesthetics? I&nbsp;think aesthetics are a lot like singing. Joanie [Baez] has a beautiful voice, but the reason her voice is beautiful isn’t because her voice is just beautiful. It’s because she has an incredibly good ear. She can listen to somebody speak for thirty seconds and imitate their voice almost perfectly. Her ear is superb. And I&nbsp;think, in the same way, good aesthetics result from just your eye. An instinct of what you see, not so much what you do.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-195"><em>SJ:</em> I want to build products that are inherently smaller than any of the products on the market today. And when you make things smaller, you have the ability to make them more precisely. Obviously, a perfect example of that is a watch. It’s beautiful, but the precision has to be the scale of the object itself, and so you make it very precise. And as our products get smaller, we have the opportunity to do that. So, obviously, I&nbsp;would like everything to be&nbsp;smaller.</p>
+               <p id="sid-196">I also think that it’s really nice to be able to carry products around. Even if they’re not portable, it’s very nice to be able to have a handle on them that says, “Pick me up and move me when you want to change where I&nbsp;am.” Carry them from room to room, or from office to office. Lisa’s too heavy to carry from office to office, or room to room, or home on the weekends. So the question is, “How do we find a way to package that same functionality into something that we can carry around with us and that is smaller, <span class="no-wrap">obviously—</span>and be able to express the form of that more precisely?” That’s where we’re going in the future, those directions.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-197"><em>MM:</em> What are the uglier, offensive designs of products, or are there just too many to&nbsp;list?</p>
+               <p class="interview" id="sid-198"><em>SJ:</em> <span class="no-wrap">Yeah—</span>pick any car before three years ago, you know? Pick most cars today. Anything. Just look around the room. Tables, chairs: all ugly. You can ask me, what am I&nbsp;doing in this office? But anyway, most things are not very&nbsp;nice.</p>
+               <p id="sid-199">The telephone’s a perfect example. The only telephone that’s ever been any good is the original one and the Trimline. The Trimline is the only decent one. What they’ve done to the new stuff is just garbage.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-200"><em>SJ:</em> [At Apple] we’re just getting simpler and simpler and simpler. Very, very simple. Simple.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-201"><em>SJ:</em> Have you ever seen HP’s buildings over on Page Mill Road, the original ones? They’re really neat. They’ve got these scalloped roofs, and they face the glass north, and you can actually put solar collectors on them, if you wanted to. They stick out. In a building, they make a whole glass wall. And so people work down there, and they get tons of natural light coming in. Just&nbsp;tons.</p>
+               <p id="sid-202">The problem with these buildings [at Apple] is there’s no light. I&nbsp;mean, you spend five minutes outside, and you walk in here, it’s really dark, and you can’t see anything. And we’re all sort of like living in these little tiny&nbsp;caverns.</p>
+               <p id="sid-203">I just want a ton of natural light.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-204"><em>MM:</em> Was all the stuff about Big Brother [in the “1984” commercial] very conscious of the IBM stuff, or was that something that outsiders quickly interpreted, and you guys weren’t exactly <span class="no-wrap">going&nbsp;to—</span></p>
+               <p class="interview" id="sid-205"><em>SJ:</em> Deny it?</p>
+               <p class="interview" id="sid-206"><em>MM:</em> Deny it.</p>
+               <p class="interview" id="sid-207"><em>SJ:</em> Well, the best response to that was the response given, I&nbsp;think, in <em>Fortune</em>, which was, “If seeing Big Brother in 1984 connotes IBM to a large number of people, that says more about IBM’s image problem than our&nbsp;intentions.”</p>
+               <p id="sid-208">In truth: of course, we saw the analogy. And I&nbsp;think that we were saying two things. I&nbsp;think the first thing we were saying was, this image of computers as sort of a centralized group of people having control of very powerful machines to keep track of us, that iconic fear in our <span class="no-wrap">minds—</span>we were commenting on that cultural fear that we&nbsp;have.</p>
+               <p id="sid-209">And of course, one <span class="no-wrap">couldn’t—</span>you’d have to be an idiot not to see the parallels to&nbsp;IBM.</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1976–1985-11" id="sid-210" theme="black">
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <snap-start id="snap-29"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-211" credit="Photo by Norman Seeff, 1984" alt="A glamorous magazine shot shows Steve, wearing a double-breasted blazer, with arms crossed and hair blowing in the wind." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-212">
+                        <img id="photo-55" class="portrait p-2" width="1000" height="1500" src="icons/placeholder_image.svg" alt="A glamorous magazine shot shows Steve, wearing a double-breasted blazer, with arms crossed and hair blowing in the wind." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Under&nbsp;his&nbsp;double-breasted&nbsp;suit&nbsp;coat, Steve&nbsp;wore&nbsp;jeans.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-30"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1976–1985-12" id="interview-newsweek-1985" theme="white" dtoc="Interview with Newsweek (1985)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-214">Interview with&nbsp;<em>Newsweek</em></h1>
+               <h2 id="sid-215">“I want to build&nbsp;things.”</h2>
+               <h3 id="sid-216">Steve left Apple in September 1985, after losing a power struggle with CEO John Sculley. The departure was officially a resignation, but Steve considered it a betrayal. A few weeks later, he spoke to&nbsp;<em>Newsweek</em>.</h3>
+               <p class="interview" id="sid-217"><em>Newsweek:</em> How did you react when you heard the [Apple] board’s decision [to sue you]? These were people that you knew and worked with for a long&nbsp;time.</p>
+               <p class="interview" id="sid-218"><em>Steve Jobs:</em> Oh, yeah. I&nbsp;mean, in my wildest imagination, I&nbsp;couldn’t have come up with such a wild ending to all of this. I&nbsp;had hoped that my life would take on the quality of an interesting tapestry where I&nbsp;would have weaved in and out of Apple: I&nbsp;would have been there a period of time, and maybe I&nbsp;would have gone off and done something else to contribute, but connected with Apple, and then maybe come back and stay for a lengthy time period, and then go off and do something else. But it’s just not going to work out that way. So I&nbsp;had ten of the best years of my life, you know. And I&nbsp;don’t regret much of anything.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-219">I personally, man, I&nbsp;want to build things. I’m thirty. I’m not ready to be an industry pundit. I&nbsp;got three offers to be a professor during this summer, and I&nbsp;told all of the universities that I&nbsp;thought I&nbsp;would be an awful professor. What I’m best at doing is finding a group of talented people and making things with them. I&nbsp;respect the direction that Apple is going in. But for me personally, you know, I&nbsp;want to make things. And if there’s no place for me to make things there, then I’ll do what I&nbsp;did twice before. I’ll make my own place. You know, I&nbsp;did it in the garage when Apple started, and I&nbsp;did it in the metaphorical garage when Mac started.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-220"><em>SJ:</em> Though the outside world looks at success from a numerical point of view, my yardstick might be quite different than that. My yardstick may be how every computer that’s designed from here on out will have to be at least as good as a Macintosh.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-221"><em>SJ:</em> I used to go into work, I’d get there, and I&nbsp;would have one or two phone calls to perform, a little bit of mail to look at. <span class="no-wrap">But—</span>this was in June, <span class="no-wrap">July—</span>most of the corporate management reports stopped flowing by my desk. A few people might see my car in the parking lot and come over and&nbsp;commiserate.</p>
+               <p id="sid-222">And I&nbsp;would get depressed and go home in three or four hours, really depressed. I&nbsp;did that a few times, and I&nbsp;decided that was mentally unhealthy. So I&nbsp;just stopped going in. You know, there was nobody really there to miss&nbsp;me.</p>
+               <p class="interview" id="sid-223"><em>Q:</em> Do you feel that they have taken your company away from&nbsp;you?</p>
+               <p class="interview" id="sid-224"><em>SJ:</em> To me, Apple exists in the spirit of the people that work there, and the sort of philosophies and purpose by which they go about their business. So if Apple just becomes a place where computers are a commodity item and where the romance is gone, and where people forget that computers are the most incredible invention that man has ever invented, then I’ll feel I&nbsp;have lost Apple. But if I’m a million miles away and all those people still feel those things and they’re still working to make the next great personal computer, then I&nbsp;will feel that my genes are still in there.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-225"><em>SJ:</em> One of the five most difficult days was that day John [Sculley, Apple’s CEO] said at the analysts meeting about there not being a role for me in the future, and he said it again in another analysts meeting a week later. He didn’t say it to me directly; he said it to the press. You’ve probably had somebody punch you in the stomach and it knocks the wind out of you and you can’t breathe. If you relax, you’ll start breathing again. That’s how I&nbsp;felt all summer long. The thing I&nbsp;had to do was try to relax. It was hard. But I&nbsp;went for a lot of long walks in the woods and didn’t really talk to a lot of people.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-226"><em>Q:</em> You’ve talked about being tough to get along with, having a rough-edge personality. Did you contribute in some way to your own&nbsp;downfall?</p>
+               <p class="interview" id="sid-227"><em>SJ:</em> You know, I’m not a sixty-two-year-old statesman that’s traveled around the world all his life. So I’m sure that there was a situation when I&nbsp;was twenty-five that if I&nbsp;could go back, knowing what I&nbsp;know now, I&nbsp;could have handled much better. And I’m sure I’ll be able to say the same thing when I’m thirty-five about the situation in 1985. I&nbsp;can be very intense in my convictions. And I&nbsp;don’t <span class="no-wrap">know—</span>all in all, I&nbsp;kind of like myself, and I’m not that anxious to&nbsp;change.</p>
+               <p class="interview" id="sid-228"><em>Q:</em> But has this experience changed&nbsp;you?</p>
+               <p class="interview" id="sid-229"><em>SJ:</em> Oh, this <span class="no-wrap">has—</span>yeah, I&nbsp;think I&nbsp;am growing from this, and I&nbsp;think I’m learning a lot from it. I’m not sure how or what yet. But yes, I&nbsp;feel that way. I’m not bitter; I’m not bitter.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-230"><em>Q:</em> There’s been a lot in the press about your interest in Buddhism,&nbsp;vegetarianism.</p>
+               <p class="interview" id="sid-231"><em>SJ:</em> As we descend into the&nbsp;isms.</p>
+               <p class="interview" id="sid-232"><em>Q:</em> The isms. Are you still interested in those&nbsp;things?</p>
+               <p class="interview" id="sid-233"><em>SJ:</em> Well, I&nbsp;don’t know what to say. I&nbsp;mean, I&nbsp;don’t eat meat, and I&nbsp;don’t go to church every&nbsp;Sunday.</p>
+               <p class="interview" id="sid-234"><em>Q:</em> They said at some point you had thought of going to Japan and sitting in a&nbsp;monastery.</p>
+               <p class="interview" id="sid-235"><em>SJ:</em> Yeah, yeah. I’m glad I&nbsp;didn’t do that. I&nbsp;know this is going to sound really, really corny. But I&nbsp;feel like I’m an American, and I&nbsp;was born here. And the fate of the world is in America’s hands right now. I&nbsp;really feel that. And you know, I’m going to live my life here and do what I&nbsp;can to&nbsp;help.</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1976–1985-13" id="sid-236" theme="black">
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <snap-start id="snap-31"></snap-start>
+            <snap-end></snap-end>
+               <figure id="sid-237" credit="Photo by Steve Ringman / San Francisco Chronicle / Hearst Newspapers via Getty Images, 1985" alt="Steve, at home, is dressed in jeans and a sweater. He holds a mug and stares pensively at the camera from his leather sofa." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-238">
+                        <img id="photo-63" class="landscape p-2" width="1500" height="987" src="icons/placeholder_image.svg" alt="Steve, at home, is dressed in jeans and a sweater. He holds a mug and stares pensively at the camera from his leather sofa." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Steve circa&nbsp;1985.</figcaption>
+               </figure>
+            </div>
+         </div>
+       </div>
+       <div class="book-section" chapter="1985–1996">
+         <snap-start id="snap-32"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1985–1996-01" id="part-ii" theme="blue" toc="Part II, 1985–1996" sticky="1985–1996" scrubber="1985–1996">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-240">Part II,&nbsp;1985–1996</h1>
+               <h2 id="part-ii-subtitle">“You&nbsp;never&nbsp;achieve&nbsp;what&nbsp;you&nbsp;want without&nbsp;falling&nbsp;on&nbsp;your face&nbsp;a&nbsp;few&nbsp;times.”</h2>
+            </div>
+         </div>
+         <snap-start id="snap-33"></snap-start>
+            <snap-end></snap-end>
+         <div class="book-page" subchapter="1985–1996-02" id="part-ii-editors-note" theme="white" dtoc="Part II, 1985–1996 Editor's Note">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <p class="narration" id="sid-243">The years after Steve left Apple were among the toughest of his <span class="no-wrap">career—</span>and the most&nbsp;formative.</p>
+               <p class="narration" id="sid-244">Determined to build a new great computer company, he started NeXT with several members of the Macintosh team. “We’ll make a whole bunch of mistakes, but at least they’ll be new and creative ones,” he&nbsp;predicted.</p>
+               <p class="narration" id="sid-245">Around the same time, Steve invested $10 million in a small company called Pixar. It was a tiny computer graphics operation, newly spun off from filmmaker George Lucas’s empire. The technical expertise at Pixar attracted Steve; its initial product was a high-end graphics computer that cost more than&nbsp;$100,000.</p>
+               <p class="narration" id="sid-246">Both NeXT and Pixar quickly ran into trouble. The NeXT computer system, which debuted in 1988, was powerful and packed with the humanistic touches Steve loved. It was visually striking and intuitive to use, with high-quality audio and the complete works of Shakespeare built in. But it was also late to market and <span class="no-wrap">expensive—</span>and it sold poorly. Within six years of NeXT’s launch, the entire founding team, other than Steve, had&nbsp;resigned.</p>
+               <p class="narration" id="sid-247">Pixar, meanwhile, was eking out an existence selling computers and software and, later, animating commercials. The company was also making award-winning short films that charmed Steve. This use of technology in service of brilliant storytelling embodied one of his favorite things: work at the intersection of technology and the liberal arts. The short films fired Steve’s enthusiasm and kept him writing check after check to Pixar, ultimately investing some $60&nbsp;million.</p>
+               <p class="narration" id="sid-248">But the films were, as Steve put it, “in the background,” not the company’s focus. He described Pixar’s early business strategy as “find a way to pay the bills,” and he later speculated that the only reason the company didn’t fall apart then was that the leadership team “would all get depressed … but not all of us at&nbsp;once.”</p>
+               <p class="narration" id="sid-249">If at times in these years he seemed disappointed by the possibilities of <span class="no-wrap">technology—</span>“this stuff doesn’t change the world. It really doesn’t,” he told a reporter in an uncharacteristic flash of <span class="no-wrap">pessimism—</span>his world was also expanding beyond his work. He treasured his privacy, saying of his public persona, “I think of it as my well-known twin brother. It’s not&nbsp;me.”</p>
+               <p class="narration" id="sid-250">Steve learned how to hone a company to its essence, even when it was painful. He shifted NeXT’s focus to selling software. The shift meant closing a factory and laying off more than two hundred of NeXT’s five hundred and thirty employees. Meanwhile, Pixar stripped away its advertising and hardware businesses and entered into an agreement with Disney, all to pursue what sometimes seemed an impossible dream: to make fully computer-animated feature&nbsp;films.</p>
+               <p class="narration" id="sid-251">After nearly a decade of difficulty, the streamlined NeXT and Pixar both transformed into unlikely success stories. At the end of 1995, Pixar premiered Toy Story in the same month it held its initial public offering. A year later, Apple, in need of operating-system software, bought NeXT for $427 million. “If you really look closely,” Steve liked to say, “most overnight successes took a long&nbsp;time.”</p>
+               <book-subpage-divider id="on-starting-next" dtoc="On Starting NeXT"></book-subpage-divider>
+               <h1 id="sid-253">Steve on Starting&nbsp;NeXT</h1>
+               <h3 id="sid-254">A few weeks after starting NeXT, Steve spoke with <em>Newsweek</em> about the original insight for the&nbsp;company.</h3>
+               <p id="sid-255">I had been reading some biochemistry, recombinant DNA literature. [I had recently met] Paul Berg, the inventor of some of the recombinant techniques. I&nbsp;called him up, and I&nbsp;said, “You remember me. I’m ignorant about this stuff, but I’ve got a bunch of questions about how it works, and I’d love to have lunch with you.” So we had lunch at Stanford. He was showing me how they were doing gene repairing. Actually, it’s straightforward, it’s kind of neat. It smells a lot like some of the concepts you find in computer science. So he was explaining how he does experiments in a wet laboratory and they take a week or two or three to run. I&nbsp;asked him, “Why don’t you simulate these on a computer? Not only will it allow you to run your experiments faster, but someday every freshman microbiology student in the country can play with the Paul Berg recombinant software.” So his eyes lit up. And that was sort of a landmark lunch. Because that’s when I&nbsp;started to really think about this stuff and get my wheels turning&nbsp;again.</p>
+               <book-subpage-divider id="on-pixar-shareholder" dtoc="On Becoming Majority Shareholder in Pixar"></book-subpage-divider>
+               <h1 id="sid-257">On Becoming Majority Shareholder in&nbsp;Pixar</h1>
+               <h3 id="sid-258">In 1996, the year after Pixar released <em>Toy Story</em> and held its IPO, Steve looked back on the work and ideas that first drew him to the&nbsp;company.</h3>
+               <p id="sid-259">I met Ed Catmull, who was running the computer division of Lucasfilm, in 1985. […] I’d been involved in graphics most of my life. The Apple II, though most people don’t remember, was the first real color computer that you could get your hands on. The Macintosh, obviously, was graphics. The LaserWriter was graphics. But it was all <span class="tabular-nums no-wrap">2-D</span>. We’d done some <span class="tabular-nums no-wrap">3-D</span> work at Apple, and I&nbsp;was certainly aware of the <span class="no-wrap">field—</span>but the stuff that Ed and his team were doing was way ahead of anything I’d ever seen anyone&nbsp;do.</p>
+               <book-subpage-divider id="on-pixar-early-days" dtoc="Steve on Pixar’s Early Days"></book-subpage-divider>
+               <h1 id="sid-261">On Pixar’s Early&nbsp;Days</h1>
+               <h3 id="sid-262">In 2003, with Disney and Pixar deep in negotiations over the future of the studio, Steve told filmmaker Leslie Iwerks about Pixar’s&nbsp;start.</h3>
+               <p id="sid-263">Our strategy in the early days of Pixar was: find a way to pay the bills. In the background, we were developing animation software, and John [Lasseter] was making the succession of short films on the way to <em>Toy Story</em>. But we were trying to pay the bills and just buy time. That strategy really turned out not to work. Probably if you look back in the rearview mirror, we would have been better off just funding the animation efforts and not trying to pay the bills through these other products, such as the Pixar Image Computer and software, but that was our best attempt to try to keep the company going. In the end, I&nbsp;just ended up writing checks to keep the company <span class="no-wrap">going—</span>and that basically went on for ten years.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p id="sid-264">You could see there was magic in [a Pixar animated short film], right from the beginning. With the rest of Pixar’s technology, you had to be an expert to understand it. [… But] you didn’t have to know anything about the technology to enjoy the film. It was incredibly refreshing and really pointed the way to where we wanted to go. We didn’t want to have to convince people that our technology was <span class="no-wrap">great—</span>we knew it was great. We wanted to use our technology to make something where nobody needed to know anything about the technology to love it. And that’s what we ended up&nbsp;doing.</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1985–1996-03" id="sid-265" theme="black">
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <snap-start id="snap-34"></snap-start>
+                  <snap-end></snap-end>
+               <figure id="sid-266" credit="Photo by Jeffrey Aaronson, 1984" alt="Steve gazes into the camera as he cradles his chin in his right hand, his left hand resting on top of a newspaper on the table." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-267">
+                        <img id="photo-18" class="portrait p-2" width="1172" height="1500" src="icons/placeholder_image.svg" alt="Steve gazes into the camera as he cradles his chin in his right hand, his left hand resting on top of a newspaper on the table." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Shortly before becoming the majority shareholder of&nbsp;Pixar.</figcaption>
+               </figure>
+               <snap-start id="snap-35"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-268" credit="Photo by Doug Menuez, 1986" alt="Steve, in a white shirt, writes on a whiteboard. He has a look of concentration and is sticking out his tongue." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-269">
+                        <img id="photo-20" class="landscape p-2" width="1500" height="949" src="icons/placeholder_image.svg" alt="Steve, in a white shirt, writes on a whiteboard. He has a look of concentration and is sticking out his tongue." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>NeXT&nbsp;planned&nbsp;to&nbsp;capture the&nbsp;education&nbsp;market.</figcaption>
+               </figure>
+               <snap-start id="snap-36"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-270" credit="Photo by Ben Blackwell courtesy of Apple" alt="A memo from Steve on the NeXT letterhead proposes meeting-free Thursdays and warns against managerial bureaucracy." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-271">
+                        <img id="photo-19" class="portrait p-2" width="1156" height="1500" src="icons/placeholder_image.svg" alt="A memo from Steve on the NeXT letterhead proposes meeting-free Thursdays and warns against managerial bureaucracy." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>NeXT’s&nbsp;ban&nbsp;on&nbsp;Thursday meetings&nbsp;was&nbsp;short-lived.</figcaption>
+               </figure>
+               <snap-start id="snap-37"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-272" credit="Photographer unknown, 1987" alt="Steve sits in a chair, hand cradling his head, and stares at a life-size pink foam NeXT computer prototype." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-273">
+                        <img id="photo-21" class="landscape p-2" width="1500" height="1199" src="icons/placeholder_image.svg" alt="Steve sits in a chair, hand cradling his head, and stares at a life-size pink foam NeXT computer prototype." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Reviewing&nbsp;a&nbsp;Styrofoam&nbsp;model of&nbsp;the&nbsp;NeXT&nbsp;machine,&nbsp;1987.</figcaption>
+               </figure>
+               <snap-start id="snap-38"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-274" credit="Photo by Doug Menuez, 1987" alt="Steve kicks a beach ball in a grassy park. He is dressed in ripped jeans and a patterned shirt with rolled-up sleeves." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-275">
+                        <img id="photo-53" class="landscape p-2" width="1500" height="985" src="icons/placeholder_image.svg" alt="Steve kicks a beach ball in a grassy park. He is dressed in ripped jeans and a patterned shirt with rolled-up sleeves." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Taking a break at a NeXT company picnic in Menlo&nbsp;Park.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-39"></snap-start>
+               <snap-end></snap-end>
+         <div class="book-page" subchapter="1985–1996-04" id="email-pixar-led-the-way" theme="white" dtoc="Email to NeXT Employees: Pixar led the way! (1989)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-277">Email to NeXT&nbsp;Employees</h1>
+               <h2 id="sid-278">“Pixar led the&nbsp;way!”</h2>
+               <p class="verbatim" id="sid-279">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-280">To: NeXT</p>
+               <p class="verbatim" id="sid-281">Subject: A great day and a&nbsp;half</p>
+               <p class="verbatim" id="sid-282">Date: March 30, 1989, 8:08&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-283">Well, we did it again. Congrats to all for a real TEAM effort. And, Pixar did it&nbsp;too.</p>
+               <br>
+               <p class="verbatim" id="sid-284">For those of you who didn’t see the Academy Awards last night, Pixar won an award in the category of short animated films: for their computer generated film Tin&nbsp;Toy</p>
+               <br>
+               <p class="verbatim" id="sid-285">Tin Toy is the first computer generated film to ever win an award, and was competing against several very good traditionally animated (non-computer-animated)&nbsp;films!</p>
+               <br>
+               <p class="verbatim" id="sid-286">The computer graphics industry just achieved a major milestone, and Pixar led the&nbsp;way!</p>
+               <book-subpage-divider id="speech-reed-1991" dtoc="Speech at Reed College (1991)"></book-subpage-divider>
+               <h1 id="sid-288">Speech at Reed&nbsp;College</h1>
+               <h2 id="sid-289">“Character&nbsp;is&nbsp;built&nbsp;not&nbsp;in&nbsp;good&nbsp;times, but&nbsp;in&nbsp;bad&nbsp;times.”</h2>
+               <h3 id="sid-290">When Steve welcomed the incoming class of freshmen at his alma mater, Reed College, on August 27, 1991, NeXT computers were not selling well and Pixar had just had a round of&nbsp;layoffs.</h3>
+               <p id="sid-291">Thank you very much for this. It means a lot to me. I’m a peculiar Reed alumnus, as many of you know. I&nbsp;never graduated from <span class="no-wrap">Reed—</span>although that doesn’t make me that unusual, I&nbsp;suppose.</p>
+               <p id="sid-292">But maybe more unusual: I&nbsp;ran out of money after one semester here at Reed, so I&nbsp;dropped out. But then I&nbsp;dropped in for another year and a half. So, I&nbsp;was actually here by choice, which is somewhat more unusual. And I&nbsp;had some experiences <span class="no-wrap">here—</span>that I’m sure many of you will have as freshmen and throughout your years <span class="no-wrap">here—</span>that have stayed with me my whole life. I&nbsp;was thinking of some of them to recount to&nbsp;you.</p>
+               <p id="sid-293">Remember that I’m much older than you now. I’ve always thought that people’s spark of self-consciousness turns on at about fifteen or sixteen. So if we normalize age to fifteen or sixteen, then most of you are two or three or four years old here, as freshmen. I’m about twenty. So that maybe puts in perspective what it’s like to return to Reed after so many years. But a few things stick in my mind that I&nbsp;wanted to pass on that maybe could be of some value. The first was that, as you will be shortly, I&nbsp;was forced to go to humanities <span class="no-wrap">lectures—</span>it seemed like every day. I&nbsp;studied Shakespeare with Professor Svitavsky. And at the time, I&nbsp;thought these were meaningless and even somewhat cruel endeavors to be put through. I&nbsp;can assure you that as the patina of time takes its toll, I&nbsp;thank God that I&nbsp;had these experiences here. It has helped me in everything I’ve ever done, although I&nbsp;wouldn’t have ever guessed it at the&nbsp;time.</p>
+               <p id="sid-294">The second experience that I&nbsp;remember from Reed is being hungry. All the time. The cafeteria here taught me quickly to be a vegetarian. I&nbsp;didn’t have so much money, so I&nbsp;would gather up Coke bottles and take them up to the store to find out how to eat. I&nbsp;discovered the cheapest way to eat was Roman Meal. Have you ever heard of this? It’s cereal. It was invented by a Harvard professor who was a history professor who one day wondered what the Roman legion took with them to eat as they conquered and pillaged these villages, and he found out through his research that it’s Roman Meal. And you can buy it at the local store, and it’s the cheapest way to live. So I&nbsp;lived for many months on Roman&nbsp;Meal.</p>
+               <p id="sid-295">But also, several of us, after not eating for a few days, would hitchhike across town to the Hare Krishna temple on Sundays, where they would feed all comers. Through practice, we discovered just the right moment to <span class="no-wrap">arrive—</span>after their particular religious practices and right before the food. And not having eaten for days, we would eat a lot, and on several occasions stay over, because we were not able to&nbsp;move.</p>
+               <p id="sid-296">The following morning, they would wake us up at four o’clock in the morning because it was their time to go gather flowers for their temple to honor Krishna. So they would take us with them, predawn, out into the <span class="no-wrap">neighborhood—</span>where they would proceed to steal flowers from the neighbors. And the neighbors that lived close to the Hare Krishna temple soon were wise to their pillage and would get up early in the morning and guard their flower beds. And so they would have to go in an ever-wider circumference around their temple. In spending a little time with these people, I&nbsp;noticed some of their other behaviors. They used to sell incense to the local department stores and then go steal it back, so that the department stores would buy more, and they would have a thriving business. And their ethics told them that this was fine, that anything in the service of Krishna was fine. In interacting with them, I&nbsp;think I&nbsp;learned more about situational ethics than I&nbsp;ever did on&nbsp;campus.</p>
+               <p id="sid-297">The last experience I&nbsp;wanted to recount for you: there is a <span class="no-wrap">man—</span>I think he’s here <span class="no-wrap">today—</span>named Jack Dudman, who used to be the dean of the school. He was one of the heroes of my life while I&nbsp;was here, because Jack Dudman looked the other way when I&nbsp;was staying on campus without paying. He looked the other way when I&nbsp;was taking classes without being a formal student and paying the tuition. And oftentimes, when I&nbsp;was at the end of my rope, Jack would go for a walk with me, and I&nbsp;would discover a twenty-dollar bill in my tattered coat pocket after that walk, with no mention of it from Jack before, during, or&nbsp;after.</p>
+               <p id="sid-298">I learned more about generosity from Jack Dudman and the people here at this school than I&nbsp;learned anywhere else in my life. So I&nbsp;wanted to thank this community, because the things I&nbsp;learned here stayed with me. Character is built not in good times, but in bad times; not in a time of plenty, but in a time of <span class="no-wrap">adversity—</span>and this school seems to manage to nurture that spirit of adversity, and I&nbsp;think does build some character. So I&nbsp;thank you for teaching me how to be hungry and how to keep that with me my whole&nbsp;life.</p>
+               <p id="sid-299">Thank you very&nbsp;much.</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1985–1996-05" id="sid-300" theme="black">
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <snap-start id="snap-40"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-301" credit="Photo by Ben Blackwell, © Disney / Pixar" alt="A note on Pixar letterhead. The handwritten text reads: Steve, President Clinton is holding." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-302">
+                        <img id="photo-31" class="portrait p-2" width="931" height="1500" src="icons/placeholder_image.svg" alt="A note on Pixar letterhead. The handwritten text reads: Steve, President Clinton is holding." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Steve sometimes exchanged calls with President Bill&nbsp;Clinton.</figcaption>
+               </figure>
+               <snap-start id="snap-41"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-303" credit="Photo by Louie Psihoyos, 1995, © Disney / Pixar" alt="Steve, now wearing glasses, sits cross-legged in a director's chair under an oversized anglepoise Pixar-style lamp." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-304">
+                        <img id="photo-23" class="portrait p-2" width="1198" height="1500" src="icons/placeholder_image.svg" alt="Steve, now wearing glasses, sits cross-legged in a director's chair under an oversized anglepoise Pixar-style lamp." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>In 1995, the year <em>Toy Story</em> was released and Pixar had its&nbsp;IPO.</figcaption>
+               </figure>
+               <snap-start id="snap-42"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-305" credit="Photographer unknown, 1995, © Disney" alt="Steve, smiling, poses with Mickey and Minnie Mouse at Disneyland." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-306">
+                        <img id="photo-22" class="landscape p-2" width="1500" height="1216" src="icons/placeholder_image.svg" alt="Steve, smiling, poses with Mickey and Minnie Mouse at Disneyland." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>In 1995, around the time of the Pixar-Disney deal&nbsp;renegotiation.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-43"></snap-start>
+               <snap-end></snap-end>
+         <div class="book-page" subchapter="1985–1996-06" id="email-andy-grove" theme="white" dtoc="Email Exchange Between Steve, Intel CEO Andy Grove, and an Intel Engineer: I have changed my position (1995)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-308">Email Exchange Between Steve, Intel CEO Andy Grove, and an Intel&nbsp;Engineer</h1>
+               <h2 id="sid-309">“I have changed my position 180&nbsp;degrees.”</h2>
+               <h3 id="sid-310">As Pixar became a leader in graphics, Steve and his mentor, Intel CEO Andy Grove, discussed how Intel might learn from Pixar. When an Intel engineer tried to follow up, Steve&nbsp;resisted.</h3>
+               <p class="verbatim" id="sid-311">From: [Engineer 1 at&nbsp;Intel]</p>
+               <p class="verbatim" id="sid-312">To: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-313">Cc: Andy&nbsp;Grove</p>
+               <p class="verbatim" id="sid-314">Subject: Pixar-3D&nbsp;graphics</p>
+               <p class="verbatim" id="sid-315">Date: September 22, 1995, 2:04&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-316">Steve,</p>
+               <p class="verbatim" id="sid-317">Andy asked me to look into what we should do in dramatically improving the Intel architecture platform’s 3D graphics performance. He indicated that you and key people at Pixar like Ed Catmull have lots of good ideas on what we should do in this area. I&nbsp;actually contacted Ed several months ago but he was real busy and cannot commit to meeting until after Sept. As you know, I&nbsp;am in charge of microprocessors at&nbsp;Intel.</p>
+               <br>
+               <p class="verbatim" id="sid-318">I have located several key Intel 3D experts. One of them, [Engineer 2], came from Sun over a year ago. I&nbsp;would like to have a meeting (at Next, Intel or Pixar) with you, Catmull, and others with me and our graphics experts to discuss your ideas and map out what our action plans are. I&nbsp;am in Tokyo next week but will be back in my office on Monday Oct. 2. I&nbsp;will ask my admin to contact your office to set that meeting&nbsp;up.</p>
+               <br>
+               <p class="verbatim" id="sid-319">Thanks.</p>
+               <p class="verbatim" id="sid-320">[Engineer&nbsp;1]</p>
+               <br><br>
+               <p class="verbatim" id="sid-321">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-322">To: [Engineer&nbsp;1]</p>
+               <p class="verbatim" id="sid-323">Subject: Pixar-3D&nbsp;graphics</p>
+               <p class="verbatim" id="sid-324">Date: September 23, 1995, 7:11&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-325">[Engineer&nbsp;1],</p>
+               <p class="verbatim" id="sid-326">Pixar does indeed possess the knowledge to enable Intel’s processors to render 3D graphics at much high performance and quality. These “secrets” could definitely make their way into future Intel general purpose processor&nbsp;hardware.</p>
+               <br>
+               <p class="verbatim" id="sid-327">We believe this single capability is the key for Intel to dramatically enlarge the PCs market share in the consumer market – by significantly surpassing the dedicated gaming machines (Sega, Nintendo, Playstation, etc) graphics&nbsp;capabilities.</p>
+               <br>
+               <p class="verbatim" id="sid-328">Pixar’s secrets were invented through significant investment over ten years or more, and we value them highly. Even without the secrets implemented in the processor, Pixar can gain significant competitive advantage and differentiation through implementing them in software. By disclosing the “correct” way to do high quality, high performance graphics, Pixar will lose much of this to any and all competitors, with no work on their part. Hence, the need for&nbsp;compensation.</p>
+               <br>
+               <p class="verbatim" id="sid-329">What does Intel propose to give Pixar for disclosing and licensing its secrets to&nbsp;Intel?</p>
+               <br>
+               <p class="verbatim" id="sid-330">Steve</p>
+               <br><br>
+               <p class="verbatim" id="sid-331">From: [Engineer&nbsp;1]</p>
+               <p class="verbatim" id="sid-332">To: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-333">Cc: Andy&nbsp;Grove</p>
+               <p class="verbatim" id="sid-334">Subject: Re: Pixar-3D&nbsp;graphics</p>
+               <p class="verbatim" id="sid-335">Date: September 25, 1995, 11:22&nbsp;a.m.</p>
+               <br>
+               <p class="verbatim" id="sid-336">Steve,</p>
+               <p class="verbatim" id="sid-337">We would very much like to have our meeting, but I&nbsp;will put that on hold based on your input. We talked to many key people on ideas to improve the microprocessor capability with the aim that this will benefit the whole industry, and everyone will benefit. We have not entered into any financial arrangement in exchange for good ideas for our microprocessors in the past and have no intention for the&nbsp;future.</p>
+               <br>
+               <p class="verbatim" id="sid-338">[Engineer&nbsp;1]</p>
+               <br><br>
+               <p class="verbatim" id="sid-339">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-340">To: [Engineer&nbsp;1]</p>
+               <p class="verbatim" id="sid-341">Cc: Andy&nbsp;Grove</p>
+               <p class="verbatim" id="sid-342">Subject: Re: Pixar-3D&nbsp;graphics</p>
+               <p class="verbatim" id="sid-343">Date: September 25, 1995, 5:29&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-344">This approach has not served you well in the past, as evidenced by your poor graphics architectures and performance. Maybe you should think of changing it for the&nbsp;future…</p>
+               <br>
+               <p class="verbatim" id="sid-345">Steve</p>
+               <br><br>
+               <p class="verbatim" id="sid-346">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-347">To: Andy&nbsp;Grove</p>
+               <p class="verbatim" id="sid-348">Subject: Re: Pixar-3D&nbsp;graphics</p>
+               <p class="verbatim" id="sid-349">Date: September 25, 1995, 10:27&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-350">Andy,</p>
+               <p class="verbatim" id="sid-351">Maybe it’s just me, but I&nbsp;find [Engineer 1]’s approach extremely arrogant, given Intel’s (his?) dismal showing in understanding computer graphics architectural issues in the&nbsp;past…</p>
+               <br>
+               <p class="verbatim" id="sid-352">If I&nbsp;were going to make hundreds of millions of something, I&nbsp;sure as hell would be willing to pay for the best advice money could buy… Any[way], this isn’t a sales pitch; I&nbsp;just wanted you to know what I&nbsp;thought, as&nbsp;always.</p>
+               <br>
+               <p class="verbatim" id="sid-353">Best,</p>
+               <p class="verbatim" id="sid-354">Steve</p>
+               <br><br>
+               <p class="verbatim" id="sid-355">From: Andy&nbsp;Grove</p>
+               <p class="verbatim" id="sid-356">To: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-357">Subject: Re[2]: Pixar-3D&nbsp;graphics</p>
+               <p class="verbatim" id="sid-358">Date: September 26, 1995, 3:12&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-359">Steve,</p>
+               <p class="verbatim" id="sid-360">I am firmly on [Engineer 1]’s side on this one. He is taking your offer to help us very seriously, rounded up the best technical people and was ready to go when you introduced a brand new element into the discussion:&nbsp;money.</p>
+               <br>
+               <p class="verbatim" id="sid-361">You and I&nbsp;have talked many times about this subject; you never suggested or hinted at this being a commercial exchange. I&nbsp;took your offer to help us exactly as that: help, not an offer of a commercial&nbsp;relationship.</p>
+               <br>
+               <p class="verbatim" id="sid-362">You may remember, that from time to time I&nbsp;offered suggestions that pertained to your business. Examples range from porting NextStep to the 486 - - which was in our interest too - - to my presentation to your staff on repositioning NextStep beyond that. I&nbsp;am not suggesting that these are comparable in value to your expertise in graphics, but I&nbsp;gave what I&nbsp;had, put some thought into the problem I&nbsp;saw you were facing - - and it never entered my mind to charge for it. In my view, that’s what friendly companies (and friends) do for each other. In the long run, these things balance&nbsp;out.</p>
+               <br>
+               <p class="verbatim" id="sid-363">I am sorry you don’t feel that way. We will be worse off as a result, and so will the&nbsp;industry.</p>
+               <br>
+               <p class="verbatim" id="sid-364">Regards,</p>
+               <p class="verbatim" id="sid-365">a</p>
+               <br><br>
+               <p class="verbatim" id="sid-366">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-367">To: Andy&nbsp;Grove</p>
+               <p class="verbatim" id="sid-368">Subject: Re[2]: Pixar-3D&nbsp;graphics</p>
+               <p class="verbatim" id="sid-369">Date: October 1, 1995, 3:50&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-370">Andy,</p>
+               <p class="verbatim" id="sid-371">I have many faults, but one of them is not ingratitude. And, I&nbsp;do agree with you that “In the long run, these things balance&nbsp;out.”</p>
+               <br>
+               <p class="verbatim" id="sid-372">Therefore, I&nbsp;have changed my position 180 degrees - - we will freely help [Engineer 1] make his processors much better for 3D graphics. Please ask [Engineer 1] to call me, and we will arrange for a meeting as soon as the appropriate Pixar technical folks can be freed up from the&nbsp;film.</p>
+               <br>
+               <p class="verbatim" id="sid-373">Thanks for the clearer&nbsp;perspective.</p>
+               <p class="verbatim" id="sid-374">Steve</p>
+               <book-subpage-divider id="email-pixar-175-and-beyond" dtoc="Email to Pixar Employees: To $175M and beyond! (1996)"></book-subpage-divider>
+               <h1 id="sid-376">Email to Pixar&nbsp;Employees</h1>
+               <h2 id="sid-377">“To $175M and&nbsp;beyond!”</h2>
+               <p class="verbatim" id="sid-378">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-379">To: Pixar</p>
+               <p class="verbatim" id="sid-380">Subject: Toy Story Crosses $150M&nbsp;!!</p>
+               <p class="verbatim" id="sid-381">Date: January 2, 1996, 9:30&nbsp;a.m.</p>
+               <br>
+               <p class="verbatim" id="sid-382">Yesterday Toy Story crossed $150M in domestic box office receipts -- only 13 days after crossing $100M&nbsp;!!</p>
+               <br>
+               <p class="verbatim" id="sid-383">Toy Story was the undisputed blockbuster of the holiday season, topping all other films including Jumanji, Father of the Bride II, Waiting to Exhale and, of course, Balto. Toy Story may even surpass the current 1995 box office leaders, Batman Forever ($184M) and Apollo 13 ($172M), and become the most successful film of&nbsp;1995.</p>
+               <br>
+               <p class="verbatim" id="sid-384">Toy Story has already become the third most successful animated feature film of all time, topping all of Disney’s classics except “Aladdin” ($217M) and “The Lion King”&nbsp;($312M).</p>
+               <br>
+               <p class="verbatim" id="sid-385">To $175M and&nbsp;beyond!</p>
+               <br>
+               <p class="verbatim" id="sid-386">Congratulations&nbsp;team,</p>
+               <p class="verbatim" id="sid-387">Steve</p>
+               <book-subpage-divider id="interview-terry-gross-1996" dtoc="Interview with Terry Gross (1996)"></book-subpage-divider>
+               <h1 id="sid-389">Interview with Terry&nbsp;Gross</h1>
+               <h2 id="sid-390">“One of the things I&nbsp;always tried to coach myself on was not being afraid to&nbsp;fail.”</h2>
+               <h3 id="sid-391">In 1996, Steve and the <em>Fresh Air</em> radio host Terry Gross looked back on his time at Apple and ahead to the future of the computer industry. They spoke shortly after Pixar’s release of <em>Toy Story</em> and its successful initial public offering. NeXT, meanwhile, continued to&nbsp;struggle.</h3>
+               <p class="interview" id="sid-392"><em>Terry Gross:</em> How do you think that the web might change in the near future with the help of the type of software that you are producing&nbsp;now?</p>
+               <p class="interview" id="sid-393"><em>Steve Jobs:</em> I think most large companies and medium-size companies (and even small companies) are starting to look at the web as the ultimate direct-to-customer distribution chain, bypassing all middlemen, going directly from the supplier to the consumer. That’s a pretty powerful concept when you think about it. One of the things that I&nbsp;love is that a very small company, if they invest a lot in their website, can look just as formidable and just as solid on the web as a very large company can. As a matter of fact, some of the smaller companies are more hip on the web, getting more hip to the web sooner, and so they actually look better than some of the large companies do right now. It’s going to be this very leveling phenomenon, but I&nbsp;think a tremendous amount of goods and services is going to be sold, or at least the demand created for such things, over the&nbsp;web.</p>
+               <p class="interview" id="sid-394"><em>TG:</em> What else do you see in the near future for the web, besides the ability to shop in a more kind of complete way through the&nbsp;web?</p>
+               <p class="interview" id="sid-395"><em>SJ:</em> It’s not just shopping for goods and services. It’s shopping for information. I&nbsp;mean, you’re going to find out … Already, when I&nbsp;want to find out the movies that are playing around Silicon Valley, I&nbsp;just go up on the local web page and check it out. It’s a lot faster than going through the newspaper, and a lot faster than calling the theaters, et cetera. More and more, we’re shopping for information on the web. I&nbsp;just recently bought a Sony, one of the new Sony camcorders. I&nbsp;went on Sony’s web page, and I&nbsp;found out all about the ones they offer and picked the one I&nbsp;wanted right from that web page before I&nbsp;even called the store to try to find it physically. The demand to get me to buy that thing was created from Sony’s web page. I&nbsp;think we’re going to see more and more of that. You’re going to be buying information or finding information, and really making a lot of decisions about what you’re going to do with your life, or what you’re going to purchase, from the&nbsp;web.</p>
+               <p class="interview" id="sid-396"><em>TG:</em> Is the whole idea of going to the store to buy software going to become obsolete, too? Do you think we’ll be downloading our software from the&nbsp;web?</p>
+               <p class="interview" id="sid-397"><em>SJ:</em> Of course. Yeah, there’s no question about it. There’s no question that that will happen, and I&nbsp;think it will happen in the next twenty-four months. There’s some software right now that’s still very large. The web on-ramps and off-ramps to corporations are now very fast, but the off-ramps to the consumers’ homes are still not so fast. For buying large software, such as CD-ROM games and stuff, they’ll still be distributed on physical media for a while, but when the off-ramps to the consumer get faster, possibly with cable modems in the near future, then that could possibly go fully electronic as&nbsp;well.</p>
+               <p class="interview" id="sid-398"><em>TG:</em> Tell me what else you see for the web beyond the world of&nbsp;retail.</p>
+               <p class="interview" id="sid-399"><em>SJ:</em> There’s a lot of things happening with the web right now, in terms of allowing people access to information that they would just never have before. What this does is, of course, it lets special-interest groups get together. I&nbsp;know people who have had, as an example, a stroke, and have gotten on the web and found that there are several web pages now devoted to information for stroke victims where they can learn about some of the latest treatments. They can learn about avoidance, the latest in avoidance advice, and things like that. Those things didn’t exist before, as well.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-400"><em>TG:</em> Do you think that when you were ousted from Apple that people kind of wrote you off? I&nbsp;mean, here you are with these big successes&nbsp;now.</p>
+               <p class="interview" id="sid-401"><em>SJ:</em> Oh golly, I&nbsp;don’t know. I’m sure that a lot of people did, and that was fine. It was a very painful time, as you might&nbsp;imagine.</p>
+               <p class="interview" id="sid-402"><em>TG:</em> What, to be forced out of the company you&nbsp;created?</p>
+               <p class="interview" id="sid-403"><em>SJ:</em> Oh, of course. That was a very painful time, but you just march forward, and you try to learn from it. One of the things I&nbsp;always tried to coach myself on was not being afraid to fail. When you have something that doesn’t work out, a lot of times, people’s reaction is to get very protective about never wanting to fall on their face again. I&nbsp;think that’s a big mistake, because you never achieve what you want without falling on your face a few times in the process of getting there. I’ve tried to not be afraid to fail, and, matter of fact, I’ve failed quite a bit since leaving&nbsp;Apple.</p>
+               <p class="interview" id="sid-404"><em>TG:</em> Are you surprised at the problems Apple is having now, or did you see that&nbsp;coming?</p>
+               <p class="interview" id="sid-405"><em>SJ:</em> I try not to talk about Apple too much. What I&nbsp;will say is that the day I&nbsp;left Apple, we had a ten-year lead over Microsoft. In the technology business, a ten-year lead is really hard to come by. It happens, maybe a company has that once every few decades, whether it be Xerox or IBM with mainframes. Apple had that with the graphical user interface. The problem at Apple was that they stopped innovating. If you look at the Mac that ships today, it’s 25 percent different than the day I&nbsp;left, and that’s not enough for ten years and billions of dollars in&nbsp;R&D.</p>
+               <p id="sid-406">It wasn’t that Microsoft was so brilliant or clever in copying the Mac. It’s that the Mac was a sitting duck for ten years. That’s Apple’s problem, is that their differentiation evaporated. Unlike Compaq, or others who play in the Intel-Microsoft standard space, where they only … Compaq only has to be 5 percent better than its competitors for everyone to want to buy their&nbsp;computers.</p>
+               <p id="sid-407">Apple has to be 50 percent or 100 percent better, because when you buy something that is out of the mainstream a little bit, you take a risk, and you want a much bigger reward for taking that risk. […] That differentiation has not completely evaporated, but for the most part it has. That’s the predicament Apple’s in now. That’s why cost-cutting and other things at Apple are not going to be the cure. The cure for Apple is to innovate its way out of its current predicament. There’s a lot of good people left at Apple that are capable of doing that with the proper leadership, which is what’s been&nbsp;missing.</p>
+               <p class="interview" id="sid-408"><em>TG:</em> Some Mac users are afraid that the Mac operating system is in danger of becoming obsolete in the way that Beta video became obsolete because it was outdone by VHS. What do you&nbsp;think?</p>
+               <p class="interview" id="sid-409"><em>SJ:</em> I think with the appropriate leadership at Apple, that’s not going to happen, but I&nbsp;think we have to wait and&nbsp;see.</p>
+               <p class="interview" id="sid-410"><em>TG:</em> Do you care? How still involved, invested, do you feel in the future of Apple, the company you&nbsp;co-created?</p>
+               <p class="interview" id="sid-411"><em>SJ:</em> I’m happy every time a Mac gets shipped. I&nbsp;still have people sending me emails, telling me how much they love their Macs. It’s sort of … how do you explain it? It’s like the first person you were ever in love with. You know? It’s like your first love, and there will never be another one like it. In my case, we were together for ten years, and that’s a long time. But if you move on in your life, you can’t always stay in love with your first girlfriend. Right?&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-412"><em>TG:</em> What do you think the state of the computer would be if it weren’t for Apple? This is a chance, I&nbsp;guess, for a really self-serving answer. But, I&nbsp;mean, I’m really curious what you&nbsp;think.</p>
+               <p class="interview" id="sid-413"><em>SJ:</em> I usually believe that if one group of people didn’t do something, within a certain number of years, the times would produce another group of people that would accomplish similar things. We happened to be at the right place, at exactly the right time, with the right group of people. We did some wonderful work. I’m extraordinarily proud of the work that the team at Apple did when I&nbsp;was there. I&nbsp;think that, personally, our major contribution was a little different than some people might think. I&nbsp;think our major contribution was in bringing a liberal arts point of view to the use of&nbsp;computers.</p>
+               <p class="interview" id="sid-414"><em>TG:</em> Yeah, explain what you mean by&nbsp;that.</p>
+               <p class="interview" id="sid-415"><em>SJ:</em> What I&nbsp;mean by that is that if you really look at the ease of use of the Macintosh, the driving motivation behind that was to <span class="no-wrap">bring—</span>not only ease of use to people so that many, many more people could use computers for nontraditional things at that <span class="no-wrap">time—</span>but it was to bring beautiful fonts and typography to people. It was to bring graphics to people, not for plotting laminar flow calculations, but so that they could see beautiful photographs, or pictures, or artwork, et cetera, to help them communicate what they were doing, potentially. Our goal was to bring a liberal arts perspective and a liberal arts audience to what had traditionally been a very geeky technology and a very geeky&nbsp;audience.</p>
+               <p class="interview" id="sid-416"><em>TG:</em> What made you think that that more liberal arts direction was the direction to head&nbsp;in?</p>
+               <p class="interview" id="sid-417"><em>SJ:</em> Because in my perspective, and the way I&nbsp;was raised, was that science and computer science is a liberal art. It’s something that everyone should know how to use, at least, and harness in their life. It’s not something that should be relegated to 5 percent of the population over in the corner. It’s something that everybody should be exposed to, everyone should have a mastery of, to some extent, and that’s how we viewed computation, or these computation&nbsp;devices.</p>
+               <p class="interview" id="sid-418"><em>TG:</em> And you think that concept really caught on in the whole industry,&nbsp;eventually?</p>
+               <p class="interview" id="sid-419"><em>SJ:</em> That’s the seed of Apple: computers for the rest of us. I&nbsp;think the liberal arts point of view still lives at Apple. I’m not so sure that it lives that many other places. I&nbsp;mean, one of the reasons I&nbsp;think Microsoft took ten years to copy the Mac was because they didn’t really get it at its&nbsp;core.</p>
+               <p class="interview" id="sid-420"><em>TG:</em> Do you think the PC, as we know it, is on the road of&nbsp;changing?</p>
+               <p class="interview" id="sid-421"><em>SJ:</em> That’s a really big question. I&nbsp;think the PC as we know it is going to be around for quite some time, but the heart of the question is, are we entering a time window where we might see the first successful post-PC devices? Personal digital assistants, or PDAs, attempted to be that and&nbsp;failed.</p>
+               <p id="sid-422">The next attempt, I&nbsp;think, is going to be these very low-cost consumer internet appliances. Can somebody make a three-hundred-dollar box that hooks up to your television on one side and maybe hooks up to ISDN or a cable modem on the other side and allows you for, three hundred dollars, to have a web browser on your TV and to access the entire internet? I&nbsp;think that’s entirely possible, and I&nbsp;think that we’re going to see those devices soon, hopefully some innovative marketing and distribution techniques surrounding those devices so that a lot of people can all of a sudden have an internet browser in their living room. I&nbsp;think that’s going to be very exciting, and I&nbsp;think that could be the beginning of the first real post-PC&nbsp;market.</p>
+               <p class="interview" id="sid-423"><em>TG:</em> I know at Apple there was, at least early on, a very informal, non-corporate type of atmosphere. I&nbsp;wonder if there are any lessons you learned about what worked and didn’t work in the corporate lifestyle at Apple that you’ve applied to your current companies, NeXT and&nbsp;Pixar.</p>
+               <p class="interview" id="sid-424"><em>SJ:</em> Well, I&nbsp;don’t know what a corporate lifestyle is. I&nbsp;mean, Apple was a corporation; we were very conscious of that. We were very driven to make money so that we could continue to invest in the things we loved. I&nbsp;would say Apple was a corporate lifestyle, but it had a few very big differences to other corporate lifestyles that I’d seen. The first one was a real belief that there wasn’t a hierarchy of ideas that mapped onto the hierarchy of the organization. In other words, great ideas could come from anywhere and that we better sort of treat people in a much more egalitarian sense, in terms of where the ideas came&nbsp;from.</p>
+               <p id="sid-425">And Apple was a very bottoms-up company when it came to a lot of its great ideas. And we hired truly great people and gave them the room to do great work. A lot of <span class="no-wrap">companies—</span>I know it sounds <span class="no-wrap">crazy—</span>but a lot of companies don’t do that. They hire people to tell them what to do. We hired people to tell us what to do. We figured we’re paying them all this money, their job is to figure out what to do and tell us. And that led to a very different corporate culture, and one that’s really much more collegial than&nbsp;hierarchical.</p>
+               <p class="interview" id="sid-426"><em>TG:</em> In spite of this kind of different approach to the corporate hierarchy, it was probably still a very high-stress&nbsp;place.</p>
+               <p class="interview" id="sid-427"><em>SJ:</em> Well, we were very young, and most of the folks were not married, and so they could work fifteen-hour days. You didn’t have a typical situation where you worked so that you can support your life. Your work was your life, in many&nbsp;cases.</p>
+               <p class="interview" id="sid-428"><em>TG:</em> Right. Do you feel you’ve changed from that? Is that still your&nbsp;life?</p>
+               <p class="interview" id="sid-429"><em>SJ:</em> I feel it is still my life, but it’s not all my life. It’s less of a percentage, but I&nbsp;still don’t really … I’ve never been able to think of my work and my life as different things. They’re the same thing. Where it used to be 99 percent of my life, it’s maybe 50 percent of my life&nbsp;now.</p>
+               <book-subpage-divider id="email-next-white-house" dtoc="Email to NeXT colleagues: White House (1996)"></book-subpage-divider>
+               <h1 id="sid-431">Email to NeXT&nbsp;Colleagues</h1>
+               <h2 id="sid-432">“White&nbsp;House”</h2>
+               <p class="verbatim" id="sid-433">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-434">To: [NeXT&nbsp;Colleagues]</p>
+               <p class="verbatim" id="sid-435">Subject: White&nbsp;House</p>
+               <p class="verbatim" id="sid-436">Date: April 2, 1996, 4:17&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-437">I am sending you this email from the White House&nbsp;!!</p>
+               <br>
+               <p class="verbatim" id="sid-438">Steve</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1985–1996-07" id="sid-439" theme="black">
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <snap-start id="snap-44"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-440" credit="Photo by Barbara Kinney courtesy SJA" alt="Steve’s vintage slide rule sits next to its brown leather case." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-441">
+                        <img id="photo-47" class="portrait p-2" width="928" height="1500" src="icons/placeholder_image.svg" alt="Steve’s vintage slide rule sits next to its brown leather case." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Steve’s slide rule. He was born before the electronic&nbsp;calculator.</figcaption>
+               </figure>
+               <snap-start id="snap-45"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-442" credit="Photo by Diane Cook and Len Jenshel / Contour RA / via Getty Images, 1996" alt="Steve stands against the white garage door of the house where Apple started in 1976. The house number reads 2066." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-443">
+                        <img id="photo-59" class="landscape p-2" width="1500" height="995" src="icons/placeholder_image.svg" alt="Steve stands against the white garage door of the house where Apple started in 1976. The house number reads 2066." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>1996: At his childhood home, where Apple was&nbsp;founded.</figcaption>
+               </figure>
+               <snap-start id="snap-46"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-444" credit="Photo by Ben Blackwell courtesy SJA" alt="A typed page from a speech at Palo Alto High School, with handwritten notes strewn across the bottom in blue ink." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-445">
+                        <img id="photo-24" class="portrait p-2" width="1155" height="1500" src="icons/placeholder_image.svg" alt="A typed page from a speech at Palo Alto High School, with handwritten notes strewn across the bottom in blue ink." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>Steve’s&nbsp;notes&nbsp;on&nbsp;his&nbsp;speech at&nbsp;Palo&nbsp;Alto&nbsp;High&nbsp;School.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-47"></snap-start>
+               <snap-end></snap-end>
+         <div class="book-page" subchapter="1985–1996-08" id="speech-palo-alto" theme="white" dtoc="Speech at Palo Alto High School (1996)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-447">Speech at Palo Alto High&nbsp;School</h1>
+               <h2 id="sid-448">“What you follow with your heart will indeed come back to make your life much&nbsp;richer.”</h2>
+               <h3 id="sid-449">Steve spoke at the Palo Alto High School graduation in June&nbsp;1996.</h3>
+               <p id="sid-450">I have been invited here today to address you as you leave high school, and in most cases your parents, too, to venture out into the world on your own. I&nbsp;am supposed to offer you some wisdom and advice that you may remember along your&nbsp;travels.</p>
+               <p id="sid-451">I will address my remarks to you, the students, rather than to your parents. It is proper that I&nbsp;do so, being that the only wisdom I&nbsp;have comes from my advanced age; your parents are as old as I&nbsp;am, and much wiser, I&nbsp;am&nbsp;sure.</p>
+               <p id="sid-452">However, I&nbsp;am wiser than you, and maybe you will listen to me more than you listen to your parents. Some of your parents may not agree, or agree fully, with what I&nbsp;will say today. This is OK. I&nbsp;will simply be one of the first in your post-high-school life to fill your head with ideas that they disagree with. Wait until you get to college! But, in any event, if there is any discordance between what they have told you and what you hear from me today, rest assured that I&nbsp;am&nbsp;right.</p>
+               <p id="sid-453">Be aware of the world’s magical, mystical, and artistic sides. The most important things in life are not the goal-oriented, materialistic things that everyone and everything tries to convince you to strive for. Most of you know that deep inside. Think back on this <span class="no-wrap">spring—</span>the last three or four <span class="no-wrap">months—</span>when you are winding down high school, know where you are going next year, and begin to really have strong intuitions about the world you will encounter. Maybe you see an image of yourself in Paris, sculpting in an artist’s studio as the setting sun shines in the paned windows. Maybe you’re in India, running a hospital for poor children, and you hear the distant clatter of the outdoor marketplace in the early morning. Maybe you see yourself in a recording studio laying down a track for your album. Maybe you see yourself alone in a rented room at 4:30 in the morning being the only person alive to understand a new law of physics you just figured&nbsp;out.</p>
+               <p id="sid-454">Whatever it may be, I&nbsp;bet many of you have had some of these intuitive feelings about what you could do with your lives. These feelings are very real, and if nurtured can blossom into something wonderful and magical. A good way to remember these kinds of intuitive feelings is to walk alone near <span class="no-wrap">sunset—</span>and spend a lot of time looking at the sky in general. We are never taught to listen to our intuitions, to develop and nurture our intuitions. But if you do pay attention to these subtle insights, you can make them come&nbsp;true.</p>
+               <p id="sid-455">People will come at you with reasons why you shouldn’t do these&nbsp;things:</p>
+               <p id="sid-456">You can’t make a living writing songs. (Right, just ask Bob&nbsp;Dylan.)</p>
+               <p id="sid-457">Helping children in India is nice, but you need to prepare for real life. (Just ask Mother&nbsp;Teresa.)</p>
+               <p id="sid-458">You could be doing so much more with your life. (You can hear Albert Einstein’s parents encouraging him to get a real job, when he was working a low-level job in the Swiss patent office rather than teaching in a university, so that he could stay up late at night working through his new&nbsp;ideas.)</p>
+               <p id="sid-459">If you don’t have any of these feelings, called dreams, then you’re in trouble. Before you “spend” four or more years of your life going in a direction your heart may or may not want you to go, you need to recapture&nbsp;them.</p>
+               <p id="sid-460">Be a creative person. Creativity equals connecting previously unrelated experiences and insights that others don’t&nbsp;see.</p>
+               <p id="sid-461">You have to have them to connect them. Creative people feel guilty that they are simply relaying what they “see.” How do you get a more diverse set of experiences? Not by traveling the same path as everyone else&nbsp;…</p>
+               <p id="sid-462">I’ll give you an example. The college I&nbsp;went to was a small liberal arts college in Portland, Oregon, named Reed College. It was, at that time, the center of a calligraphy revival movement in the US. I&nbsp;ended up taking a calligraphy course before I&nbsp;left college, and at the age of eighteen was exposed to a totally new world of typography, graphic layout, font design, and the like. There was no hope of earning any income from this skill or knowledge, and some of my friends derided me for wasting my time and talents on learning how to write with “fancy&nbsp;letters.”</p>
+               <p id="sid-463">However, years later, when we were designing the Macintosh, it was this very same experience and set of insights which drove me to insist that we find a way to use proportionally spaced type and offer a range of <span class="no-wrap">fonts—</span>in essence, to bring a much richer world of typography to the computer world than had ever existed before. And this also led to the LaserWriter printer, so that one could print these letterforms with the quality they deserved. And this set the stage for “desktop publishing.” I&nbsp;tell you truly: none of this would have ever happened at Apple if I&nbsp;had sacrificed that calligraphy class for a more “substantive” class of economics or&nbsp;engineering.</p>
+               <p id="sid-464">So to be a creative person, you need to “feed” or “invest” in yourself by exploring uncharted paths that are outside the realm of your past experience. Seek out new dimensions of <span class="no-wrap">yourself—</span>especially those that carry a romantic&nbsp;scent.</p>
+               <p id="sid-465">But one has no way of knowing which of these paths will lead anywhere in advance. That’s the wonderful thing about it, in a way. The only thing one can do is to believe that some of what you follow with your heart will indeed come back to make your life much richer. And it will. And you will gain an ever firmer trust in your instincts and&nbsp;intuition.</p>
+               <p id="sid-466">Don’t be a career. The enemy of most dreams and intuitions, and one of the most dangerous and stifling concepts ever invented by humans, is the “Career.” A career is a concept for how one is supposed to progress through stages during the training for and practicing of your working&nbsp;life.</p>
+               <p id="sid-467">There are some big problems here. First and foremost is the notion that your work is different and separate from the rest of your life. If you are passionate about your life and your work, this can’t be so. They will become more or less one. This is a much better way to live one’s&nbsp;life.</p>
+               <p id="sid-468">[The] risk factor quotient goes down as you encounter the real world. Many [people] find what they believe to be safe harbors (lawyers and accountants), only to wake up ten or fifteen years later and discover the price they&nbsp;paid.</p>
+               <p id="sid-469">Make your avocation your vocation. Make what you love your&nbsp;work.</p>
+               <p id="sid-470">The journey is the reward. People think that you’ve made it when you’ve gotten to the end of the rainbow and got the pot of gold. But they’re wrong. The reward is in the crossing the rainbow. That’s easy for me to <span class="no-wrap">say—</span>I got the pot of gold (literally). But if you get to the pot of gold, you already know that that’s not the reward, and you go looking for another rainbow to&nbsp;cross.</p>
+               <p id="sid-471">Think of your life as a rainbow arcing across the horizon of this world. You appear, have a chance to blaze in the sky, then you&nbsp;disappear.</p>
+               <p id="sid-472">The two endpoints of everyone’s rainbow are birth and death. We all experience both completely alone. And yet, most people of your age have not thought about these events very much, much less even seen them in others. How many of you have seen the birth of another human? It is a miracle. And how many of you have witnessed the death of a human? It is a mystery beyond our comprehension. No human alive knows what happens to “us” upon or after our death. Some believe this, others that, but no one really knows at all. Again, most people of your age have not thought about these events very much, and it’s as if we shelter you from them, afraid that the thought of mortality will somehow wound you. For me it’s the opposite: to know my arc will fall makes me want to blaze while I&nbsp;am in the sky. Not for others, but for myself, for the trail I&nbsp;know I&nbsp;am&nbsp;leaving.</p>
+               <p id="sid-473">Now, as you live your arc across the sky, you want to have as few regrets as possible. Remember, regrets are different from mistakes. Mistakes are those things that you did and wish you could do over again. In some you were a fool (usually concerning women). In others you were scared. In others you hurt someone else. Some mistakes are deep, others not. But if your intent was pure, they are almost always enriching in some way. So mistakes are things that you did and wish you could do over&nbsp;again.</p>
+               <p id="sid-474">Regrets are most often things you didn’t do, and wish you did. I&nbsp;still regret not kissing Nancy Kinniman in high school. Who knows what might have happened? Maybe she regrets it too&nbsp;…</p>
+               <book-subpage-divider id="interview-about-pixar" dtoc="Interview About Pixar (1996)"></book-subpage-divider>
+               <h1 id="sid-476">Interview about&nbsp;Pixar</h1>
+               <h2 id="sid-477">“To put these stories into the culture … is a rare&nbsp;opportunity.”</h2>
+               <h3 id="sid-478">On November 22, 1996, Steve discussed leading Pixar, his strategy for the studio’s future, and the privilege of creating stories for future&nbsp;generations.</h3>
+               <p class="interview" id="sid-479"><em>Q:</em> What kinds of things did you need to do, both personally (learning to become a filmmaker) and as a businessman, to put the company where it is&nbsp;today?</p>
+               <p class="interview" id="sid-480"><em>Steve Jobs:</em> Well, Pixar is a studio. I’m not a filmmaker. I&nbsp;don’t direct our films. […] What I&nbsp;try to do is help create the environment where all these incredible people can make films. We’ve got a really unique thing in the industry, in that the very best creative people will only go to work at a few places: Disney, Pixar, possibly DreamWorks. In the same sense, the very best computer scientists in computer graphics will only go to work at a few places. Pixar is one of those, but most of the studios are not because they don’t have [our] level of technical culture there. I&nbsp;think Pixar is the only place in the world that can hire the best from both of these areas. And we’ve worked for ten years to figure out a way to have them all work together, which is not easy, because the Hollywood culture and the Silicon Valley culture are really different. We think we’ve picked the best from both.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-481"><em>Q:</em> I’ve heard that there are no contracts at Pixar, and that’s different than a lot of Hollywood productions. What’s the philosophy behind&nbsp;that?</p>
+               <p class="interview" id="sid-482"><em>SJ:</em> In this blending of [cultures], one of the things that we encountered was that the Hollywood culture and the Silicon Valley culture each use different models of employee retention. Hollywood uses the stick, which is the contract. And Silicon Valley uses the carrot, which is the stock option. We examined both of those in really pretty great detail: economically, but also sort of psychologically and culture-wise. What kind of culture do you end up&nbsp;with?</p>
+               <p id="sid-483">And while there’s a lot of reasons to want to lock down your employees for the duration of a film, because if somebody leaves, you know you’re at risk, those same dangers exist in Silicon Valley. During an engineering project, you don’t want to lose people, and yet [Silicon Valley] managed to evolve another system other than contracts. And we prefer the Silicon Valley model in this case: give people stock in the company so that we all have the same goal, which is to create shareholder&nbsp;value.</p>
+               <p id="sid-484">But [not having contracts] also makes us constantly worry about making Pixar the greatest company we can, so that nobody would ever want to leave. When you sign a contract with somebody, you can sort of say, “Well, I&nbsp;don’t have to worry about that person for five years.” You know? And if you’re real sophisticated, you’ll have a little database that tickles you six months before their contract’s up so you can start paying them more attention. And they’re the most important person in the world for six months, and then after they sign up again, you put them in a&nbsp;drawer.</p>
+               <p id="sid-485">Our system’s a little different than that. Every single day we worry about how we can make Pixar a better company so that nobody will ever want to leave, and so we don’t take anybody for granted. Because if they don’t want to be at Pixar, then probably they should leave <span class="no-wrap">anyway—</span>whether or not they would ever have a contract.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-486"><em>SJ:</em> In technology, and at Pixar on the creative side, you’ve got incredibly talented people who are also rare and in demand. If you don’t treat them right, they can go get another job in ten minutes.&nbsp;Right?</p>
+               <p id="sid-487">So a strange thing happens: the hierarchy of power sort of inverts, and the CEO is actually at the bottom. I&nbsp;sort of feel like I&nbsp;work for most of these people because they’re the ones that are doing all the brilliant&nbsp;work.</p>
+               <p id="sid-488">And it’s the same in software. It’s the same thing. The best people are very hard to come by, and so it’s management’s job to support them because they’re on the front lines doing the work.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-489"><em>Q:</em> How is your relationship with Pixar different than Louis B. Mayer or some of the great studio heads who may not have been directors or producers themselves, but who certainly had a great deal to do with what was&nbsp;done?</p>
+               <p class="interview" id="sid-490"><em>SJ:</em> Well, we’re a small studio, and so we don’t want to let any of this go to our&nbsp;heads.</p>
+               <p id="sid-491">What we’re trying to do is to build a great animation studio. We stay very focused on that. The other great animation studio is, of course, Disney. And they’ve done an incredible job. Feature animation is really at the heart of Disney; they’ve created all the character franchises that really breathe life into the theme parks. And if you look at where [Disney’s] profits come from, a tremendous amount of it is dependent on feature animation, as are the theme&nbsp;parks.</p>
+               <p id="sid-492">What we’re doing is just a pure play to build a feature animation studio. My role is to try to understand the pieces we need to put in place to do that, to work with everybody to attract and retain the people to do that, and to get a clear strategy in place. And [I] help with the relationships with Disney and other&nbsp;people.</p>
+               <p id="sid-493">I enjoy it tremendously. We’ve got an incredible collection of people at Pixar, so I&nbsp;learn a lot. I&nbsp;learn a lot.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-494"><em>SJ:</em> I like to get in there and help where I&nbsp;can. But my greatest joy is when we have people that are much better than I&nbsp;am at something, so I&nbsp;can forget about it, and not worry about it, and get on to something else where I&nbsp;can help.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-495"><em>SJ:</em> Making an animated film is entirely different than making a live-action film. When you make a live-action film, a director typically shoots between ten and twenty-five times as much footage as will end up on the screen. They take that into the editing room and they build their film. And hopefully they can do a good job, because if they can’t, it’s too <span class="no-wrap">late—</span>the actors are gone, the sets are&nbsp;down.</p>
+               <p id="sid-496">Walt Disney realized many decades ago that animation was so expensive that you couldn’t afford to animate ten times more than what you need. Matter of fact, you don’t want to animate even 10 percent more than what you need. And therefore, the only conclusion you can come to is, you have to edit your film before you make it. Disney pioneered a lot of techniques for doing that, and they’ve refined those over the last sixty&nbsp;years.</p>
+               <p id="sid-497">Working with Disney gave us access to that wisdom that you can’t buy for love or money: the wisdom and experience of having made tens of feature animated films. And I&nbsp;think we learned a tremendous amount.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-498"><em>SJ:</em> Ten years ago, when we made the landmark short film <em>Luxo Jr.</em>, it took about three hours on average to render each frame. Fast-forward to today. Computers are a hundred times faster, and yet in <em>Toy Story</em> it took three hours on average to render each frame. And the reason was the frames were a hundred times more complex in many&nbsp;cases.</p>
+               <p id="sid-499">And we’re throwing between five and ten times more computer power at our second feature film, code name <em>Bugs</em>, than we did at <em>Toy Story</em>. And it’ll still take three hours to render each frame. Our ambitions visually are growing as fast as the technology can feed them. And so I&nbsp;think the visual worlds which we’ll be able to create will be much richer over&nbsp;time.</p>
+               <p id="sid-500">On the creative side, though, I&nbsp;think the art of storytelling is very old. And no amount of technology can turn a bad story into a good story. […] Storytelling is a real art, and that’s something that we’re always going to be working on very, very hard. I&nbsp;don’t think it’s changed in a long time, and I’m not sure it will. And I&nbsp;don’t think it’s something that the technology has anything to do with.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-501"><em>SJ:</em> You can hardly find an Apple II around too much anymore. You still can in the schools, but that’s about it. It’s not clear whether you’ll be able to boot up a Macintosh five years from now or not. All these technology boxes and all this software: it has a life of a year or two, if you’re very lucky. If it has a life of five years, it’s extraordinary. And every once in a while, something has a life of ten to fifteen <span class="no-wrap">years—</span>and I’ve been lucky to be associated with a few of those products as well. But sooner or later, they all become part of the sedimentary layer that is the foundation for new&nbsp;innovation.</p>
+               <p id="sid-502">[By contrast] Disney released its first animated feature film, <em>Snow White</em>, in 1937. That’s sixty years ago. A few years ago, they rereleased it on video and sold 28 million copies, making probably around a quarter billion dollars of <span class="no-wrap">profits—</span>sixty years after its initial&nbsp;release!</p>
+               <p id="sid-503">And I&nbsp;have a young son. We got <em>Snow White</em>, and he loved it. He watched it thirty, forty times. And it really struck me that I&nbsp;know people on most of the continents of this world, and I&nbsp;think everyone I&nbsp;know knows the story of <em>Snow White</em>. I&nbsp;don’t think I&nbsp;know one person who hasn’t seen&nbsp;it.</p>
+               <p id="sid-504">Watching my son watch this, it really hit me that these stories renew themselves with each generation of young children. You read Joseph Campbell; these are our myths. Here’s something that’s sixty years old that’s regenerating itself in my son and other young&nbsp;children.</p>
+               <p id="sid-505">And I&nbsp;think people are going to be watching <em>Toy Story</em> in sixty years. Not because of the computer graphics, but because of the story about friendship. And that’s something really amazing to me, something very different than the industry I&nbsp;worked in in the&nbsp;past.</p>
+               <p id="sid-506">To have the opportunity to put these stories into the culture like this, if we can work really hard and be lucky again and again, is a rare opportunity. And I&nbsp;think everybody at Pixar feels really, really privileged to have this&nbsp;opportunity.</p>
+               <book-subpage-divider id="email-pixar-waltz" dtoc="Email to Pixar Employees: Pixar Holiday Waltz (1996)"></book-subpage-divider>
+               <h1 id="sid-508">Email to Pixar&nbsp;Employees</h1>
+               <h2 id="sid-509">“The Pixar Holiday&nbsp;Waltz”</h2>
+               <p class="verbatim" id="sid-510">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-511">To: Pixar</p>
+               <p class="verbatim" id="sid-512">Subject: Pixar Holiday&nbsp;Waltz</p>
+               <p class="verbatim" id="sid-513">Date: December 12, 1996, 4:03&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-514">I am told that around 40 of us are feeling uncomfortable coming to the Pixar Holiday Waltz because we don’t have a guest or because we feel it’s a “hoity toity*” affair that does not reflect “who we&nbsp;are.”</p>
+               <br>
+               <p class="verbatim" id="sid-515">I think very few of us belong to the waltz crowd, nor often attend formal affairs like this (my last waltz was ten years ago). That’s exactly why this promises to be so much fun – it’s a chance to see ourselves and our colleagues in a strange costume (tuxedo) doing a totally foreign activity (waltzing). This may be your last chance during this lifetime to see your favorite TD trying to dance in a&nbsp;tuxedo.</p>
+               <br>
+               <p class="verbatim" id="sid-516">As for being single, all I&nbsp;can say is that cutting in on a lovely lady or elegant gentleman during a waltz is considered proper and flattering. You might also enjoy the food, music, friends and&nbsp;ambience.</p>
+               <br>
+               <p class="verbatim" id="sid-517">I do hope those of you not planning to attend reconsider joining your friends and colleagues at our Pixar Holiday Waltz. We will miss you if you don’t come. What do you have to lose? You just might love&nbsp;it.</p>
+               <br>
+               <p class="verbatim" id="sid-518">Steve</p>
+               <br>
+               <p class="verbatim" id="sid-519">*hoity-toity adj&nbsp;(1690)</p>
+               <p class="verbatim" id="sid-520">1: thoughtlessly silly or frivolous:&nbsp;FLIGHTY</p>
+               <p class="verbatim" id="sid-521">2: marked by an air of assumed&nbsp;importance:</p>
+               <p class="verbatim" id="sid-522">HIGHFALUTIN</p>
+            </div>
+         </div>
+         <div class="book-page" subchapter="1985–1996-09" id="sid-523" theme="black">
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <snap-start id="snap-48"></snap-start>
+               <snap-end></snap-end>
+               <figure id="sid-524" credit="© Pixar, 1996" alt="A ticket to the event on December 14, 1996, illustrated with a tuxedoed man waltzing with a woman in a flowing gown." class="photo-count-1">
+                  
+                  <image-set>
+                     <picture id="sid-525">
+                        <img id="photo-25" class="portrait p-2" width="626" height="1500" src="icons/placeholder_image.svg" alt="A ticket to the event on December 14, 1996, illustrated with a tuxedoed man waltzing with a woman in a flowing gown." loading="eager">
+                     </picture>
+                  </image-set>
+                  <figcaption>A staff invitation to the Pixar Holiday&nbsp;Waltz.</figcaption>
+               </figure>
+            </div>
+         </div>
+         <snap-start id="snap-49"></snap-start>
+               <snap-end></snap-end>
+         <div class="book-page" subchapter="1985–1996-10" id="interview-company-of-giants" theme="white" dtoc="Interview for In the Company of Giants (1997)">
+            
+            <nav-occluder></nav-occluder>
+            <div class="page-content">
+               <h1 id="sid-527">Interview&nbsp;for&nbsp;<em>In&nbsp;the Company&nbsp;of&nbsp;Giants</em></h1>
+               <h2 id="sid-528">“The worst thing that someone can do in an interview is to agree with&nbsp;me.”</h2>
+               <h3 id="sid-529">In the 1990s, when Steve was running NeXT and Pixar, two Stanford Business School students won a lunch with him at a charity auction. They later interviewed him for a book profiling business leaders in&nbsp;technology.</h3>
+               <p class="interview" id="sid-530"><em>Steve Jobs:</em> You’d better have great people, or you won’t get your product to market as fast as possible. Or you might get a product to market really fast, but it will be really clunky and nobody will buy it. There are no shortcuts around quality, and quality starts with people. Maybe shortcuts exist, but I’m not smart enough to have ever found&nbsp;any.</p>
+               <p id="sid-531">I spend 20 percent of my time recruiting, even now. I&nbsp;spend a day a week helping people recruit. It’s one of the most important things you can&nbsp;do.</p>
+               <p class="interview" id="sid-532"><em>Q:</em> If finding the A players is so important, how can you tell who is an A player and who&nbsp;isn’t?</p>
+               <p class="interview" id="sid-533"><em>SJ:</em> That’s a very hard question. Ultimately there are two paths. If a candidate has been in the workplace for a while, you have to look at the results. There are people who look so good on paper and talk such a good story but have no results behind them. They can’t point to breakthroughs or successful products that they shipped and played an integral part in. Ultimately the results should lead you to the people. As a matter of fact, that’s how I&nbsp;find great people. I&nbsp;look at great results and I&nbsp;find out who was responsible for&nbsp;them.</p>
+               <p id="sid-534">However, sometimes young people haven’t had the opportunity yet to be in a position of influence to create such results. So here you must evaluate potential. It’s certainly more difficult, but the primary attributes of potential are intelligence and the ability to learn quickly. Much of it is also drive and <span class="no-wrap">passion—</span>hard work makes up for a&nbsp;lot.</p>
+               <p id="sid-535">When you recruit, you’re rolling the dice. No matter what, you’re rolling the dice because you’ve only got an hour to assess the candidate. The most time I&nbsp;spend with somebody is an hour, and I&nbsp;must then recommend whether we hire the person or not. Others will recommend, too, so I&nbsp;won’t be the only one, but I’ll still have to throw my vote in the&nbsp;hat.</p>
+               <p id="sid-536">Ultimately it comes down to your gut feeling. Your gut feeling gets refined as you hire more people and see how they do. Some you thought would do well don’t, and you can sense why. If you study it a bit you might say, “I thought this person was going to do well, but I&nbsp;overlooked this aspect,” or, “I didn’t think this person would do well, but they did and here’s why.” As you hire people over time, your gut instinct gets better and more&nbsp;precise.</p>
+               <p id="sid-537">Over time, my digging in during an interview gets more precise. For example, many times in an interview I&nbsp;will purposely upset someone: I’ll criticize their prior work. I’ll do my homework, find out what they worked on and say, “God, that really turned out to be a bomb. That really turned out to be a bozo product. Why did you work on that?” I&nbsp;shouldn’t say this in your book, but the worst thing that someone can do in an interview is to agree with me and knuckle&nbsp;under.</p>
+               <p id="sid-538">What I&nbsp;look for is for someone to come right back and say, “You’re dead wrong and here’s why.” I&nbsp;want to see what people are like under pressure. I&nbsp;want to see if they just fold or if they have firm conviction, belief, and pride in what they did. It’s also good every once in a while to really piss somebody off in an interview to see how they react because, if your company is a meritocracy of ideas, with passionate people, you have a company with a lot of arguments. If people can’t stand up and argue well under pressure, they may not do well in such an environment.&nbsp;<mark class="snip">&#9986;</mark></p>
+               <p class="interview" id="sid-539"><em>Q:</em> What do you think your weaknesses are when it comes to&nbsp;management?</p>
+               <p class="interview" id="sid-540"><em>SJ:</em> I don’t know. People are package deals; you take the good with the confused. In most cases, strengths and weaknesses are two sides of the same coin. A strength in one situation is a weakness in another, yet often the person can’t switch gears. It’s a very subtle thing to talk about strengths and weaknesses because almost always they’re the same&nbsp;thing.</p>
+               <p id="sid-541">My strength probably is that I’ve always viewed technology from a liberal arts perspective, from a human culture perspective. As such, I’ve always pushed for things that pulled technology in those directions by bringing insights from other fields. An example of that would <span class="no-wrap">be—</span>with the <span class="no-wrap">Macintosh—</span>desktop publishing: its proportionately spaced fonts, its ease of use. All of the desktop publishing stuff on the Mac comes from books: the typography, that rich feel that nobody in computers knew anything about. I&nbsp;think that my other strength is that I’m a pretty good judge of people and have the ability to bring people together around common&nbsp;vision.</p>
+               <p class="interview" id="sid-542"><em>Q:</em> Well then, when are your <span class="no-wrap">strengths—</span>judgment of character and liberal arts <span class="no-wrap">perspective—</span>your&nbsp;weaknesses?</p>
+               <p class="interview" id="sid-543"><em>SJ:</em> In certain cases, my weaknesses are that I’m too idealistic. [I need to] realize that sometimes best is the enemy of better. Sometimes I&nbsp;go for “best” when I&nbsp;should go for “better,” and end up going nowhere or backwards. I’m not always wise enough to know when to go for the best and when to just go for&nbsp;better.</p>
+               <p id="sid-544">Sometimes I’m blinded by “what could be” versus “what is possible,” doing things incrementally versus doing them in one fell swoop. Balancing the ideal and the practical is something I&nbsp;still must pay attention&nbsp;to.</p>
+               <p class="interview" id="sid-545"><em>Q:</em> In terms of going for the best, you have a widely held reputation of being extremely <span class="no-wrap">charismatic—</span>someone who is always able to draw out the best in other people. How have you been able to motivate your&nbsp;employees?</p>
+               <p class="interview" id="sid-546"><em>SJ:</em> Well, I&nbsp;think <span class="no-wrap">that—</span>ultimately, it’s the work that motivates people. I&nbsp;sometimes wish it were me, but it’s not. It’s the work. My job is to make sure the work is as good as it should be and to get people to stretch beyond their best. But it’s ultimately the work that motivates people. That’s what binds them&nbsp;together.</p>
+               <p class="interview" id="sid-547"><em>Q:</em> Yet in the case of the Macintosh, you got tremendous output from people. Regardless of the type of work, not everybody can elicit that type of&nbsp;commitment.</p>
+               <p class="interview" id="sid-548"><em>SJ:</em> Well, I’m not sure I’d chalk that up to charisma. Part of the CEO’s job is to cajole and beg and plead and threaten at <span class="no-wrap">times—</span>to do whatever is necessary to get people to see things in a bigger and more profound way than they have, and to do better work than they thought they could&nbsp;do.</p>
+               <p id="sid-549">When they do their best and you don’t think it’s enough, you tell them straight: “This isn’t good enough. I&nbsp;know you can do better. You need to do better. Now go do&nbsp;better.”</p>
+               <p id="sid-550">You must play those cards carefully. You must be right a lot of the time because you’re messing with people’s lives. But that’s part of the job. In the end, it’s the environment you create, the coworkers, and the work that binds. The Macintosh team, if you talk to most of <span class="no-wrap">them—</span>a dozen years since we shipped the <span class="no-wrap">product—</span>most will still say that working on the Mac was the most meaningful experience of their lives. If we’d never shipped a product they wouldn’t say that. If the product hadn’t been so good they wouldn’t say that. The Macintosh experience wasn’t just about going to camp with a bunch of fun people. It wasn’t just a motivational speaker. It was the product that everybody put their heart and soul into, and it was the product that expressed their deep appreciation, somehow, for the world to&nbsp;see.</p>
+               <p id="sid-551">So, in the end, it’s the work that binds. That’s why it’s so important to pick very important things to do because it’s very hard to get people motivated to make a breakfast cereal. It takes something that’s worth&nbsp;doing.</p>
+               <book-subpage-divider id="email-pixar-apple-next" dtoc="Email to Pixar Employees: Apple Acquires NeXT (1996)"></book-subpage-divider>
+               <h1 id="sid-553">Email to Pixar&nbsp;Employees</h1>
+               <h2 id="sid-554">“Apple Acquires&nbsp;NeXT.”</h2>
+               <p class="verbatim" id="sid-555">From: Steve&nbsp;Jobs</p>
+               <p class="verbatim" id="sid-556">To: Pixar</p>
+               <p class="verbatim" id="sid-557">Subject: Apple Acquires&nbsp;NeXT</p>
+               <p class="verbatim" id="sid-558">Date: December 20, 1996, 9:24&nbsp;p.m.</p>
+               <br>
+               <p class="verbatim" id="sid-559">Today Apple announced that it is acquiring NeXT! This is great for Apple -- it gives them a very advanced object-oriented operating system, OpenStep, that can leapfrog Microsoft&nbsp;Windows.</p>
+               <br>
+               <p class="verbatim" id="sid-560">This is great for NeXT -- OpenStep will become mainstream and be used by millions of people; this has been a dream of everyone at NeXT for ten&nbsp;years.</p>
+               <br>
+               <p class="verbatim" id="sid-561">This is great for Pixar -- it will free me up from running two companies, so I&nbsp;can devote even more of my energies to Pixar. There may even be some possibilities for Pixar and Apple to work together in the future (if creatively&nbsp;driven!).</p>
+               <br>
+               <p class="verbatim" id="sid-562">And, this is really great for me. I&nbsp;have been working with a group of wonderful colleagues at NeXT for over a decade, and having our work finally become mainstream will be very gratifying (a feeling everyone at Pixar already knows). I&nbsp;will be advising Apple on their product strategy, and I&nbsp;will get to spend even more of my time at Pixar&nbsp;:).</p>
+               <br>
+               <p class="verbatim" id="sid-563">I am very happy and&nbsp;excited.</p>
+               <p class="verbatim" id="sid-564">Steve</p>
+               <br>
+               <p class="verbatim" id="sid-565">PS: For more details, check out NeXT’s website&nbsp;at</p>
+               <p class="verbatim" id="sid-566">www.next.com</p>
+            </div>
+         </div>
+       </div>
+       
    
    
    </div>
     
 </div>
+
+

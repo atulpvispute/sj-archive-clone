@@ -10,9 +10,9 @@ import { BookContent } from './book-content/book-content';
 export class Book {
   isDragScaling: boolean = false;
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event: Event) {
-    // console.log('Scroll event triggered:', event);
-    // console.log('Scroll position X, Y:', window.scrollX, window.scrollY);
-  }
+  // @HostListener('window:scroll', ['$event'])
+  // onScroll(event: Event) {
+  //   // console.log('Scroll event triggered:', event);
+  //   // console.log('Scroll position X, Y:', window.scrollX, window.scrollY);
+  // }
 }
