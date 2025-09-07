@@ -1,11 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { Page } from './page/page';
 import { Book } from './book/book';
 
 
 @Component({
   selector: 'app-root',
-  imports: [Book],//Page
+  imports: [Book],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
