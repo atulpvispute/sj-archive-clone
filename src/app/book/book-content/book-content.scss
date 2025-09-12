@@ -2,6 +2,7 @@
 
 
 .book-main {
+
   .active-subchapter-theme-display-2 {
     position: fixed;
     top: 100px;
@@ -254,8 +255,8 @@
       right: 22px; // Distance from edge - adjusted for centering
       width: 4px;
       height: 100%;
-      background-color: #ccc; //grey// Grey background
-      transition: width 0.3s ease-in-out, right 0.3s ease-in-out; // Smooth width and position transition
+      background-color: var(--scroll-progress-before-color, #ccc); // Use CSS custom property with fallback
+      transition: width 0.3s ease-in-out, right 0.3s ease-in-out, background-color 0.3s ease-in-out; // Smooth transitions including color
       transform-origin: center; // Ensure scaling from center
     }
 
@@ -265,7 +266,7 @@
       right: 22px; // Distance from edge - adjusted for centering
       width: 4px;
       background-color: #007bff; // Blue fill color
-      transition: height 0.1s ease-out, width 0.3s ease-in-out, right 0.3s ease-in-out; // Smooth height, width and position transitions
+      transition: height 0.1s ease-out, width 0.3s ease-in-out, right 0.3s ease-in-out, background-color 0.3s ease-in-out; // Smooth height, width and position transitions
       height: 0%; // Start with 0% height
       transform-origin: center; // Ensure scaling from center
      }
@@ -276,7 +277,7 @@
          height: 2px;
          background-color: #F1F1F1;
          z-index: 1001; // Above the progress bar
-         transition: width 0.3s ease-in-out, right 0.3s ease-in-out; // Match scrollbar transitions
+         transition: width 0.3s ease-in-out, right 0.3s ease-in-out, background-color 0.3s ease-in-out; // Match scrollbar transitions
 
                    .chapter-name-label {
             position: absolute;
@@ -289,7 +290,7 @@
             font-weight: 500;
             white-space: nowrap;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out, color 0.3s ease-in-out;
             pointer-events: auto; // Enable pointer events for clicking
 
             &:hover {

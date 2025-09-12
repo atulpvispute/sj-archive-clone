@@ -62,6 +62,58 @@ export class BookContent implements AfterViewInit, OnDestroy {
   isSnapScrolling: boolean = false;
   private snapScrollTimeout: any;
 
+  private themeObject = [
+    {
+      theme: 'white',
+      color: '#FFFFFF',
+      scrollBarDividerColor: '#FFFFFF',
+      chapterTitleColor: '#0093E3',
+      scrollbarEmptyColor: '#DFDFDF',
+      timelineTextEmptyColor: '#DFDFDF',
+      scrollbarFillColor: '#0099EB',
+      timelineTextFillColor: '#567787',
+      treeIconColor: '#000000',
+      isActive: false,
+    },
+    {
+      theme: 'gray',
+      color: '#646464',
+      scrollBarDividerColor: '#646464',
+      chapterTitleColor: '#FFFFFF',
+      scrollbarEmptyColor: '#7C7C7C',
+      timelineTextEmptyColor: '#7C7C7C',
+      scrollbarFillColor: '#FFFFFF',
+      timelineTextFillColor: '#FFFFFF',
+      treeIconColor: '#000000',
+      isActive: false,
+    },
+    {
+      theme: 'blue',
+      color: '#008BD6',
+      scrollBarDividerColor: '#008BD6',
+      chapterTitleColor: '#FFFFFF',
+      scrollbarEmptyColor: '#189CD3',
+      timelineTextEmptyColor: '#189CD3',
+      scrollbarFillColor: '#FFFFFF',
+      timelineTextFillColor: '#FFFFFF',
+      treeIconColor: '#FFFFFF',
+      isActive: false,
+    },
+    {
+      theme: 'black',
+      color: '#000000',
+      scrollBarDividerColor: '#000000',
+      chapterTitleColor: '#FFFFFF',
+      scrollbarEmptyColor: '#2C2C2C',
+      timelineTextEmptyColor: '#2C2C2C',
+      scrollbarFillColor: '#FFFFFF',
+      timelineTextFillColor: '#FFFFFF',
+      treeIconColor: '#FFFFFF',
+      isActive: false,
+    },
+    
+  ]
+
 
   ngAfterViewInit() {
     // Detect touch device
@@ -76,6 +128,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
         this.setupResizeObserver(); // Set up resize observer for dynamic updates
         this.initializeChaptersData(); // Initialize chapters data array
         this.initializeSubchaptersData(); // Initialize subchapters data array
+        this.getBackgroundColorAtPosition(100, 100);
     }, 500); // Increased timeout to allow more time for content to load
   }
 
@@ -228,7 +281,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
       this.isSnapScrolling = false;
       this.updateChaptersData();
       this.updateSubchaptersData();
-    }, 200); // 800ms should be enough for smooth scroll to complete
+    }, 200); // 800ms should be enough for smooth scroll to complete 
   }
 
   // Snap to the bottom of a specific element
@@ -244,8 +297,8 @@ export class BookContent implements AfterViewInit, OnDestroy {
     window.scrollTo({
       top: targetPosition,
       behavior: 'smooth'
-    });
-    
+    }); 
+
     // Set timeout to re-enable input after scroll completes
     this.snapScrollTimeout = setTimeout(() => {
       this.isSnapScrolling = false;
@@ -294,8 +347,75 @@ export class BookContent implements AfterViewInit, OnDestroy {
       }
     }
 
+     
+   }
+
+  // Get background color at specific position (top, right)
+  private getBackgroundColorAtPosition(top: number, right: number): void {
+    const viewportWidth = window.innerWidth;
+    const x = viewportWidth - right; // Convert right to left position
+    const y = top;
+    
+    const element = document.elementFromPoint(x, y);
+    if (element) {
+      const computedStyle = window.getComputedStyle(element);
+      const backgroundColor = computedStyle.backgroundColor;
+      
+      // Convert RGB to hex if needed
+      if (backgroundColor && backgroundColor !== 'rgba(0, 0, 0, 0)' && backgroundColor !== 'transparent') {
+        const rgbToHex = (rgb: string) => {
+          const result = rgb.match(/\d+/g);
+          if (result) {
+            const r = parseInt(result[0]);
+            const g = parseInt(result[1]);
+            const b = parseInt(result[2]);
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+          }
+          return rgb;
+        };
+        
+        const hexColor = rgbToHex(backgroundColor);
+        this.themeObject.forEach((theme) => {
+            if (theme.color.toUpperCase() === hexColor.toUpperCase()) {
+              theme.isActive = true;
+            } else {
+              theme.isActive = false;
+            }
+          });
+          if (this.themeObject.every(theme => !theme.isActive)) {
+            this.themeObject[0].isActive = true;
+          }
+      }
+    } else {
+    }
+
     
   }
+
+  updateElementsBasedOnThemeActive(element: string) {
+    const obj = this.themeObject.find(theme => theme.isActive);
+    if (obj) {
+      return obj[element as keyof typeof obj];
+    }
+    return this.themeObject[0][element as keyof typeof this.themeObject[0]];
+  }
+
+  // Method to get label color based on scroll progress
+  getLabelColor(chapter: ChapterData): string {
+    const scrollProgressPercent = this.scrollProgress;
+    const chapterStartPercent = chapter.percentageStartPosition;
+
+    const obj = this.themeObject.find(theme => theme.isActive) 
+          ? this.themeObject.find(theme => theme.isActive) 
+          : this.themeObject[0];  
+
+    // If scroll progress is before this chapter, use default color
+    if (scrollProgressPercent <= chapterStartPercent) {
+        return obj?.timelineTextEmptyColor as string;
+    }
+    return obj?.timelineTextFillColor as string;
+  }
+
 
   // Detect if device is touch device or has screen size <= 767px
   detectTouchDevice(): void {
@@ -396,6 +516,10 @@ export class BookContent implements AfterViewInit, OnDestroy {
   onMouseDown(event: MouseEvent) {
     this.isDragging = true;
     this.isDragScaling = true;
+    this.themeObject.forEach((theme) => {
+      theme.isActive = false;
+    });
+    this.themeObject[0].isActive = true;
     this.showScrollProgress(); // Show progress bar when interacting
     event.preventDefault(); // Prevent text selection
     
@@ -460,7 +584,7 @@ export class BookContent implements AfterViewInit, OnDestroy {
   onMouseUp(event: MouseEvent) {
     this.isDragging = false;
     this.isDragScaling = false;
-
+   this.getBackgroundColorAtPosition(100, 100);
     // Get the final scroll progress bar position
     const progressBar = event.currentTarget as HTMLElement;
     const rect = progressBar.getBoundingClientRect();
@@ -776,6 +900,10 @@ export class BookContent implements AfterViewInit, OnDestroy {
                           currentScrollProgressPercent < subchapter.percentageEndPosition;
       }
     });
+
+    setTimeout(() => {
+      this.getBackgroundColorAtPosition(100, 100);
+    }, 300);
   }
 
   private setupChapterObserver() {
@@ -817,17 +945,6 @@ export class BookContent implements AfterViewInit, OnDestroy {
     });
   }
 
-  // Method to get label color based on scroll progress
-  getLabelColor(chapter: ChapterData): string {
-    const scrollProgressPercent = this.scrollProgress;
-    const chapterStartPercent = chapter.percentageStartPosition;
-    
-    // If scroll progress is before this chapter, use default color
-    if (scrollProgressPercent <= chapterStartPercent) {
-      return '#ccc'; // Grey
-    }
-    return '#124966'; // Fallback blue color
-  }
 
   // Touch device button click handler
   onTouchButtonClick(): void {

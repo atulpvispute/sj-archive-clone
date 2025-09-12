@@ -1,9 +1,11 @@
 <div class="book-main">
+
     <!-- Active Chapter Display -->
     <div >
         @for (chapter of getChaptersData(); track chapter.chapterName) {
             @if (chapter.isActive && chapter.chapterName) {
-                <strong class="active-chapter-display">{{ chapter.chapterName }}</strong>
+                <strong class="active-chapter-display"
+                     [style.color]="updateElementsBasedOnThemeActive('chapterTitleColor')">{{ chapter.chapterName }}</strong>
             }
         }
     </div>
@@ -19,15 +21,19 @@
          (mousedown)="onMouseDown($event)"
          (mousemove)="onMouseMove($event)"
          (mouseup)="onMouseUp($event)"
+         [style.--scroll-progress-before-color]="updateElementsBasedOnThemeActive('scrollbarEmptyColor')"
          >
-         <div class="scroll-progress-fill" [style.height.%]="scrollProgress"></div>
+         <div class="scroll-progress-fill" [style.height.%]="scrollProgress"
+               [style.backgroundColor]="updateElementsBasedOnThemeActive('scrollbarFillColor')"
+               ></div>
                  <!-- Chapter Divider Lines -->
                  @for (chapter of getChaptersData(); track chapter.chapterName) {
                      @if (chapter.chapterName || !(chapter.chapterName===" ")) {
                          <div class="chapter-divider-line" 
                               [style.top.%]="chapter.percentageStartPosition"
                               [style.width.px]="4"
-                              [style.right.px]="22">
+                              [style.right.px]="22"
+                              [style.backgroundColor]="updateElementsBasedOnThemeActive('scrollBarDividerColor')">
                              <span class="chapter-name-label" 
                                    (click)="scrollToChapter(chapter.chapterName); $event.stopPropagation()"
                                    [title]="'Click to scroll to ' + chapter.chapterName"
@@ -55,7 +61,6 @@
        <!-- Touch Device Button -->
       <button class="touch-device-button" (click)="onTouchButtonClick()">
           <img src="scroll-switcher.svg" class="scroll-switcher-image" alt="scroll-switcher" >
-         <!-- <span class="button-text">Timeline</span> -->
       </button>
   </div>
 
